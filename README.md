@@ -24,6 +24,7 @@ Trained on over 500,000 ranked matches, the model reconstructs 15 draft momentum
 
 * **Zero-Leakage Training**: Multi-player group split (`GroupShuffleSplit` on `MatchFk`) ensuring all 10 players from a match stay together. All target encodings were calculated strictly within the training fold.
 * **Isotonic Calibration**: Resolves random forest probability compression, aligning raw model outputs with empirical draft win rates (44% to 56%).
+* **Baseline Rates vs. Pairwise Matchups**: Computes lane differentials using independent baseline win rates rather than head-to-head champion matchup histories. This prevents severe data sparsity across thousands of individual pairings while providing a stable macro baseline.
 * **Live Riot API Ingestion**: Dynamically resolves Riot IDs via `ACCOUNT-V1`, ingests full pick, ban, and role payloads from `MATCH-V5`, and maps live patch metadata from Data Dragon.
 * **Direct Role Allotments**: Reconstructed lane matchups so the model compares direct counterparts (Top vs. Top, Jungle vs. Jungle) rather than arbitrary lobby array indices.
 
@@ -67,11 +68,11 @@ In the raw database tables, columns labeled `B1` through `B5` and `R1` through `
 ### 3. Case Study: Why the Statistical Edge Failed (+6.5% Edge vs In-Game Outcome)
 In one evaluated match, the model favored the red side by +6.5% because four out of five red champions had higher historical base win rates.
 
-However, flat statistical win rates cannot capture direct tactical kit counters:
-* **Targeted Hard CC**: The blue side mid laner had point-and-click stuns that repeatedly canceled the red jungler's channeled movement and ultimate abilities.
-* **Predator into Immobile Targets**: The blue stealth assassin jungler repeatedly punished the red side's immobile, low-peel marksman and support duo.
+This highlights an intentional architectural trade-off: the model calculates lane differentials from independent historical win rates (`ally_win_rate - enemy_win_rate`) across all matches, rather than maintaining a sparse pairwise head-to-head matrix of Champion A directly against Champion B. Because champions are evaluated by general baseline strength in a vacuum, the model cannot account for direct tactical kit interactions:
+* **Direct Counter**: The blue side mid laner had crowd control abilities that directly countered the red side jungler's engage.
+* **Predator into Immobile Targets**: The blue side assassin jungler repeatedly punished the red side's immobile, undefensible marksman and support duo.
 * **Reset Cleanups**: The blue side secondary assassin secured continuous resets whenever the red frontline was halted.
-* **Conclusion**: Statistical draft advantage provides a measurable macro baseline (+/- 6%), but hard archetype counters and mechanical execution dictate high-variance solo-queue outcomes.
+* **Conclusion**: Evaluating independent win rates provides a robust macro baseline (+/- 6%) without overfitting patch data, but specific head-to-head kit counters and mechanical execution dictate high-variance solo-queue outcomes.
 
 </details>
 
