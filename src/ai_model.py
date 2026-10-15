@@ -124,6 +124,13 @@ class MobalyticsJoblibModel(DraftModelInterface):
             else:
                 self.model = self.pipeline
                 self.is_loaded = True
+
+            # Backward-compatibility: scikit-learn 1.4+ added monotonic_cst to DecisionTreeClassifier
+            base_rf = getattr(self.model, "base_model", self.model)
+            if hasattr(base_rf, "estimators_"):
+                for est in base_rf.estimators_:
+                    if not hasattr(est, "monotonic_cst"):
+                        est.monotonic_cst = None
         except Exception as e:
             logger.error("Failed to load model from %s: %s", self.model_path, e)
             self.is_loaded = False

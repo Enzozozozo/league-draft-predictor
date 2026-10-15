@@ -16,6 +16,8 @@ dist/
 downloads/
 eggs/
 .eggs/
+.venv/
+venv/
 lib/
 lib64/
 parts/
