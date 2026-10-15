@@ -46,3 +46,8 @@ data/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Node & Frontend
+node_modules/
+dist/
+.vite/

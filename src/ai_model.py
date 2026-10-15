@@ -44,7 +44,16 @@ class MonotonicCalibratedForest:
         self.feature_importances_ = getattr(base_model, "feature_importances_", None)
 
     def predict_proba(self, X):
-        raw_p = self.base_model.predict_proba(X)[:, 1]
+        proba = self.base_model.predict_proba(X)
+        if proba.ndim == 2 and proba.shape[1] >= 2:
+            row_sums = proba.sum(axis=1, keepdims=True)
+            if np.any(row_sums > 1.01):
+                proba = proba / np.maximum(row_sums, 1e-9)
+            raw_p = proba[:, 1]
+        elif proba.ndim == 2:
+            raw_p = proba[:, 1]
+        else:
+            raw_p = proba
         cal_p = np.clip(self.calibrator.transform(raw_p), 0.01, 0.99)
         return np.column_stack([1 - cal_p, cal_p])
 

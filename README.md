@@ -21,15 +21,17 @@ Trained on over 500,000 ranked matches, the model reconstructs 15 draft momentum
 
 ## Quickstart
 
-### 1. Install
+### 1. Interactive React Web Application (Vite + Tailwind CSS)
+Launch the Hextech Tournament Draft Lobby and Modern SaaS Studio Analytics interface:
 ```bash
-git clone https://github.com/Enzozozozo/league-draft-predictor.git
-cd league-draft-predictor
-pip install -r requirements.txt
+npm install
+npm run dev
 ```
+Open [http://localhost:3000](http://localhost:3000) to draft champions, search the Data Dragon catalog, and run real-time calibrated inference.
 
-### 2. Run in Offline / Demo Mode (No API key needed)
+### 2. Python Backend & CLI
 ```bash
+pip install -r requirements.txt
 python -m src.app
 ```
 
