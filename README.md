@@ -9,54 +9,6 @@ Trained on over 500,000 ranked matches, the model reconstructs 15 draft momentum
 
 ---
 
-### Sample Output (CLI Draft Analysis Report)
-
-```text
-==========================================================================================
- LEAGUE OF LEGENDS CHAMPION DRAFT AI REPORT | MATCH: SG2_168483294
-==========================================================================================
-Queue:    Ranked Solo/Duo (Patch: 14.10)
-Duration: 28m 42s | Bans Supported: True
-Model:    MonotonicCalibratedForest
-
-------------------------------------------------------------------------------------------
- 1. OBJECTIVE CHAMPION DRAFT SELECTION
-------------------------------------------------------------------------------------------
-Role       | Blue Team (100)                    | Red Team (200)                    
-------------------------------------------------------------------------------------------
-TOP        | Frontline Bruiser (51.2% WR)       | Skirmisher        (49.8% WR)
-JUNGLE     | Assassin          (50.4% WR)       | Channeled Tank    (53.1% WR)
-MIDDLE     | Burst Mage        (51.8% WR)       | Control Mage      (50.2% WR)
-BOTTOM     | Hypercarry ADC    (48.9% WR)       | Immobile Marksman (52.4% WR)
-UTILITY    | Enchanter         (49.5% WR)       | Catcher Support   (51.1% WR)
-
-------------------------------------------------------------------------------------------
- 2. AI MODEL DRAFT PREDICTION & DRAFT TIER
-------------------------------------------------------------------------------------------
-Blue Win Probability:  43.50%
-Red Win Probability:   56.50%
-Draft Edge (Δ):        +6.50%  (Baseline: 50.0%)
-Draft Tier:            Heavy Advantage
-Actual Match Result:   Red (200)
-
-------------------------------------------------------------------------------------------
- 3. TACTICAL COMPOSITION METRICS (0 - 10 Scale)
-------------------------------------------------------------------------------------------
-Tactical Dimension     | Blue Team       | Red Team        | Advantage
-------------------------------------------------------------------------------------------
-Hard Engage            | 4.0             | 8.5             | Red Team (+)
-Disengage & Peel       | 7.0             | 3.5             | Blue Team (+)
-Poke & Harass          | 5.5             | 3.0             | Blue Team (+)
-Late-game Scaling      | 8.0             | 6.5             | Blue Team (+)
-5v5 Teamfight          | 6.0             | 8.0             | Red Team (+)
-
-Damage Profile (Blue): 45% Physical / 50% Magic / 5% True
-Damage Profile (Red):  65% Physical / 30% Magic / 5% True
-==========================================================================================
-```
-
----
-
 ## Key Highlights
 
 * **Zero-Leakage Training**: Multi-player group split (`GroupShuffleSplit` on `MatchFk`) ensuring all 10 players from a match stay together. All target encodings were calculated strictly within the training fold.
