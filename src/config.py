@@ -13,19 +13,12 @@ CACHE_DIR = BASE_DIR / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Path to the user's trained joblib model
-DEFAULT_MODEL_PATH = Path(
-    r"C:\Users\tayen\OneDrive - Singapore Polytechnic\Code\Projects\league_mobalytics_clone.joblib"
-)
-FALLBACK_MODEL_PATH = BASE_DIR / "models" / "league_mobalytics_clone.joblib"
+DEFAULT_MODEL_PATH = BASE_DIR / "models" / "league_mobalytics_clone.joblib"
 
 
 def get_model_path() -> Path:
     """Return an existing path to the trained model artifact."""
-    if FALLBACK_MODEL_PATH.exists():
-        return FALLBACK_MODEL_PATH
-    if DEFAULT_MODEL_PATH.exists():
-        return DEFAULT_MODEL_PATH
-    return FALLBACK_MODEL_PATH
+    return DEFAULT_MODEL_PATH
 
 
 @dataclass(frozen=True)
