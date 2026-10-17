@@ -1,6 +1,6 @@
 import unittest
-from src.config import RiotConfig, get_regional_route
-from src.riot_client import RiotClient, RateLimiter
+from src.backend.config import RiotConfig, get_regional_route
+from src.backend.riot_client import RiotClient, RateLimiter
 
 
 class TestRiotClient(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
-from src.riot_client import RiotClient
-from src.draft_extractor import DraftExtractor
-from src.schemas import TeamSide, Role
+from src.backend.riot_client import RiotClient
+from src.backend.draft_extractor import DraftExtractor
+from src.backend.schemas import TeamSide, Role
 
 
 class TestDraftExtractor(unittest.TestCase):

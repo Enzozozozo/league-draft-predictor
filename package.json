@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "server": "python server.py",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vite --config src/frontend/vite.config.js",
+    "server": "python -m src.backend.server",
+    "build": "vite build --config src/frontend/vite.config.js",
+    "preview": "vite preview --config src/frontend/vite.config.js"
   },
   "dependencies": {
     "clsx": "^2.1.1",

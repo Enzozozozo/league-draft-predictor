@@ -32,14 +32,14 @@ Open [http://localhost:3000](http://localhost:3000) to draft champions, search t
 ### 2. Python Backend & CLI
 ```bash
 pip install -r requirements.txt
-python -m src.app
+python -m src.backend.app
 ```
 
 ### 3. Run on Live Match History
 Add your free key from [developer.riotgames.com](https://developer.riotgames.com/) to `.env`:
 ```bash
 RIOT_API_KEY=RGAPI-your-key-here
-python -m src.app --player "YourName#Tag" --region sea
+python -m src.backend.app --riot-id "YourName#Tag" --region sea
 ```
 *(Or explore `notebooks/02_live_riot_api_evaluation.ipynb` for the full 10-game batch analyzer).*
 

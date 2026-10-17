@@ -4,11 +4,11 @@ Demonstrates draft data retrieval, pandas DataFrame conversion, and AI model eva
 using a fake/mock development key.
 """
 
-from src.config import RiotConfig
-from src.riot_client import RiotClient
-from src.draft_extractor import DraftExtractor
-from src.ai_model import MobalyticsJoblibModel
-from src.app import DraftAnalysisApp
+from src.backend.config import RiotConfig
+from src.backend.riot_client import RiotClient
+from src.backend.draft_extractor import DraftExtractor
+from src.backend.ai_model import MobalyticsJoblibModel
+from src.backend.app import DraftAnalysisApp
 
 
 def main():

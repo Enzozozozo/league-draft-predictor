@@ -1,8 +1,8 @@
 import unittest
-from src.riot_client import RiotClient
-from src.draft_extractor import DraftExtractor
-from src.ai_model import MobalyticsJoblibModel, DraftModelInterface
-from src.schemas import TeamSide, DraftAnalysisResult
+from src.backend.riot_client import RiotClient
+from src.backend.draft_extractor import DraftExtractor
+from src.backend.ai_model import MobalyticsJoblibModel, DraftModelInterface
+from src.backend.schemas import TeamSide, DraftAnalysisResult
 
 
 class TestAIModel(unittest.TestCase):

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
-from src.ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
-from src.champion_data import ChampionDataManager
+from src.backend.ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
+from src.backend.champion_data import ChampionDataManager
 
 def main():
     cdm = ChampionDataManager()
@@ -136,7 +136,7 @@ def main():
     # Sort alphabetically by champion name
     result.sort(key=lambda x: x["name"])
 
-    out_path = Path("src/data/champions.json")
+    out_path = Path("src/frontend/data/champions.json")
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
