@@ -8,8 +8,18 @@ export default function Header({
   onRandomizeDraft,
 }) {
   return (
-    <header className="sticky top-0 z-40 bg-[#070D18]/95 backdrop-blur border-b border-slate-800/80 px-4 sm:px-6 py-3 shadow-2xl">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+    <header
+      className={`sticky top-0 z-40 bg-[#070D18]/95 backdrop-blur border-b border-slate-800/80 shadow-2xl flex-shrink-0 ${
+        currentPhase === 'draft'
+          ? 'px-6 sm:px-10 lg:px-14 xl:px-16 py-2'
+          : 'px-4 sm:px-6 py-3'
+      }`}
+    >
+      <div
+        className={`${
+          currentPhase === 'draft' ? 'max-w-[1800px]' : 'max-w-7xl'
+        } mx-auto flex flex-col md:flex-row items-center justify-between gap-2.5`}
+      >
         
         {/* Brand & Crest */}
         <div className="flex items-center gap-3.5">

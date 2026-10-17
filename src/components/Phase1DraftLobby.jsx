@@ -13,6 +13,9 @@ export default function Phase1DraftLobby({
   roleFilter,
   setRoleFilter,
   onSelectChampion,
+  onAssignChampionToSlot,
+  draggedChampion,
+  setDraggedChampion,
   onPredictWinrate,
 }) {
   const handleSelectSlot = (team, index) => {
@@ -20,31 +23,27 @@ export default function Phase1DraftLobby({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 min-h-0 flex flex-col gap-2">
       
-      {/* 1. Champion Select Turn Header (No bans, clean turn state) */}
+      {/* 1. Position Selector & Drag-and-Drop Status Bar */}
       <DraftTurnHeader
         activeSlot={activeSlot}
         bluePicks={bluePicks}
         redPicks={redPicks}
       />
 
-      {/* 2. Symmetrical 3-Column 5v5 Drafting Arena */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      {/* 2. Single-Page 3-Column 5v5 Drafting Arena (22% Blue / 56% Grid / 22% Red) */}
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[22fr_56fr_22fr] gap-4 items-stretch">
         
-        {/* Left Column: Blue Team (3 Columns on Large) */}
-        <div className="lg:col-span-3 space-y-3">
-          <div className="flex items-center justify-between px-2 pb-1 border-b border-sky-500/20">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#0AC8B9] shadow-sm shadow-[#0AC8B9]" />
-              <span className="text-xs font-bold font-mono uppercase tracking-wider text-[#0AC8B9]">
-                Blue Side (Team 100)
-              </span>
-            </div>
-            <span className="text-[11px] font-mono text-slate-400">First Pick</span>
+        {/* Left Column: Blue Team Positions */}
+        <div className="flex flex-col min-h-0 gap-1.5">
+          <div className="px-2 pb-1 border-b border-sky-500/20 flex-shrink-0">
+            <h2 className="text-2xl leading-tight font-bold font-mono uppercase tracking-wider text-[#0AC8B9]">
+              Blue Side
+            </h2>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="flex-1 min-h-0 grid grid-rows-5 gap-2">
             {bluePicks.map((pick, idx) => (
               <DraftSlotCard
                 key={`blue-slot-${idx}`}
@@ -53,13 +52,16 @@ export default function Phase1DraftLobby({
                 pick={pick}
                 isActive={activeSlot.team === 'blue' && activeSlot.index === idx}
                 onSelectSlot={handleSelectSlot}
+                onDropChampion={onAssignChampionToSlot}
+                draggedChampion={draggedChampion}
+                setDraggedChampion={setDraggedChampion}
               />
             ))}
           </div>
         </div>
 
-        {/* Center Column: Champion Grid & Action Hub (6 Columns on Large) */}
-        <div className="lg:col-span-6">
+        {/* Center Column: 5-Per-Row Champion Grid & Action Hub */}
+        <div className="flex flex-col min-h-0">
           <ChampionGrid
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -69,23 +71,21 @@ export default function Phase1DraftLobby({
             bluePicks={bluePicks}
             redPicks={redPicks}
             onSelectChampion={onSelectChampion}
+            draggedChampion={draggedChampion}
+            setDraggedChampion={setDraggedChampion}
             onPredictWinrate={onPredictWinrate}
           />
         </div>
 
-        {/* Right Column: Red Team (3 Columns on Large) */}
-        <div className="lg:col-span-3 space-y-3">
-          <div className="flex items-center justify-between px-2 pb-1 border-b border-rose-500/20">
-            <span className="text-[11px] font-mono text-slate-400">Counter Pick</span>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold font-mono uppercase tracking-wider text-[#E84057]">
-                Red Side (Team 200)
-              </span>
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E84057] shadow-sm shadow-[#E84057]" />
-            </div>
+        {/* Right Column: Red Team Positions */}
+        <div className="flex flex-col min-h-0 gap-1.5">
+          <div className="px-2 pb-1 border-b border-rose-500/20 flex-shrink-0 text-right">
+            <h2 className="text-2xl leading-tight font-bold font-mono uppercase tracking-wider text-[#E84057]">
+              Red Side
+            </h2>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="flex-1 min-h-0 grid grid-rows-5 gap-2">
             {redPicks.map((pick, idx) => (
               <DraftSlotCard
                 key={`red-slot-${idx}`}
@@ -94,6 +94,9 @@ export default function Phase1DraftLobby({
                 pick={pick}
                 isActive={activeSlot.team === 'red' && activeSlot.index === idx}
                 onSelectSlot={handleSelectSlot}
+                onDropChampion={onAssignChampionToSlot}
+                draggedChampion={draggedChampion}
+                setDraggedChampion={setDraggedChampion}
               />
             ))}
           </div>

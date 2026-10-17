@@ -1,6 +1,25 @@
-import React from 'react';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { getChampion } from '../data/championsData';
+
+const ROLE_ICON_URLS = {
+  TOP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png',
+  JGL: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png',
+  MID: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png',
+  BOT: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png',
+  SUP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png',
+};
+
+function RoleIcon({ role, fullRoleName }) {
+  const iconUrl = ROLE_ICON_URLS[role] || ROLE_ICON_URLS.TOP;
+  return (
+    <img
+      src={iconUrl}
+      alt={fullRoleName}
+      draggable={false}
+      className="w-7 h-7 xl:w-8 xl:h-8 object-contain pointer-events-none select-none"
+    />
+  );
+}
 
 export default function DraftSlotCard({
   team, // 'blue' | 'red'
@@ -8,7 +27,11 @@ export default function DraftSlotCard({
   pick, // { role: 'TOP', champion: 'Aatrox', archetype: 'Juggernaut', winRate: 51.2 }
   isActive,
   onSelectSlot,
+  onDropChampion,
+  draggedChampion,
+  setDraggedChampion,
 }) {
+  const [isDragOver, setIsDragOver] = useState(false);
   const isBlue = team === 'blue';
   const champData = getChampion(pick.champion);
 
@@ -27,42 +50,124 @@ export default function DraftSlotCard({
 
   const fullRoleName = roleNameMap[pick.role] || pick.role;
 
+  const handleDragStart = (e) => {
+    const champPayload = champData || {
+      name: pick.champion,
+      archetype: pick.archetype || 'Specialist',
+      winRate: pick.winRate ?? 50.0,
+    };
+    const transferObj = {
+      champion: champPayload,
+      sourceSlot: { team, index },
+    };
+    e.dataTransfer.setData('application/json', JSON.stringify(transferObj));
+    e.dataTransfer.effectAllowed = 'copyMove';
+    if (setDraggedChampion) {
+      setDraggedChampion(transferObj);
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragOver(false);
+    if (setDraggedChampion) {
+      setDraggedChampion(null);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    if (!isDragOver) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsDragOver(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+
+    let payload = draggedChampion;
+    try {
+      const raw = e.dataTransfer.getData('application/json');
+      if (raw) {
+        payload = JSON.parse(raw);
+      }
+    } catch {
+      // Fallback to state payload
+    }
+
+    const champToAssign = payload?.champion || payload;
+    const sourceSlot = payload?.sourceSlot || null;
+
+    if (champToAssign && onDropChampion) {
+      onDropChampion(champToAssign, team, index, sourceSlot);
+    }
+    if (setDraggedChampion) {
+      setDraggedChampion(null);
+    }
+  };
+
   return (
     <div
+      draggable
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       onClick={() => onSelectSlot(team, index)}
-      className={`group relative p-3 rounded-xl border transition-all duration-200 cursor-pointer select-none ${
-        isActive
+      title={`Click to select ${team.toUpperCase()} ${fullRoleName}, or drop a champion here`}
+      className={`group relative px-3 py-2 h-full flex flex-col justify-center rounded-xl border transition-all duration-150 cursor-pointer select-none ${
+        isDragOver
+          ? 'bg-amber-500/15 border-amber-400 ring-2 ring-amber-400 shadow-lg shadow-amber-500/30 scale-[1.01]'
+          : isActive
           ? isBlue
-            ? 'bg-slate-900/90 border-[#0AC8B9] shadow-hextech-blue ring-2 ring-[#0AC8B9]/60'
-            : 'bg-slate-900/90 border-[#E84057] shadow-hextech-red ring-2 ring-[#E84057]/60'
+            ? 'bg-slate-900/95 border-[#0AC8B9] shadow-hextech-blue ring-2 ring-[#0AC8B9]/60'
+            : 'bg-slate-900/95 border-[#E84057] shadow-hextech-red ring-2 ring-[#E84057]/60'
+          : draggedChampion
+          ? isBlue
+            ? 'bg-[#0B121E]/90 border-[#0AC8B9]/40 border-dashed hover:border-[#0AC8B9]'
+            : 'bg-[#0B121E]/90 border-[#E84057]/40 border-dashed hover:border-[#E84057]'
           : isBlue
           ? 'bg-[#0B121E]/90 border-slate-800 hover:border-[#0AC8B9]/50 hover:bg-slate-900/50'
           : 'bg-[#0B121E]/90 border-slate-800 hover:border-[#E84057]/50 hover:bg-slate-900/50'
       }`}
     >
-      {/* Active slot indicator badge */}
-      {isActive && (
+      {/* Active or Drop Target badge */}
+      {(isActive || isDragOver) && (
         <div
-          className={`absolute -top-2.5 ${
+          className={`absolute -top-2 ${
             isBlue ? 'left-3' : 'right-3'
-          } px-2 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider text-slate-950 shadow-md ${
-            isBlue ? 'bg-[#0AC8B9]' : 'bg-[#E84057]'
+          } px-2 py-0.2 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider text-slate-950 shadow-md ${
+            isDragOver
+              ? 'bg-amber-400'
+              : isBlue
+              ? 'bg-[#0AC8B9]'
+              : 'bg-[#E84057]'
           }`}
         >
-          Active Slot
+          {isDragOver ? `Drop into ${fullRoleName}` : `Selected • ${fullRoleName}`}
         </div>
       )}
 
       <div
-        className={`flex items-center gap-3.5 ${
+        className={`flex items-center justify-between gap-3.5 ${
           isBlue ? 'flex-row text-left' : 'flex-row-reverse text-right'
         }`}
       >
-        {/* Champion Square Avatar */}
+        {/* Enlarged Champion Square Avatar */}
         <div className="relative flex-shrink-0">
           <div
-            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden border-2 bg-slate-950 transition-transform duration-200 group-hover:scale-105 ${
-              isActive
+            className={`w-16 h-16 xl:w-[70px] xl:h-[70px] rounded-xl overflow-hidden border-2 bg-slate-950 transition-transform duration-200 group-hover:scale-105 ${
+              isDragOver
+                ? 'border-amber-400 shadow-lg shadow-amber-400/40'
+                : isActive
                 ? isBlue
                   ? 'border-[#0AC8B9] shadow-lg shadow-[#0AC8B9]/30'
                   : 'border-[#E84057] shadow-lg shadow-[#E84057]/30'
@@ -74,57 +179,33 @@ export default function DraftSlotCard({
             <img
               src={imgUrl}
               alt={pick.champion}
-              className="w-full h-full object-cover"
+              draggable={false}
+              className="w-full h-full object-cover pointer-events-none"
               onError={(e) => {
                 e.currentTarget.src =
                   'https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aatrox.png';
               }}
             />
           </div>
-
-          {/* Micro slot number */}
-          <span
-            className={`absolute -bottom-1 ${
-              isBlue ? '-right-1' : '-left-1'
-            } w-4 h-4 rounded-full text-[9px] font-mono font-bold flex items-center justify-center text-slate-950 shadow ${
-              isBlue ? 'bg-sky-400' : 'bg-rose-400'
-            }`}
-          >
-            {index + 1}
-          </span>
         </div>
 
-        {/* Details: Role, Champion Name, Archetype & Win Rate */}
+        {/* Champion Name */}
         <div className="flex-1 min-w-0">
-          <div
-            className={`flex items-center gap-1.5 ${
-              isBlue ? 'justify-start' : 'justify-end'
-            }`}
-          >
-            <span
-              className={`text-[10px] font-mono font-extrabold uppercase px-1.5 py-0.5 rounded border ${
-                isBlue
-                  ? 'bg-sky-500/10 text-[#0AC8B9] border-[#0AC8B9]/30'
-                  : 'bg-rose-500/10 text-[#E84057] border-[#E84057]/30'
-              }`}
-            >
-              {fullRoleName}
-            </span>
-          </div>
-
-          <div className="text-sm sm:text-base font-bold text-slate-100 truncate mt-0.5 group-hover:text-amber-200 transition-colors">
+          <div className="text-base xl:text-lg font-bold text-slate-100 truncate group-hover:text-amber-200 transition-colors">
             {pick.champion}
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
-            <span className="truncate text-slate-300 font-medium">
-              {pick.archetype || champData?.archetype || 'Bruiser'}
-            </span>
-            <span className="text-slate-600">•</span>
-            <span className="font-mono text-[11px] font-semibold text-amber-300/90 whitespace-nowrap">
-              {pick.winRate}% WR
-            </span>
-          </div>
+        {/* Role Position Emblem Icon */}
+        <div
+          title={fullRoleName}
+          className={`flex-shrink-0 p-1.5 rounded-lg border transition-colors ${
+            isBlue
+              ? 'bg-sky-500/10 border-[#0AC8B9]/30 group-hover:border-[#0AC8B9]/60'
+              : 'bg-rose-500/10 border-[#E84057]/30 group-hover:border-[#E84057]/60'
+          }`}
+        >
+          <RoleIcon role={pick.role} fullRoleName={fullRoleName} />
         </div>
       </div>
     </div>
