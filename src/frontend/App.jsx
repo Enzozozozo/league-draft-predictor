@@ -143,14 +143,16 @@ export default function App() {
     setPredictionData(result);
   }, []);
 
+  const handleEditSlotFromAnalytics = useCallback((team, index, role) => {
+    setActiveSlot({ team, index });
+    if (role) {
+      setRoleFilter(role);
+    }
+    setCurrentPhase('draft');
+  }, []);
+
   return (
-    <div
-      className={`${
-        currentPhase === 'draft'
-          ? 'min-h-screen lg:h-screen lg:overflow-hidden'
-          : 'min-h-screen'
-      } bg-[#070B13] bg-hextech-grid flex flex-col text-slate-100 selection:bg-amber-500/30 selection:text-amber-200`}
-    >
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#070B13] bg-hextech-grid flex flex-col text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       
       {/* Global Application Header */}
       <Header
@@ -160,14 +162,8 @@ export default function App() {
         onRandomizeDraft={handleRandomizeDraft}
       />
 
-      {/* Main Interactive Container: Phase 1 fits on one page with generous edge padding; Phase 2 keeps max-w-7xl & standard padding */}
-      <main
-        className={
-          currentPhase === 'draft'
-            ? 'flex-1 min-h-0 w-full max-w-[1800px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 py-2.5 flex flex-col'
-            : 'flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6'
-        }
-      >
+      {/* Main Interactive Container: Both Phase 1 and Phase 2 fit on a single screen with generous edge padding */}
+      <main className="flex-1 min-h-0 w-full max-w-[1800px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 py-1.5 flex flex-col">
         
         {/* Phase State Machine Switching */}
         {currentPhase === 'draft' ? (
@@ -190,30 +186,21 @@ export default function App() {
           <Phase2AnalyticsDashboard
             predictionData={predictionData}
             onModifyDraft={() => setCurrentPhase('draft')}
+            onEditSlot={handleEditSlotFromAnalytics}
           />
         )}
 
       </main>
 
       {/* Footer / Engineering Signature */}
-      <footer
-        className={`border-t border-slate-900 bg-[#050811]/90 text-xs text-slate-500 font-mono ${
-          currentPhase === 'draft'
-            ? 'py-1.5 px-6 sm:px-10 lg:px-14 xl:px-16 flex-shrink-0'
-            : 'py-5 px-6 mt-12'
-        }`}
-      >
-        <div
-          className={`${
-            currentPhase === 'draft' ? 'max-w-[1800px]' : 'max-w-7xl'
-          } mx-auto flex flex-col sm:flex-row items-center justify-between gap-2`}
-        >
+      <footer className="border-t border-slate-900 bg-[#050811]/90 text-xs text-slate-500 font-mono py-1.5 px-6 sm:px-10 lg:px-14 xl:px-16 flex-shrink-0">
+        <div className="max-w-[1800px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             <span>GroupShuffleSplit Zero-Leakage • Isotonically Calibrated RF</span>
           </div>
           <div>
-            Data Dragon CDN v14.10.1 • 173 Champions • Match-V5 Schema Ingestion
+            Data Dragon CDN v16.20.1 • 173 Champions • Match-V5 Schema Ingestion
           </div>
         </div>
       </footer>

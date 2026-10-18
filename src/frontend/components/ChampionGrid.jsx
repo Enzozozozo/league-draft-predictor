@@ -35,9 +35,12 @@ export default function ChampionGrid({
     return map;
   }, [redPicks]);
 
-  // Filter champions based on search query and role filter
+  // Filter champions based on search query (champion name only) and role filter
   const filteredChampions = useMemo(() => {
-    return CHAMPIONS.filter((champ) => {
+    const rawQuery = searchQuery.toLowerCase().trim();
+    const cleanQuery = rawQuery.replace(/[^a-z0-9]/g, '');
+
+    const matches = CHAMPIONS.filter((champ) => {
       // Role filter check
       if (roleFilter !== 'ALL') {
         const matchesRole =
@@ -45,16 +48,38 @@ export default function ChampionGrid({
         if (!matchesRole) return false;
       }
 
-      // Search query check
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = champ.name.toLowerCase().includes(q);
-        const matchesTitle = champ.title?.toLowerCase().includes(q);
-        const matchesArchetype = champ.archetype?.toLowerCase().includes(q);
-        return matchesName || matchesTitle || matchesArchetype;
+      // Search query check (champion name only, supporting both "kai'sa" and "kaisa")
+      if (rawQuery) {
+        const rawName = champ.name.toLowerCase();
+        const cleanName = rawName.replace(/[^a-z0-9]/g, '');
+        return (
+          rawName.includes(rawQuery) ||
+          (cleanQuery.length > 0 && cleanName.includes(cleanQuery))
+        );
       }
 
       return true;
+    });
+
+    if (!rawQuery) return matches;
+
+    // Prioritize champions whose name starts with the query
+    return [...matches].sort((a, b) => {
+      const aRaw = a.name.toLowerCase();
+      const bRaw = b.name.toLowerCase();
+      const aClean = aRaw.replace(/[^a-z0-9]/g, '');
+      const bClean = bRaw.replace(/[^a-z0-9]/g, '');
+
+      const aStarts =
+        aRaw.startsWith(rawQuery) ||
+        (cleanQuery.length > 0 && aClean.startsWith(cleanQuery));
+      const bStarts =
+        bRaw.startsWith(rawQuery) ||
+        (cleanQuery.length > 0 && bClean.startsWith(cleanQuery));
+
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      return aRaw.localeCompare(bRaw);
     });
   }, [searchQuery, roleFilter]);
 

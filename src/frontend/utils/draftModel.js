@@ -1,4 +1,4 @@
-import { getChampion } from '../data/championsData';
+import { getChampion } from '../data/championsData.js';
 
 /**
  * Calculates pre-game draft metrics, win probabilities, tactical spreads,
@@ -224,16 +224,26 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
     const bChamp = getChampion(bPick.champion);
     const rChamp = getChampion(rPick.champion);
 
+    // Expected @15m Gold & Dynamic Lane State
+    const goldDiff15 = Math.round(diff * 85); // approx ~85g per 1% win rate delta
+    let laneDynamic = 'Even Skill Matchup';
+    if (diff >= 3.0) laneDynamic = 'Heavy Kill Pressure';
+    else if (diff >= 1.2) laneDynamic = 'Wave Priority';
+    else if (diff <= -3.0) laneDynamic = 'High Dive Risk';
+    else if (diff <= -1.2) laneDynamic = 'Defensive Farming';
+
     return {
       role: bPick.role,
       blueChampion: bPick.champion,
       blueWinRate: bWr,
-      blueImage: bChamp?.image || `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${bPick.champion}.png`,
+      blueImage: bChamp?.image || `https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/${bPick.champion}.png`,
       redChampion: rPick.champion,
       redWinRate: rWr,
-      redImage: rChamp?.image || `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${rPick.champion}.png`,
+      redImage: rChamp?.image || `https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/${rPick.champion}.png`,
       differential: diff,
       isBlueLean,
+      goldDiff15,
+      laneDynamic,
       badgeText: isBlueLean ? `+${absDiff}% Blue Lean` : `-${absDiff}% Red Lean`,
     };
   });
@@ -293,6 +303,95 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
     }
   }
 
+  // 9. Power Curves / Phase Spikes (Early: 0-15m, Mid: 15-25m, Late: 25m+)
+  let powerSpikes;
+  if (isDefaultDraft) {
+    powerSpikes = [
+      {
+        phase: 'Early Game',
+        timeframe: '0 - 15m',
+        blueAdv: 48,
+        redAdv: 52,
+        favoredSide: 'Red',
+        delta: '+4%',
+        label: 'Red Laning Pressure',
+        details: 'Lorem ipsum dolor sit',
+      },
+      {
+        phase: 'Mid Game',
+        timeframe: '15 - 25m',
+        blueAdv: 55,
+        redAdv: 45,
+        favoredSide: 'Blue',
+        delta: '+10%',
+        label: 'Blue 2-Item Spike',
+        details: 'Lorem consectetur elit',
+      },
+      {
+        phase: 'Late Game',
+        timeframe: '25m+',
+        blueAdv: 62,
+        redAdv: 38,
+        favoredSide: 'Blue',
+        delta: '+24%',
+        label: 'Blue Hypercarry Peak',
+        details: 'Lorem tempor incidunt',
+      },
+    ];
+  } else {
+    // Dynamic calculation based on lane matchups, tactical dimensions & overall winrate
+    const totalGoldDiff15 = laneMatchups.reduce((acc, m) => acc + (m.goldDiff15 || 0), 0);
+    const earlyBlue = Math.min(75, Math.max(25, Math.round(50 + (totalGoldDiff15 / 120))));
+    const earlyRed = 100 - earlyBlue;
+
+    const scalingDiff = tacticalDimensions.find(d => d.name === 'Late-Game Scaling')?.diff || 0;
+    const lateBlue = Math.min(80, Math.max(20, Math.round(50 + (scalingDiff * 5.5))));
+    const lateRed = 100 - lateBlue;
+
+    const engageDiff = tacticalDimensions.find(d => d.name === 'Hard Engage')?.diff || 0;
+    const midBlue = Math.min(75, Math.max(25, Math.round(50 + (engageDiff * 2.5) + ((blueWinProb - 50) * 0.35))));
+    const midRed = 100 - midBlue;
+
+    const createSpike = (phase, timeframe, bVal, rVal, loremNote) => {
+      const favoredSide = bVal >= rVal ? 'Blue' : 'Red';
+      const deltaVal = Math.abs(bVal - rVal);
+      return {
+        phase,
+        timeframe,
+        blueAdv: bVal,
+        redAdv: rVal,
+        favoredSide,
+        delta: `+${deltaVal}%`,
+        label: `${favoredSide} Spike`,
+        details: loremNote,
+      };
+    };
+
+    powerSpikes = [
+      createSpike(
+        'Early Game',
+        '0 - 15m',
+        earlyBlue,
+        earlyRed,
+        'Lorem ipsum dolor sit'
+      ),
+      createSpike(
+        'Mid Game',
+        '15 - 25m',
+        midBlue,
+        midRed,
+        'Lorem consectetur elit'
+      ),
+      createSpike(
+        'Late Game',
+        '25m+',
+        lateBlue,
+        lateRed,
+        'Lorem tempor incidunt'
+      ),
+    ];
+  }
+
   return {
     source: 'Client Calibrated Model (Offline Safe)',
     isBackend: false,
@@ -318,6 +417,7 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
     redDamage,
     laneMatchups,
     primaryWinCondition,
+    powerSpikes,
     calculatedAt: new Date().toISOString(),
   };
 }
@@ -355,8 +455,11 @@ export async function predictDraftWithBackend(bluePicks, redPicks) {
 
     if (resp && resp.ok) {
       const data = await resp.json();
+      const fallbackPrediction = calculateDraftPrediction(bluePicks, redPicks);
       return {
+        ...fallbackPrediction,
         ...data,
+        powerSpikes: data.powerSpikes || fallbackPrediction.powerSpikes,
         isBackend: true,
         source: 'Python ML Backend (models/league_mobalytics_clone.joblib)',
         modelSpec: {

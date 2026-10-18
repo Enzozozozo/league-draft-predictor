@@ -4,7 +4,7 @@
     "key": 266,
     "name": "Aatrox",
     "title": "the Darkin Blade",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aatrox.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Aatrox.png",
     "roles": [
       "TOP"
     ],
@@ -27,7 +27,7 @@
     "key": 103,
     "name": "Ahri",
     "title": "the Nine-Tailed Fox",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ahri.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ahri.png",
     "roles": [
       "MID"
     ],
@@ -51,13 +51,13 @@
     "key": 84,
     "name": "Akali",
     "title": "the Rogue Assassin",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Akali.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Akali.png",
     "roles": [
       "MID",
       "TOP"
     ],
     "primaryRole": "MID",
-    "archetype": "AP Assassin",
+    "archetype": "Assassin",
     "winRate": 49.0,
     "engage": 4.0,
     "disengage": 3.0,
@@ -75,14 +75,12 @@
     "key": 166,
     "name": "Akshan",
     "title": "the Rogue Sentinel",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Akshan.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Akshan.png",
     "roles": [
-      "BOT",
-      "MID",
-      "JGL"
+      "MID"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "primaryRole": "MID",
+    "archetype": "Assassin",
     "winRate": 48.0,
     "engage": 4.0,
     "disengage": 3.0,
@@ -101,7 +99,7 @@
     "key": 12,
     "name": "Alistar",
     "title": "the Minotaur",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Alistar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Alistar.png",
     "roles": [
       "SUP"
     ],
@@ -125,14 +123,12 @@
     "key": 799,
     "name": "Ambessa",
     "title": "Matriarch of War",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ambessa.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ambessa.png",
     "roles": [
-      "MID",
-      "JGL",
       "TOP"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "TOP",
+    "archetype": "Diver",
     "winRate": 47.3,
     "engage": 6.0,
     "disengage": 3.0,
@@ -151,14 +147,13 @@
     "key": 32,
     "name": "Amumu",
     "title": "the Sad Mummy",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Amumu.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Amumu.png",
     "roles": [
-      "SUP",
-      "TOP",
-      "JGL"
+      "JGL",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "JGL",
+    "archetype": "Vanguard Tank",
     "winRate": 51.8,
     "engage": 10.0,
     "disengage": 7.0,
@@ -177,13 +172,12 @@
     "key": 34,
     "name": "Anivia",
     "title": "the Cryophoenix",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Anivia.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Anivia.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Battlemage",
     "winRate": 49.4,
     "engage": 4.0,
     "disengage": 5.0,
@@ -201,12 +195,11 @@
     "key": 1,
     "name": "Annie",
     "title": "the Dark Child",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Annie.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Annie.png",
     "roles": [
-      "SUP",
       "MID"
     ],
-    "primaryRole": "SUP",
+    "primaryRole": "MID",
     "archetype": "Burst Mage",
     "winRate": 50.5,
     "engage": 4.0,
@@ -226,12 +219,12 @@
     "key": 523,
     "name": "Aphelios",
     "title": "the Weapon of the Faithful",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aphelios.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Aphelios.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 50.4,
     "engage": 4.0,
     "disengage": 3.0,
@@ -249,13 +242,13 @@
     "key": 22,
     "name": "Ashe",
     "title": "the Frost Archer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ashe.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ashe.png",
     "roles": [
       "BOT",
       "SUP"
     ],
     "primaryRole": "BOT",
-    "archetype": "Catcher / Warden",
+    "archetype": "Marksman",
     "winRate": 51.5,
     "engage": 4.0,
     "disengage": 7.0,
@@ -274,7 +267,7 @@
     "key": 136,
     "name": "Aurelion Sol",
     "title": "The Star Forger",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/AurelionSol.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/AurelionSol.png",
     "roles": [
       "MID"
     ],
@@ -297,14 +290,13 @@
     "key": 893,
     "name": "Aurora",
     "title": "the Witch Between Worlds",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aurora.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Aurora.png",
     "roles": [
       "MID",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Burst Mage",
     "winRate": 48.9,
     "engage": 4.0,
     "disengage": 5.0,
@@ -323,14 +315,12 @@
     "key": 268,
     "name": "Azir",
     "title": "the Emperor of the Sands",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Azir.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Azir.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "MID"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "primaryRole": "MID",
+    "archetype": "Marksman",
     "winRate": 44.5,
     "engage": 4.0,
     "disengage": 5.0,
@@ -349,13 +339,12 @@
     "key": 432,
     "name": "Bard",
     "title": "the Wandering Caretaker",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Bard.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Bard.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "archetype": "Catcher",
     "winRate": 47.2,
     "engage": 4.0,
     "disengage": 9.0,
@@ -374,12 +363,11 @@
     "key": 200,
     "name": "Bel'Veth",
     "title": "the Empress of the Void",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Belveth.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Belveth.png",
     "roles": [
-      "TOP",
       "JGL"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "JGL",
     "archetype": "Skirmisher",
     "winRate": 49.9,
     "engage": 6.0,
@@ -398,7 +386,7 @@
     "key": 53,
     "name": "Blitzcrank",
     "title": "the Great Steam Golem",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Blitzcrank.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Blitzcrank.png",
     "roles": [
       "SUP"
     ],
@@ -422,14 +410,14 @@
     "key": 63,
     "name": "Brand",
     "title": "the Burning Vengeance",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Brand.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Brand.png",
     "roles": [
-      "SUP",
       "JGL",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "JGL",
+    "archetype": "Burst Mage",
     "winRate": 52.4,
     "engage": 4.0,
     "disengage": 9.0,
@@ -448,11 +436,9 @@
     "key": 201,
     "name": "Braum",
     "title": "the Heart of the Freljord",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Braum.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Braum.png",
     "roles": [
-      "SUP",
-      "TOP",
-      "JGL"
+      "SUP"
     ],
     "primaryRole": "SUP",
     "archetype": "Warden Tank",
@@ -474,14 +460,12 @@
     "key": 233,
     "name": "Briar",
     "title": "the Restrained Hunger",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Briar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Briar.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 51.0,
     "engage": 6.0,
     "disengage": 3.0,
@@ -500,12 +484,12 @@
     "key": 51,
     "name": "Caitlyn",
     "title": "the Sheriff of Piltover",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Caitlyn.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Caitlyn.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 50.1,
     "engage": 4.0,
     "disengage": 3.0,
@@ -523,13 +507,12 @@
     "key": 164,
     "name": "Camille",
     "title": "the Steel Shadow",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Camille.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Camille.png",
     "roles": [
-      "MID",
-      "JGL",
+      "SUP",
       "TOP"
     ],
-    "primaryRole": "MID",
+    "primaryRole": "SUP",
     "archetype": "Diver",
     "winRate": 50.1,
     "engage": 6.0,
@@ -549,10 +532,9 @@
     "key": 69,
     "name": "Cassiopeia",
     "title": "the Serpent's Embrace",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Cassiopeia.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Cassiopeia.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
     "archetype": "Battlemage",
@@ -573,15 +555,12 @@
     "key": 31,
     "name": "Cho'Gath",
     "title": "the Terror of the Void",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Chogath.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Chogath.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL",
-      "MID"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Warden Tank",
+    "archetype": "Specialist",
     "winRate": 49.6,
     "engage": 8.0,
     "disengage": 5.0,
@@ -600,14 +579,12 @@
     "key": 42,
     "name": "Corki",
     "title": "the Daring Bombardier",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Corki.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Corki.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "MID"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Artillery Marksman",
+    "primaryRole": "MID",
+    "archetype": "Marksman",
     "winRate": 48.4,
     "engage": 4.0,
     "disengage": 5.0,
@@ -626,7 +603,7 @@
     "key": 122,
     "name": "Darius",
     "title": "the Hand of Noxus",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Darius.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Darius.png",
     "roles": [
       "TOP"
     ],
@@ -650,14 +627,13 @@
     "key": 131,
     "name": "Diana",
     "title": "Scorn of the Moon",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Diana.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Diana.png",
     "roles": [
-      "MID",
       "JGL",
-      "TOP"
+      "MID"
     ],
-    "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 51.1,
     "engage": 6.0,
     "disengage": 3.0,
@@ -676,11 +652,9 @@
     "key": 36,
     "name": "Dr. Mundo",
     "title": "the Madman of Zaun",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/DrMundo.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/DrMundo.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Juggernaut",
@@ -702,12 +676,12 @@
     "key": 119,
     "name": "Draven",
     "title": "the Glorious Executioner",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Draven.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Draven.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 46.9,
     "engage": 4.0,
     "disengage": 3.0,
@@ -725,14 +699,13 @@
     "key": 245,
     "name": "Ekko",
     "title": "the Boy Who Shattered Time",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ekko.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ekko.png",
     "roles": [
-      "MID",
-      "SUP",
-      "JGL"
+      "JGL",
+      "MID"
     ],
-    "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 51.4,
     "engage": 4.0,
     "disengage": 5.0,
@@ -751,14 +724,12 @@
     "key": 60,
     "name": "Elise",
     "title": "the Spider Queen",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Elise.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Elise.png",
     "roles": [
-      "MID",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 50.8,
     "engage": 4.0,
     "disengage": 5.0,
@@ -777,14 +748,12 @@
     "key": 28,
     "name": "Evelynn",
     "title": "Agony's Embrace",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Evelynn.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Evelynn.png",
     "roles": [
-      "MID",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 48.4,
     "engage": 4.0,
     "disengage": 5.0,
@@ -803,13 +772,12 @@
     "key": 81,
     "name": "Ezreal",
     "title": "the Prodigal Explorer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ezreal.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ezreal.png",
     "roles": [
-      "BOT",
-      "MID"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "archetype": "Marksman",
     "winRate": 47.7,
     "engage": 4.0,
     "disengage": 5.0,
@@ -828,13 +796,12 @@
     "key": 9,
     "name": "Fiddlesticks",
     "title": "the Ancient Fear",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Fiddlesticks.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Fiddlesticks.png",
     "roles": [
-      "SUP",
-      "MID"
+      "JGL"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "JGL",
+    "archetype": "Specialist",
     "winRate": 51.4,
     "engage": 4.0,
     "disengage": 9.0,
@@ -853,12 +820,12 @@
     "key": 114,
     "name": "Fiora",
     "title": "the Grand Duelist",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Fiora.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Fiora.png",
     "roles": [
       "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Duelist",
+    "archetype": "Skirmisher",
     "winRate": 49.7,
     "engage": 6.0,
     "disengage": 3.0,
@@ -877,14 +844,12 @@
     "key": 105,
     "name": "Fizz",
     "title": "the Tidal Trickster",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Fizz.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Fizz.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Assassin",
     "winRate": 50.5,
     "engage": 6.0,
     "disengage": 3.0,
@@ -903,14 +868,12 @@
     "key": 3,
     "name": "Galio",
     "title": "the Colossus",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Galio.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Galio.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "MID",
     "archetype": "Warden Tank",
     "winRate": 51.6,
     "engage": 8.0,
@@ -930,13 +893,12 @@
     "key": 41,
     "name": "Gangplank",
     "title": "the Saltwater Scourge",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Gangplank.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Gangplank.png",
     "roles": [
-      "TOP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Skirmisher",
+    "archetype": "Specialist",
     "winRate": 49.4,
     "engage": 6.0,
     "disengage": 3.0,
@@ -954,7 +916,7 @@
     "key": 86,
     "name": "Garen",
     "title": "The Might of Demacia",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Garen.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Garen.png",
     "roles": [
       "TOP"
     ],
@@ -978,14 +940,12 @@
     "key": 150,
     "name": "Gnar",
     "title": "the Missing Link",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Gnar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Gnar.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Specialist",
     "winRate": 49.3,
     "engage": 10.0,
     "disengage": 3.0,
@@ -1004,15 +964,14 @@
     "key": 79,
     "name": "Gragas",
     "title": "the Rabble Rouser",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Gragas.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Gragas.png",
     "roles": [
+      "JGL",
       "MID",
-      "SUP",
-      "TOP",
-      "JGL"
+      "TOP"
     ],
-    "primaryRole": "MID",
-    "archetype": "Battlemage",
+    "primaryRole": "JGL",
+    "archetype": "Vanguard Tank",
     "winRate": 49.2,
     "engage": 6.0,
     "disengage": 5.0,
@@ -1031,12 +990,12 @@
     "key": 104,
     "name": "Graves",
     "title": "the Outlaw",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Graves.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Graves.png",
     "roles": [
-      "BOT"
+      "JGL"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "primaryRole": "JGL",
+    "archetype": "Marksman",
     "winRate": 46.0,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1054,12 +1013,12 @@
     "key": 887,
     "name": "Gwen",
     "title": "The Hallowed Seamstress",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Gwen.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Gwen.png",
     "roles": [
-      "TOP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "JGL",
     "archetype": "Skirmisher",
     "winRate": 51.2,
     "engage": 6.0,
@@ -1078,7 +1037,7 @@
     "key": 120,
     "name": "Hecarim",
     "title": "the Shadow of War",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Hecarim.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Hecarim.png",
     "roles": [
       "JGL"
     ],
@@ -1102,13 +1061,14 @@
     "key": 74,
     "name": "Heimerdinger",
     "title": "the Revered Inventor",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Heimerdinger.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Heimerdinger.png",
     "roles": [
+      "MID",
       "SUP",
-      "MID"
+      "TOP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "MID",
+    "archetype": "Specialist",
     "winRate": 53.1,
     "engage": 6.0,
     "disengage": 9.0,
@@ -1127,13 +1087,13 @@
     "key": 910,
     "name": "Hwei",
     "title": "the Visionary",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Hwei.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Hwei.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "MID",
+    "archetype": "Artillery Mage",
     "winRate": 50.2,
     "engage": 4.0,
     "disengage": 9.0,
@@ -1152,11 +1112,9 @@
     "key": 420,
     "name": "Illaoi",
     "title": "the Kraken Priestess",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Illaoi.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Illaoi.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Juggernaut",
@@ -1178,10 +1136,9 @@
     "key": 39,
     "name": "Irelia",
     "title": "the Blade Dancer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Irelia.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Irelia.png",
     "roles": [
       "MID",
-      "JGL",
       "TOP"
     ],
     "primaryRole": "MID",
@@ -1204,13 +1161,12 @@
     "key": 427,
     "name": "Ivern",
     "title": "the Green Father",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ivern.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ivern.png",
     "roles": [
-      "SUP",
-      "MID"
+      "JGL"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "JGL",
+    "archetype": "Catcher",
     "winRate": 50.1,
     "engage": 4.0,
     "disengage": 9.0,
@@ -1229,7 +1185,7 @@
     "key": 40,
     "name": "Janna",
     "title": "the Storm's Fury",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Janna.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Janna.png",
     "roles": [
       "SUP"
     ],
@@ -1253,7 +1209,7 @@
     "key": 59,
     "name": "Jarvan IV",
     "title": "the Exemplar of Demacia",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/JarvanIV.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/JarvanIV.png",
     "roles": [
       "JGL"
     ],
@@ -1277,12 +1233,12 @@
     "key": 24,
     "name": "Jax",
     "title": "Grandmaster at Arms",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Jax.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Jax.png",
     "roles": [
-      "TOP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "JGL",
     "archetype": "Skirmisher",
     "winRate": 52.5,
     "engage": 6.0,
@@ -1301,14 +1257,13 @@
     "key": 126,
     "name": "Jayce",
     "title": "the Defender of Tomorrow",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Jayce.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Jayce.png",
     "roles": [
-      "BOT",
-      "TOP",
-      "JGL"
+      "MID",
+      "TOP"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "primaryRole": "MID",
+    "archetype": "Artillery Mage",
     "winRate": 49.0,
     "engage": 6.0,
     "disengage": 3.0,
@@ -1327,14 +1282,12 @@
     "key": 202,
     "name": "Jhin",
     "title": "the Virtuoso",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Jhin.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Jhin.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Catcher",
     "winRate": 51.6,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1353,12 +1306,12 @@
     "key": 222,
     "name": "Jinx",
     "title": "the Loose Cannon",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Jinx.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Jinx.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 53.3,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1376,12 +1329,12 @@
     "key": 897,
     "name": "K'Sante",
     "title": "the Pride of Nazumah",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/KSante.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/KSante.png",
     "roles": [
       "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Skirmisher",
     "winRate": 45.7,
     "engage": 10.0,
     "disengage": 3.0,
@@ -1400,12 +1353,12 @@
     "key": 145,
     "name": "Kai'Sa",
     "title": "Daughter of the Void",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kaisa.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kaisa.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 49.6,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1424,12 +1377,12 @@
     "key": 429,
     "name": "Kalista",
     "title": "the Spear of Vengeance",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kalista.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kalista.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 51.8,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1447,13 +1400,14 @@
     "key": 43,
     "name": "Karma",
     "title": "the Enlightened One",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Karma.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Karma.png",
     "roles": [
+      "MID",
       "SUP",
-      "MID"
+      "TOP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "MID",
+    "archetype": "Burst Mage",
     "winRate": 48.5,
     "engage": 6.0,
     "disengage": 9.0,
@@ -1472,11 +1426,9 @@
     "key": 30,
     "name": "Karthus",
     "title": "the Deathsinger",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Karthus.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Karthus.png",
     "roles": [
-      "JGL",
-      "BOT",
-      "MID"
+      "JGL"
     ],
     "primaryRole": "JGL",
     "archetype": "Battlemage",
@@ -1497,14 +1449,12 @@
     "key": 38,
     "name": "Kassadin",
     "title": "the Void Walker",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kassadin.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kassadin.png",
     "roles": [
-      "MID",
-      "SUP",
-      "JGL"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Assassin",
     "winRate": 46.8,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1523,14 +1473,12 @@
     "key": 55,
     "name": "Katarina",
     "title": "the Sinister Blade",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Katarina.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Katarina.png",
     "roles": [
-      "MID",
-      "SUP",
-      "JGL"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Assassin",
     "winRate": 48.1,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1549,14 +1497,12 @@
     "key": 10,
     "name": "Kayle",
     "title": "the Righteous",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kayle.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kayle.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "TOP"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "primaryRole": "TOP",
+    "archetype": "Marksman",
     "winRate": 52.0,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1575,12 +1521,12 @@
     "key": 141,
     "name": "Kayn",
     "title": "the Shadow Reaper",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kayn.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kayn.png",
     "roles": [
       "JGL"
     ],
     "primaryRole": "JGL",
-    "archetype": "Lethality Assassin",
+    "archetype": "Skirmisher",
     "winRate": 48.7,
     "engage": 6.0,
     "disengage": 3.0,
@@ -1599,13 +1545,12 @@
     "key": 85,
     "name": "Kennen",
     "title": "the Heart of the Tempest",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kennen.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kennen.png",
     "roles": [
-      "MID",
-      "SUP"
+      "TOP"
     ],
-    "primaryRole": "MID",
-    "archetype": "Battlemage",
+    "primaryRole": "TOP",
+    "archetype": "Marksman",
     "winRate": 49.7,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1623,13 +1568,12 @@
     "key": 121,
     "name": "Kha'Zix",
     "title": "the Voidreaver",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Khazix.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Khazix.png",
     "roles": [
-      "MID",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "AD Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 48.3,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1647,12 +1591,12 @@
     "key": 203,
     "name": "Kindred",
     "title": "The Eternal Hunters",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kindred.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kindred.png",
     "roles": [
-      "BOT"
+      "JGL"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "primaryRole": "JGL",
+    "archetype": "Marksman",
     "winRate": 49.8,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1670,10 +1614,9 @@
     "key": 240,
     "name": "Kled",
     "title": "the Cantankerous Cavalier",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Kled.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Kled.png",
     "roles": [
-      "TOP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Skirmisher",
@@ -1694,14 +1637,12 @@
     "key": 96,
     "name": "Kog'Maw",
     "title": "the Mouth of the Abyss",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/KogMaw.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/KogMaw.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 53.5,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1720,14 +1661,12 @@
     "key": 7,
     "name": "LeBlanc",
     "title": "the Deceiver",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Leblanc.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Leblanc.png",
     "roles": [
-      "MID",
-      "SUP",
-      "JGL"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Burst Mage",
     "winRate": 48.1,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1746,7 +1685,7 @@
     "key": 64,
     "name": "Lee Sin",
     "title": "the Blind Monk",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/LeeSin.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/LeeSin.png",
     "roles": [
       "JGL"
     ],
@@ -1770,7 +1709,7 @@
     "key": 89,
     "name": "Leona",
     "title": "the Radiant Dawn",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Leona.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Leona.png",
     "roles": [
       "SUP"
     ],
@@ -1794,15 +1733,12 @@
     "key": 876,
     "name": "Lillia",
     "title": "the Bashful Bloom",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lillia.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Lillia.png",
     "roles": [
-      "MID",
-      "SUP",
-      "TOP",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "primaryRole": "JGL",
+    "archetype": "Skirmisher",
     "winRate": 50.9,
     "engage": 6.0,
     "disengage": 5.0,
@@ -1821,13 +1757,12 @@
     "key": 127,
     "name": "Lissandra",
     "title": "the Ice Witch",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lissandra.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Lissandra.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Burst Mage",
     "winRate": 52.0,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1845,14 +1780,14 @@
     "key": 805,
     "name": "Locke",
     "title": "the Ashen Exorcist",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Locke.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Locke.png",
     "roles": [
       "MID",
       "SUP",
       "JGL"
     ],
     "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "archetype": "AD Assassin",
     "winRate": 50.0,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1871,13 +1806,12 @@
     "key": 236,
     "name": "Lucian",
     "title": "the Purifier",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lucian.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Lucian.png",
     "roles": [
-      "BOT",
-      "MID"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Assassin",
     "winRate": 49.3,
     "engage": 4.0,
     "disengage": 3.0,
@@ -1896,7 +1830,7 @@
     "key": 117,
     "name": "Lulu",
     "title": "the Fae Sorceress",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lulu.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Lulu.png",
     "roles": [
       "SUP"
     ],
@@ -1920,13 +1854,13 @@
     "key": 99,
     "name": "Lux",
     "title": "the Lady of Luminosity",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Lux.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Lux.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Artillery Mage",
+    "primaryRole": "MID",
+    "archetype": "Burst Mage",
     "winRate": 50.7,
     "engage": 4.0,
     "disengage": 9.0,
@@ -1945,12 +1879,13 @@
     "key": 54,
     "name": "Malphite",
     "title": "Shard of the Monolith",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Malphite.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Malphite.png",
     "roles": [
-      "TOP",
-      "MID"
+      "MID",
+      "SUP",
+      "TOP"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "MID",
     "archetype": "Vanguard Tank",
     "winRate": 52.8,
     "engage": 8.0,
@@ -1970,13 +1905,12 @@
     "key": 90,
     "name": "Malzahar",
     "title": "the Prophet of the Void",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Malzahar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Malzahar.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Battlemage",
     "winRate": 52.2,
     "engage": 4.0,
     "disengage": 5.0,
@@ -1994,14 +1928,13 @@
     "key": 57,
     "name": "Maokai",
     "title": "the Twisted Treant",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Maokai.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Maokai.png",
     "roles": [
-      "SUP",
-      "TOP",
-      "JGL"
+      "JGL",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Catcher / Warden",
+    "primaryRole": "JGL",
+    "archetype": "Vanguard Tank",
     "winRate": 50.3,
     "engage": 10.0,
     "disengage": 7.0,
@@ -2020,14 +1953,12 @@
     "key": 11,
     "name": "Master Yi",
     "title": "the Wuju Bladesman",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/MasterYi.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/MasterYi.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Skirmisher",
     "winRate": 46.7,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2046,13 +1977,13 @@
     "key": 800,
     "name": "Mel",
     "title": "the Soul's Reflection",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Mel.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Mel.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "MID",
+    "archetype": "Artillery Mage",
     "winRate": 47.9,
     "engage": 4.0,
     "disengage": 9.0,
@@ -2071,7 +2002,7 @@
     "key": 902,
     "name": "Milio",
     "title": "The Gentle Flame",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Milio.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Milio.png",
     "roles": [
       "SUP"
     ],
@@ -2095,14 +2026,12 @@
     "key": 21,
     "name": "Miss Fortune",
     "title": "the Bounty Hunter",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/MissFortune.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/MissFortune.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 51.4,
     "engage": 4.0,
     "disengage": 5.0,
@@ -2121,14 +2050,11 @@
     "key": 82,
     "name": "Mordekaiser",
     "title": "the Iron Revenant",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Mordekaiser.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Mordekaiser.png",
     "roles": [
-      "MID",
-      "SUP",
-      "TOP",
-      "JGL"
+      "TOP"
     ],
-    "primaryRole": "MID",
+    "primaryRole": "TOP",
     "archetype": "Juggernaut",
     "winRate": 51.6,
     "engage": 6.0,
@@ -2148,13 +2074,12 @@
     "key": 25,
     "name": "Morgana",
     "title": "the Fallen",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Morgana.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Morgana.png",
     "roles": [
-      "SUP",
-      "JGL"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Catcher Mage",
+    "archetype": "Catcher",
     "winRate": 51.7,
     "engage": 6.0,
     "disengage": 9.0,
@@ -2173,14 +2098,12 @@
     "key": 950,
     "name": "Naafiri",
     "title": "the Hound of a Hundred Bites",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Naafiri.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Naafiri.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "archetype": "Assassin",
     "winRate": 51.4,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2199,7 +2122,7 @@
     "key": 267,
     "name": "Nami",
     "title": "the Tidecaller",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nami.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nami.png",
     "roles": [
       "SUP"
     ],
@@ -2223,14 +2146,12 @@
     "key": 75,
     "name": "Nasus",
     "title": "the Curator of the Sands",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nasus.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nasus.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Juggernaut",
     "winRate": 51.6,
     "engage": 10.0,
     "disengage": 3.0,
@@ -2249,7 +2170,7 @@
     "key": 111,
     "name": "Nautilus",
     "title": "the Titan of the Depths",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nautilus.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nautilus.png",
     "roles": [
       "SUP"
     ],
@@ -2273,13 +2194,13 @@
     "key": 518,
     "name": "Neeko",
     "title": "the Curious Chameleon",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Neeko.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Neeko.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "MID",
+    "archetype": "Burst Mage",
     "winRate": 51.4,
     "engage": 4.0,
     "disengage": 9.0,
@@ -2298,14 +2219,12 @@
     "key": 76,
     "name": "Nidalee",
     "title": "the Bestial Huntress",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nidalee.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nidalee.png",
     "roles": [
-      "MID",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 51.0,
     "engage": 4.0,
     "disengage": 5.0,
@@ -2324,14 +2243,12 @@
     "key": 895,
     "name": "Nilah",
     "title": "the Joy Unbound",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nilah.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nilah.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "BOT"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "BOT",
+    "archetype": "Skirmisher",
     "winRate": 51.8,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2350,14 +2267,12 @@
     "key": 56,
     "name": "Nocturne",
     "title": "the Eternal Nightmare",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nocturne.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nocturne.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 50.1,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2376,7 +2291,7 @@
     "key": 20,
     "name": "Nunu & Willump",
     "title": "the Boy and His Yeti",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Nunu.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Nunu.png",
     "roles": [
       "JGL"
     ],
@@ -2400,14 +2315,12 @@
     "key": 2,
     "name": "Olaf",
     "title": "the Berserker",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Olaf.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Olaf.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Diver",
     "winRate": 53.9,
     "engage": 10.0,
     "disengage": 3.0,
@@ -2426,12 +2339,12 @@
     "key": 61,
     "name": "Orianna",
     "title": "the Lady of Clockwork",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Orianna.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Orianna.png",
     "roles": [
       "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Enchanter",
+    "archetype": "Burst Mage",
     "winRate": 48.6,
     "engage": 4.0,
     "disengage": 9.0,
@@ -2450,7 +2363,7 @@
     "key": 516,
     "name": "Ornn",
     "title": "The Fire below the Mountain",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ornn.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ornn.png",
     "roles": [
       "TOP"
     ],
@@ -2473,14 +2386,15 @@
     "key": 80,
     "name": "Pantheon",
     "title": "the Unbreakable Spear",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Pantheon.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Pantheon.png",
     "roles": [
-      "MID",
       "JGL",
+      "MID",
+      "SUP",
       "TOP"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 49.3,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2499,14 +2413,13 @@
     "key": 78,
     "name": "Poppy",
     "title": "Keeper of the Hammer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Poppy.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Poppy.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Warden Tank",
     "winRate": 49.7,
     "engage": 10.0,
     "disengage": 3.0,
@@ -2525,13 +2438,12 @@
     "key": 555,
     "name": "Pyke",
     "title": "the Bloodharbor Ripper",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Pyke.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Pyke.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Assassin Catcher",
+    "archetype": "Catcher",
     "winRate": 48.3,
     "engage": 4.0,
     "disengage": 7.0,
@@ -2550,13 +2462,12 @@
     "key": 246,
     "name": "Qiyana",
     "title": "Empress of the Elements",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Qiyana.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Qiyana.png",
     "roles": [
-      "MID",
-      "JGL"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Assassin",
+    "archetype": "Assassin",
     "winRate": 48.2,
     "engage": 4.0,
     "disengage": 3.0,
@@ -2574,14 +2485,12 @@
     "key": 133,
     "name": "Quinn",
     "title": "Demacia's Wings",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Quinn.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Quinn.png",
     "roles": [
-      "BOT",
-      "MID",
-      "JGL"
+      "TOP"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "primaryRole": "TOP",
+    "archetype": "Assassin",
     "winRate": 47.9,
     "engage": 4.0,
     "disengage": 3.0,
@@ -2600,12 +2509,12 @@
     "key": 497,
     "name": "Rakan",
     "title": "The Charmer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Rakan.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Rakan.png",
     "roles": [
       "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "archetype": "Catcher",
     "winRate": 49.1,
     "engage": 4.0,
     "disengage": 7.0,
@@ -2623,14 +2532,12 @@
     "key": 33,
     "name": "Rammus",
     "title": "the Armordillo",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Rammus.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Rammus.png",
     "roles": [
-      "TOP",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Warden Tank",
+    "primaryRole": "JGL",
+    "archetype": "Vanguard Tank",
     "winRate": 51.6,
     "engage": 8.0,
     "disengage": 3.0,
@@ -2648,14 +2555,12 @@
     "key": 421,
     "name": "Rek'Sai",
     "title": "the Void Burrower",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/RekSai.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/RekSai.png",
     "roles": [
-      "TOP",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 52.2,
     "engage": 10.0,
     "disengage": 3.0,
@@ -2674,14 +2579,12 @@
     "key": 526,
     "name": "Rell",
     "title": "the Iron Maiden",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Rell.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Rell.png",
     "roles": [
-      "SUP",
-      "TOP",
-      "JGL"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Catcher / Warden",
+    "archetype": "Vanguard Tank",
     "winRate": 52.3,
     "engage": 8.0,
     "disengage": 7.0,
@@ -2700,10 +2603,9 @@
     "key": 888,
     "name": "Renata Glasc",
     "title": "the Chem-Baroness",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Renata.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Renata.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
     "archetype": "Enchanter",
@@ -2725,14 +2627,12 @@
     "key": 58,
     "name": "Renekton",
     "title": "the Butcher of the Sands",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Renekton.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Renekton.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Diver",
     "winRate": 49.8,
     "engage": 10.0,
     "disengage": 3.0,
@@ -2751,13 +2651,13 @@
     "key": 107,
     "name": "Rengar",
     "title": "the Pridestalker",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Rengar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Rengar.png",
     "roles": [
       "JGL",
       "TOP"
     ],
     "primaryRole": "JGL",
-    "archetype": "AD Assassin",
+    "archetype": "Diver",
     "winRate": 45.4,
     "engage": 6.0,
     "disengage": 3.0,
@@ -2776,13 +2676,11 @@
     "key": 92,
     "name": "Riven",
     "title": "the Exile",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Riven.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Riven.png",
     "roles": [
-      "MID",
-      "JGL",
       "TOP"
     ],
-    "primaryRole": "MID",
+    "primaryRole": "TOP",
     "archetype": "Skirmisher",
     "winRate": 53.3,
     "engage": 6.0,
@@ -2802,12 +2700,10 @@
     "key": 68,
     "name": "Rumble",
     "title": "the Mechanized Menace",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Rumble.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Rumble.png",
     "roles": [
       "MID",
-      "SUP",
-      "TOP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "MID",
     "archetype": "Battlemage",
@@ -2829,10 +2725,9 @@
     "key": 13,
     "name": "Ryze",
     "title": "the Rune Mage",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ryze.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ryze.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
     "archetype": "Battlemage",
@@ -2853,12 +2748,12 @@
     "key": 360,
     "name": "Samira",
     "title": "the Desert Rose",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Samira.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Samira.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Skirmisher ADC",
+    "archetype": "Assassin",
     "winRate": 51.8,
     "engage": 4.0,
     "disengage": 3.0,
@@ -2877,10 +2772,9 @@
     "key": 113,
     "name": "Sejuani",
     "title": "Fury of the North",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sejuani.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sejuani.png",
     "roles": [
-      "JGL",
-      "TOP"
+      "JGL"
     ],
     "primaryRole": "JGL",
     "archetype": "Vanguard Tank",
@@ -2901,12 +2795,12 @@
     "key": 235,
     "name": "Senna",
     "title": "the Redeemer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Senna.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Senna.png",
     "roles": [
-      "SUP",
-      "BOT"
+      "BOT",
+      "SUP"
     ],
-    "primaryRole": "SUP",
+    "primaryRole": "BOT",
     "archetype": "Enchanter",
     "winRate": 49.9,
     "engage": 4.0,
@@ -2926,13 +2820,13 @@
     "key": 147,
     "name": "Seraphine",
     "title": "the Starry-Eyed Songstress",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Seraphine.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Seraphine.png",
     "roles": [
-      "SUP",
-      "MID"
+      "BOT",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Catcher / Warden",
+    "primaryRole": "BOT",
+    "archetype": "Burst Mage",
     "winRate": 51.2,
     "engage": 4.0,
     "disengage": 9.0,
@@ -2951,10 +2845,9 @@
     "key": 875,
     "name": "Sett",
     "title": "the Boss",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sett.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sett.png",
     "roles": [
-      "TOP",
-      "MID"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Juggernaut",
@@ -2976,13 +2869,13 @@
     "key": 35,
     "name": "Shaco",
     "title": "the Demon Jester",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Shaco.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Shaco.png",
     "roles": [
       "JGL",
       "SUP"
     ],
     "primaryRole": "JGL",
-    "archetype": "Trickster Assassin",
+    "archetype": "Assassin",
     "winRate": 49.5,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3000,13 +2893,12 @@
     "key": 98,
     "name": "Shen",
     "title": "the Eye of Twilight",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Shen.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Shen.png",
     "roles": [
-      "TOP",
       "SUP",
-      "JGL"
+      "TOP"
     ],
-    "primaryRole": "TOP",
+    "primaryRole": "SUP",
     "archetype": "Warden Tank",
     "winRate": 52.5,
     "engage": 8.0,
@@ -3025,14 +2917,12 @@
     "key": 102,
     "name": "Shyvana",
     "title": "the Half-Dragon",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Shyvana.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Shyvana.png",
     "roles": [
-      "TOP",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Juggernaut",
     "winRate": 49.4,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3051,15 +2941,12 @@
     "key": 27,
     "name": "Singed",
     "title": "the Mad Chemist",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Singed.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Singed.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL",
-      "MID"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Warden Tank",
+    "archetype": "Specialist",
     "winRate": 51.7,
     "engage": 8.0,
     "disengage": 5.0,
@@ -3078,11 +2965,9 @@
     "key": 14,
     "name": "Sion",
     "title": "The Undead Juggernaut",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sion.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sion.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Vanguard Tank",
@@ -3104,12 +2989,12 @@
     "key": 15,
     "name": "Sivir",
     "title": "the Battle Mistress",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sivir.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sivir.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 52.0,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3127,14 +3012,13 @@
     "key": 72,
     "name": "Skarner",
     "title": "the Primordial Sovereign",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Skarner.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Skarner.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Juggernaut",
     "winRate": 49.4,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3153,14 +3037,14 @@
     "key": 901,
     "name": "Smolder",
     "title": "the Fiery Fledgling",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Smolder.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Smolder.png",
     "roles": [
       "BOT",
       "MID",
-      "SUP"
+      "TOP"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 49.9,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3179,10 +3063,9 @@
     "key": 37,
     "name": "Sona",
     "title": "Maven of the Strings",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sona.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sona.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
     "archetype": "Enchanter",
@@ -3204,7 +3087,7 @@
     "key": 16,
     "name": "Soraka",
     "title": "the Starchild",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Soraka.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Soraka.png",
     "roles": [
       "SUP"
     ],
@@ -3228,13 +3111,14 @@
     "key": 50,
     "name": "Swain",
     "title": "the Noxian Grand General",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Swain.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Swain.png",
     "roles": [
-      "SUP",
-      "MID"
+      "BOT",
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "BOT",
+    "archetype": "Battlemage",
     "winRate": 51.4,
     "engage": 6.0,
     "disengage": 9.0,
@@ -3253,13 +3137,13 @@
     "key": 517,
     "name": "Sylas",
     "title": "the Unshackled",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Sylas.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Sylas.png",
     "roles": [
       "MID",
       "TOP"
     ],
     "primaryRole": "MID",
-    "archetype": "Burst Bruiser",
+    "archetype": "Skirmisher",
     "winRate": 48.9,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3278,7 +3162,7 @@
     "key": 134,
     "name": "Syndra",
     "title": "the Dark Sovereign",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Syndra.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Syndra.png",
     "roles": [
       "MID"
     ],
@@ -3301,14 +3185,13 @@
     "key": 223,
     "name": "Tahm Kench",
     "title": "The River King",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/TahmKench.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/TahmKench.png",
     "roles": [
       "SUP",
-      "TOP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Catcher / Warden",
+    "archetype": "Warden Tank",
     "winRate": 50.6,
     "engage": 10.0,
     "disengage": 7.0,
@@ -3327,13 +3210,13 @@
     "key": 163,
     "name": "Taliyah",
     "title": "the Stoneweaver",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Taliyah.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Taliyah.png",
     "roles": [
-      "SUP",
+      "JGL",
       "MID"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "primaryRole": "JGL",
+    "archetype": "Battlemage",
     "winRate": 47.7,
     "engage": 6.0,
     "disengage": 9.0,
@@ -3352,13 +3235,12 @@
     "key": 91,
     "name": "Talon",
     "title": "the Blade's Shadow",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Talon.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Talon.png",
     "roles": [
-      "MID",
       "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "AD Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 48.7,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3376,14 +3258,13 @@
     "key": 44,
     "name": "Taric",
     "title": "the Shield of Valoran",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Taric.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Taric.png",
     "roles": [
-      "SUP",
-      "TOP",
-      "JGL"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
-    "archetype": "Catcher / Warden",
+    "primaryRole": "MID",
+    "archetype": "Warden Tank",
     "winRate": 48.9,
     "engage": 10.0,
     "disengage": 7.0,
@@ -3402,14 +3283,14 @@
     "key": 17,
     "name": "Teemo",
     "title": "the Swift Scout",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Teemo.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Teemo.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "JGL",
+      "SUP",
+      "TOP"
     ],
-    "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "primaryRole": "JGL",
+    "archetype": "Marksman",
     "winRate": 49.3,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3428,7 +3309,7 @@
     "key": 412,
     "name": "Thresh",
     "title": "the Chain Warden",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Thresh.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Thresh.png",
     "roles": [
       "SUP"
     ],
@@ -3452,14 +3333,13 @@
     "key": 18,
     "name": "Tristana",
     "title": "the Yordle Gunner",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Tristana.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Tristana.png",
     "roles": [
       "BOT",
-      "MID",
-      "JGL"
+      "MID"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Assassin",
     "winRate": 49.6,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3478,14 +3358,13 @@
     "key": 48,
     "name": "Trundle",
     "title": "the Troll King",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Trundle.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Trundle.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Juggernaut",
     "winRate": 52.2,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3504,14 +3383,12 @@
     "key": 23,
     "name": "Tryndamere",
     "title": "the Barbarian King",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Tryndamere.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Tryndamere.png",
     "roles": [
-      "MID",
-      "JGL",
       "TOP"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "TOP",
+    "archetype": "Skirmisher",
     "winRate": 51.9,
     "engage": 6.0,
     "disengage": 3.0,
@@ -3530,14 +3407,14 @@
     "key": 4,
     "name": "Twisted Fate",
     "title": "the Card Master",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/TwistedFate.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/TwistedFate.png",
     "roles": [
       "BOT",
       "MID",
-      "SUP"
+      "TOP"
     ],
     "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "archetype": "Burst Mage",
     "winRate": 51.1,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3556,14 +3433,13 @@
     "key": 29,
     "name": "Twitch",
     "title": "the Plague Rat",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Twitch.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Twitch.png",
     "roles": [
       "BOT",
-      "MID",
-      "JGL"
+      "SUP"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Assassin",
     "winRate": 48.0,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3582,14 +3458,13 @@
     "key": 77,
     "name": "Udyr",
     "title": "the Spirit Walker",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Udyr.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Udyr.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Juggernaut",
     "winRate": 49.3,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3608,11 +3483,9 @@
     "key": 6,
     "name": "Urgot",
     "title": "the Dreadnought",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Urgot.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Urgot.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
     "archetype": "Juggernaut",
@@ -3634,14 +3507,12 @@
     "key": 110,
     "name": "Varus",
     "title": "the Arrow of Retribution",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Varus.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Varus.png",
     "roles": [
-      "BOT",
-      "MID",
-      "SUP"
+      "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Poke Marksman",
+    "archetype": "Artillery Mage",
     "winRate": 49.0,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3660,13 +3531,13 @@
     "key": 67,
     "name": "Vayne",
     "title": "the Night Hunter",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vayne.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Vayne.png",
     "roles": [
       "BOT",
       "TOP"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Assassin",
     "winRate": 51.1,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3685,10 +3556,10 @@
     "key": 45,
     "name": "Veigar",
     "title": "the Tiny Master of Evil",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Veigar.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Veigar.png",
     "roles": [
       "MID",
-      "BOT"
+      "SUP"
     ],
     "primaryRole": "MID",
     "archetype": "Burst Mage",
@@ -3709,12 +3580,12 @@
     "key": 161,
     "name": "Vel'Koz",
     "title": "the Eye of the Void",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Velkoz.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Velkoz.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
+    "primaryRole": "MID",
     "archetype": "Artillery Mage",
     "winRate": 54.1,
     "engage": 4.0,
@@ -3734,13 +3605,12 @@
     "key": 711,
     "name": "Vex",
     "title": "the Gloomist",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vex.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Vex.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Burst Mage",
     "winRate": 49.2,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3758,7 +3628,7 @@
     "key": 254,
     "name": "Vi",
     "title": "the Piltover Enforcer",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vi.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Vi.png",
     "roles": [
       "JGL"
     ],
@@ -3782,14 +3652,12 @@
     "key": 234,
     "name": "Viego",
     "title": "The Ruined King",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Viego.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Viego.png",
     "roles": [
-      "MID",
-      "JGL",
-      "TOP"
+      "JGL"
     ],
-    "primaryRole": "MID",
-    "archetype": "Lethality Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Skirmisher",
     "winRate": 49.2,
     "engage": 6.0,
     "disengage": 3.0,
@@ -3808,12 +3676,12 @@
     "key": 112,
     "name": "Viktor",
     "title": "the Herald of the Arcane",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Viktor.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Viktor.png",
     "roles": [
       "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Battlemage",
     "winRate": 49.9,
     "engage": 4.0,
     "disengage": 5.0,
@@ -3831,15 +3699,13 @@
     "key": 8,
     "name": "Vladimir",
     "title": "the Crimson Reaper",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Vladimir.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Vladimir.png",
     "roles": [
       "MID",
-      "SUP",
-      "TOP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Battlemage",
     "winRate": 48.4,
     "engage": 6.0,
     "disengage": 5.0,
@@ -3858,14 +3724,13 @@
     "key": 106,
     "name": "Volibear",
     "title": "the Relentless Storm",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Volibear.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Volibear.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "JGL",
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Juggernaut",
     "winRate": 49.8,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3884,13 +3749,13 @@
     "key": 19,
     "name": "Warwick",
     "title": "the Uncaged Wrath of Zaun",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Warwick.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Warwick.png",
     "roles": [
       "JGL",
       "TOP"
     ],
     "primaryRole": "JGL",
-    "archetype": "Diver Bruiser",
+    "archetype": "Diver",
     "winRate": 51.1,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3909,13 +3774,13 @@
     "key": 62,
     "name": "Wukong",
     "title": "the Monkey King",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/MonkeyKing.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/MonkeyKing.png",
     "roles": [
       "JGL",
       "TOP"
     ],
     "primaryRole": "JGL",
-    "archetype": "Skirmisher",
+    "archetype": "Diver",
     "winRate": 51.6,
     "engage": 10.0,
     "disengage": 3.0,
@@ -3934,12 +3799,12 @@
     "key": 498,
     "name": "Xayah",
     "title": "the Rebel",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Xayah.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Xayah.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 50.8,
     "engage": 4.0,
     "disengage": 3.0,
@@ -3957,12 +3822,12 @@
     "key": 101,
     "name": "Xerath",
     "title": "the Magus Ascendant",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Xerath.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Xerath.png",
     "roles": [
-      "SUP",
-      "MID"
+      "MID",
+      "SUP"
     ],
-    "primaryRole": "SUP",
+    "primaryRole": "MID",
     "archetype": "Artillery Mage",
     "winRate": 51.9,
     "engage": 4.0,
@@ -3982,14 +3847,12 @@
     "key": 5,
     "name": "Xin Zhao",
     "title": "the Seneschal of Demacia",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/XinZhao.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/XinZhao.png",
     "roles": [
-      "TOP",
-      "SUP",
       "JGL"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "primaryRole": "JGL",
+    "archetype": "Diver",
     "winRate": 51.0,
     "engage": 10.0,
     "disengage": 3.0,
@@ -4008,13 +3871,13 @@
     "key": 157,
     "name": "Yasuo",
     "title": "the Unforgiven",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yasuo.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Yasuo.png",
     "roles": [
+      "BOT",
       "MID",
-      "TOP",
-      "BOT"
+      "TOP"
     ],
-    "primaryRole": "MID",
+    "primaryRole": "BOT",
     "archetype": "Skirmisher",
     "winRate": 50.3,
     "engage": 6.0,
@@ -4034,10 +3897,9 @@
     "key": 777,
     "name": "Yone",
     "title": "the Unforgotten",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yone.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Yone.png",
     "roles": [
       "MID",
-      "JGL",
       "TOP"
     ],
     "primaryRole": "MID",
@@ -4060,14 +3922,12 @@
     "key": 83,
     "name": "Yorick",
     "title": "Shepherd of Souls",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yorick.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Yorick.png",
     "roles": [
-      "TOP",
-      "SUP",
-      "JGL"
+      "TOP"
     ],
     "primaryRole": "TOP",
-    "archetype": "Vanguard Tank",
+    "archetype": "Juggernaut",
     "winRate": 54.1,
     "engage": 10.0,
     "disengage": 3.0,
@@ -4086,12 +3946,12 @@
     "key": 804,
     "name": "Yunara",
     "title": "the Unbroken Faith",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yunara.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Yunara.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 48.7,
     "engage": 4.0,
     "disengage": 3.0,
@@ -4109,10 +3969,9 @@
     "key": 350,
     "name": "Yuumi",
     "title": "the Magical Cat",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Yuumi.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Yuumi.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
     "archetype": "Enchanter",
@@ -4134,7 +3993,7 @@
     "key": 904,
     "name": "Zaahen",
     "title": "The Unsundered",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zaahen.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zaahen.png",
     "roles": [
       "TOP",
       "JGL"
@@ -4158,14 +4017,14 @@
     "key": 154,
     "name": "Zac",
     "title": "the Secret Weapon",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zac.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zac.png",
     "roles": [
-      "TOP",
+      "JGL",
       "SUP",
-      "JGL"
+      "TOP"
     ],
-    "primaryRole": "TOP",
-    "archetype": "Warden Tank",
+    "primaryRole": "JGL",
+    "archetype": "Vanguard Tank",
     "winRate": 49.0,
     "engage": 10.0,
     "disengage": 3.0,
@@ -4184,13 +4043,13 @@
     "key": 238,
     "name": "Zed",
     "title": "the Master of Shadows",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zed.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zed.png",
     "roles": [
-      "MID",
-      "JGL"
+      "JGL",
+      "MID"
     ],
-    "primaryRole": "MID",
-    "archetype": "AD Assassin",
+    "primaryRole": "JGL",
+    "archetype": "Assassin",
     "winRate": 50.1,
     "engage": 4.0,
     "disengage": 3.0,
@@ -4208,12 +4067,12 @@
     "key": 221,
     "name": "Zeri",
     "title": "The Spark of Zaun",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zeri.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zeri.png",
     "roles": [
       "BOT"
     ],
     "primaryRole": "BOT",
-    "archetype": "Hypercarry",
+    "archetype": "Marksman",
     "winRate": 47.1,
     "engage": 4.0,
     "disengage": 3.0,
@@ -4231,12 +4090,12 @@
     "key": 115,
     "name": "Ziggs",
     "title": "the Hexplosives Expert",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Ziggs.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Ziggs.png",
     "roles": [
-      "MID",
-      "SUP"
+      "BOT",
+      "MID"
     ],
-    "primaryRole": "MID",
+    "primaryRole": "BOT",
     "archetype": "Artillery Mage",
     "winRate": 52.5,
     "engage": 4.0,
@@ -4255,13 +4114,12 @@
     "key": 26,
     "name": "Zilean",
     "title": "the Chronokeeper",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zilean.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zilean.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "archetype": "Specialist",
     "winRate": 50.3,
     "engage": 4.0,
     "disengage": 9.0,
@@ -4280,13 +4138,12 @@
     "key": 142,
     "name": "Zoe",
     "title": "the Aspect of Twilight",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zoe.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zoe.png",
     "roles": [
-      "MID",
-      "SUP"
+      "MID"
     ],
     "primaryRole": "MID",
-    "archetype": "Artillery Mage",
+    "archetype": "Burst Mage",
     "winRate": 48.8,
     "engage": 4.0,
     "disengage": 5.0,
@@ -4304,13 +4161,12 @@
     "key": 143,
     "name": "Zyra",
     "title": "Rise of the Thorns",
-    "image": "https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Zyra.png",
+    "image": "https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/Zyra.png",
     "roles": [
-      "SUP",
-      "MID"
+      "SUP"
     ],
     "primaryRole": "SUP",
-    "archetype": "Enchanter",
+    "archetype": "Catcher",
     "winRate": 53.6,
     "engage": 4.0,
     "disengage": 9.0,
