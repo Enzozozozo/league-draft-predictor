@@ -139,9 +139,30 @@ class ChampionDataManager:
         if "Marksman" in tags:
             teamfight += 2.0
 
-        tot_dmg = max(attack + magic, 1)
-        ad_pct = attack / tot_dmg
-        ap_pct = magic / tot_dmg
+        atk_val = float(attack)
+        mag_val = float(magic)
+
+        cid = champ.get("id", "")
+        cname = champ.get("name", self.get_name(champion_id))
+
+        AP_CHAMPIONS = {
+            "Gwen", "Singed", "Sylas", "Mordekaiser", "Leona", "Amumu", "Zac",
+            "Cho'Gath", "Sejuani", "Malphite", "Maokai", "Kassadin", "Rumble",
+            "Diana", "Ekko", "Evelynn", "Katarina", "Elise", "Blitzcrank", "TahmKench"
+        }
+
+        if "Mage" in tags or cid in AP_CHAMPIONS or cname in AP_CHAMPIONS:
+            mag_val += 3.5
+        if "Marksman" in tags:
+            atk_val += 3.5
+        if "Assassin" in tags and "Mage" not in tags and cid not in AP_CHAMPIONS:
+            atk_val += 2.5
+
+        atk_pow = max(atk_val, 0.5) ** 3
+        mag_pow = max(mag_val, 0.5) ** 3
+        tot_dmg = max(atk_pow + mag_pow, 1.0)
+        ad_pct = atk_pow / tot_dmg
+        ap_pct = mag_pow / tot_dmg
 
         return {
             "name": champ.get("name", self.get_name(champion_id)),

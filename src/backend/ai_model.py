@@ -271,11 +271,11 @@ class MobalyticsJoblibModel(DraftModelInterface):
 
         total_ad = sum(p["ad"] for p in profiles)
         total_ap = sum(p["ap"] for p in profiles)
-        tot = max(total_ad + total_ap, 1.0)
+        tot = max(total_ad + total_ap, 1e-6)
 
         ad_pct = round((total_ad / tot) * 100.0, 1)
-        ap_pct = round((total_ap / tot) * 100.0, 1)
-        true_pct = max(0.0, round(100.0 - (ad_pct + ap_pct), 1))
+        ap_pct = round(100.0 - ad_pct, 1)
+        true_pct = 0.0
 
         return CompositionMetrics(
             engage=round(engage, 1),

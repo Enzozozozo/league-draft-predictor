@@ -125,11 +125,11 @@ export default function DraftSlotCard({
       title={`Click to select ${team.toUpperCase()} ${fullRoleName}, or drop a champion here`}
       className={`group relative px-3 py-2 h-full flex flex-col justify-center rounded-xl border transition-all duration-150 cursor-pointer select-none ${
         isDragOver
-          ? 'bg-amber-500/15 border-amber-400 ring-2 ring-amber-400 shadow-lg shadow-amber-500/30 scale-[1.01]'
+          ? 'bg-amber-500/15 border-amber-400 ring-2 ring-amber-400 scale-[1.01]'
           : isActive
           ? isBlue
-            ? 'bg-slate-900/95 border-[#0AC8B9] shadow-hextech-blue ring-2 ring-[#0AC8B9]/60'
-            : 'bg-slate-900/95 border-[#E84057] shadow-hextech-red ring-2 ring-[#E84057]/60'
+            ? 'bg-slate-900/95 border-2 border-[#0AC8B9]'
+            : 'bg-slate-900/95 border-2 border-[#E84057]'
           : draggedChampion
           ? isBlue
             ? 'bg-[#0B121E]/90 border-[#0AC8B9]/40 border-dashed hover:border-[#0AC8B9]'
@@ -144,7 +144,7 @@ export default function DraftSlotCard({
         <div
           className={`absolute -top-2 ${
             isBlue ? 'left-3' : 'right-3'
-          } px-2 py-0.2 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider text-slate-950 shadow-md ${
+          } px-2 py-0.2 rounded-full text-[9px] font-sans font-bold uppercase tracking-wider text-slate-950 ${
             isDragOver
               ? 'bg-amber-400'
               : isBlue
@@ -161,16 +161,16 @@ export default function DraftSlotCard({
           isBlue ? 'flex-row text-left' : 'flex-row-reverse text-right'
         }`}
       >
-        {/* Enlarged Champion Square Avatar */}
+        {/* Champion Square Avatar */}
         <div className="relative flex-shrink-0">
           <div
-            className={`w-16 h-16 xl:w-[70px] xl:h-[70px] rounded-xl overflow-hidden border-2 bg-slate-950 transition-transform duration-200 group-hover:scale-105 ${
+            className={`w-16 h-16 xl:w-[70px] xl:h-[70px] rounded-xl overflow-hidden border-2 bg-slate-950 ${
               isDragOver
-                ? 'border-amber-400 shadow-lg shadow-amber-400/40'
+                ? 'border-amber-400'
                 : isActive
                 ? isBlue
-                  ? 'border-[#0AC8B9] shadow-lg shadow-[#0AC8B9]/30'
-                  : 'border-[#E84057] shadow-lg shadow-[#E84057]/30'
+                  ? 'border-[#0AC8B9]'
+                  : 'border-[#E84057]'
                 : isBlue
                 ? 'border-sky-500/40'
                 : 'border-rose-500/40'
@@ -191,7 +191,7 @@ export default function DraftSlotCard({
 
         {/* Champion Name */}
         <div className="flex-1 min-w-0">
-          <div className="text-base xl:text-lg font-bold text-slate-100 truncate group-hover:text-amber-200 transition-colors">
+          <div className="text-base xl:text-lg font-bold font-sans text-slate-100 truncate group-hover:text-amber-200 transition-colors">
             {pick.champion}
           </div>
         </div>

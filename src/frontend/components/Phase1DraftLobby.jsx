@@ -38,7 +38,7 @@ export default function Phase1DraftLobby({
         {/* Left Column: Blue Team Positions */}
         <div className="flex flex-col min-h-0 gap-1.5">
           <div className="px-2 pb-1 border-b border-sky-500/20 flex-shrink-0">
-            <h2 className="text-2xl leading-tight font-bold font-mono uppercase tracking-wider text-[#0AC8B9]">
+            <h2 className="text-2xl leading-tight font-extrabold font-sans uppercase tracking-wider text-[#0AC8B9]">
               Blue Side
             </h2>
           </div>
@@ -80,7 +80,7 @@ export default function Phase1DraftLobby({
         {/* Right Column: Red Team Positions */}
         <div className="flex flex-col min-h-0 gap-1.5">
           <div className="px-2 pb-1 border-b border-rose-500/20 flex-shrink-0 text-right">
-            <h2 className="text-2xl leading-tight font-bold font-mono uppercase tracking-wider text-[#E84057]">
+            <h2 className="text-2xl leading-tight font-extrabold font-sans uppercase tracking-wider text-[#E84057]">
               Red Side
             </h2>
           </div>

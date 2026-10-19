@@ -206,7 +206,7 @@ export default function ChampionGrid({
                   alt={champ.name}
                   loading="lazy"
                   draggable={false}
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105 pointer-events-none"
+                  className="w-full h-full object-cover pointer-events-none"
                   onError={(e) => {
                     e.currentTarget.src =
                       'https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aatrox.png';

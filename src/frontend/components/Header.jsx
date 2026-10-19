@@ -43,12 +43,12 @@ export default function Header({
         <div className="flex items-center gap-2 flex-wrap justify-center">
           
           {/* Phase 1 vs Phase 2 Toggle Pills */}
-          <div className="flex items-center p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-medium">
+          <div className="flex items-center p-1 bg-slate-900/90 rounded-xl border border-slate-800 text-xs font-semibold">
             <button
               onClick={() => setCurrentPhase('draft')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
                 currentPhase === 'draft'
-                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/20'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -59,7 +59,7 @@ export default function Header({
               onClick={() => setCurrentPhase('analytics')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
                 currentPhase === 'analytics'
-                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/20'
+                  ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >

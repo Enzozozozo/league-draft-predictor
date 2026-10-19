@@ -16,8 +16,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter"
     ]
@@ -39,8 +39,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.27,
-    "ap": 0.73,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Mage",
       "Assassin"
@@ -64,8 +64,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.38,
-    "ap": 0.62,
+    "ad": 0.45,
+    "ap": 0.55,
     "tags": [
       "Assassin"
     ]
@@ -87,7 +87,7 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.0,
+    "ad": 1.0,
     "ap": 0.0,
     "tags": [
       "Marksman",
@@ -111,8 +111,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.55,
-    "ap": 0.45,
+    "ad": 0.63,
+    "ap": 0.37,
     "tags": [
       "Tank",
       "Support"
@@ -160,8 +160,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Tank",
       "Support"
@@ -184,8 +184,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.09,
-    "ap": 0.91,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -207,8 +207,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -231,8 +231,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.86,
-    "ap": 0.14,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman"
     ]
@@ -255,8 +255,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.78,
-    "ap": 0.22,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman",
       "Support"
@@ -279,8 +279,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Mage"
     ]
@@ -303,8 +303,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.27,
-    "ap": 0.73,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Mage",
       "Assassin"
@@ -327,8 +327,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.43,
-    "ap": 0.57,
+    "ad": 0.36,
+    "ap": 0.64,
     "tags": [
       "Mage",
       "Marksman"
@@ -351,8 +351,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.44,
-    "ap": 0.56,
+    "ad": 0.09,
+    "ap": 0.91,
     "tags": [
       "Support",
       "Mage"
@@ -375,8 +375,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.16,
+    "ap": 0.84,
     "tags": [
       "Fighter"
     ]
@@ -398,8 +398,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.44,
-    "ap": 0.56,
+    "ad": 0.09,
+    "ap": 0.91,
     "tags": [
       "Tank",
       "Support"
@@ -424,8 +424,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -448,8 +448,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.43,
-    "ap": 0.57,
+    "ad": 0.3,
+    "ap": 0.7,
     "tags": [
       "Tank",
       "Support"
@@ -472,8 +472,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Assassin"
@@ -496,8 +496,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman"
     ]
@@ -520,8 +520,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Assassin"
@@ -544,8 +544,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -567,8 +567,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.3,
-    "ap": 0.7,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Tank",
       "Mage"
@@ -591,8 +591,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.57,
-    "ap": 0.43,
+    "ad": 0.64,
+    "ap": 0.36,
     "tags": [
       "Marksman",
       "Mage"
@@ -615,8 +615,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Tank"
@@ -640,8 +640,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.47,
-    "ap": 0.53,
+    "ad": 0.18,
+    "ap": 0.82,
     "tags": [
       "Fighter",
       "Assassin"
@@ -664,8 +664,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.45,
-    "ap": 0.55,
+    "ad": 0.37,
+    "ap": 0.63,
     "tags": [
       "Tank",
       "Fighter"
@@ -688,8 +688,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman"
     ]
@@ -712,8 +712,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.42,
-    "ap": 0.58,
+    "ad": 0.1,
+    "ap": 0.9,
     "tags": [
       "Assassin",
       "Mage"
@@ -736,8 +736,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.46,
-    "ap": 0.54,
+    "ad": 0.16,
+    "ap": 0.84,
     "tags": [
       "Assassin",
       "Mage"
@@ -760,8 +760,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Assassin",
       "Mage"
@@ -784,8 +784,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.54,
-    "ap": 0.46,
+    "ad": 0.57,
+    "ap": 0.43,
     "tags": [
       "Marksman",
       "Mage"
@@ -808,8 +808,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -832,8 +832,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.83,
-    "ap": 0.17,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Assassin"
@@ -856,8 +856,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.46,
-    "ap": 0.54,
+    "ad": 0.64,
+    "ap": 0.36,
     "tags": [
       "Assassin",
       "Fighter"
@@ -881,8 +881,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.14,
-    "ap": 0.86,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Tank",
       "Mage"
@@ -905,8 +905,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.64,
-    "ap": 0.36,
+    "ad": 0.84,
+    "ap": 0.16,
     "tags": [
       "Fighter"
     ]
@@ -928,8 +928,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.88,
-    "ap": 0.12,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Tank"
@@ -952,8 +952,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.55,
-    "ap": 0.45,
+    "ad": 0.63,
+    "ap": 0.37,
     "tags": [
       "Fighter",
       "Tank"
@@ -978,8 +978,8 @@
     "poke": 6.0,
     "scaling": 9.0,
     "teamfight": 7.5,
-    "ad": 0.4,
-    "ap": 0.6,
+    "ad": 0.07,
+    "ap": 0.93,
     "tags": [
       "Fighter",
       "Mage"
@@ -1002,8 +1002,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Marksman"
     ]
@@ -1026,8 +1026,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.58,
-    "ap": 0.42,
+    "ad": 0.36,
+    "ap": 0.64,
     "tags": [
       "Fighter"
     ]
@@ -1049,8 +1049,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.89,
+    "ap": 0.11,
     "tags": [
       "Fighter",
       "Tank"
@@ -1075,8 +1075,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Mage",
       "Support"
@@ -1100,8 +1100,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.47,
-    "ap": 0.53,
+    "ad": 0.18,
+    "ap": 0.82,
     "tags": [
       "Mage",
       "Support"
@@ -1124,8 +1124,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Tank"
@@ -1149,8 +1149,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.58,
-    "ap": 0.42,
+    "ad": 0.87,
+    "ap": 0.13,
     "tags": [
       "Fighter",
       "Assassin"
@@ -1173,8 +1173,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.3,
-    "ap": 0.7,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Support",
       "Mage"
@@ -1197,8 +1197,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.3,
-    "ap": 0.7,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Support",
       "Mage"
@@ -1221,8 +1221,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.89,
+    "ap": 0.11,
     "tags": [
       "Fighter",
       "Tank"
@@ -1270,8 +1270,8 @@
     "poke": 8.0,
     "scaling": 9.0,
     "teamfight": 6.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Marksman"
@@ -1294,8 +1294,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.74,
+    "ap": 0.26,
     "tags": [
       "Marksman",
       "Mage"
@@ -1318,8 +1318,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.69,
-    "ap": 0.31,
+    "ad": 0.97,
+    "ap": 0.03,
     "tags": [
       "Marksman"
     ]
@@ -1341,8 +1341,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.53,
-    "ap": 0.47,
+    "ad": 0.6,
+    "ap": 0.4,
     "tags": [
       "Tank",
       "Fighter"
@@ -1365,8 +1365,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.85,
+    "ap": 0.15,
     "tags": [
       "Marksman",
       "Mage"
@@ -1389,8 +1389,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.96,
+    "ap": 0.04,
     "tags": [
       "Marksman"
     ]
@@ -1414,8 +1414,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.11,
-    "ap": 0.89,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -1438,8 +1438,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -1461,8 +1461,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.27,
-    "ap": 0.73,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Assassin",
       "Mage"
@@ -1485,8 +1485,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.31,
-    "ap": 0.69,
+    "ad": 0.03,
+    "ap": 0.97,
     "tags": [
       "Assassin",
       "Mage"
@@ -1509,8 +1509,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.46,
-    "ap": 0.54,
+    "ad": 0.43,
+    "ap": 0.57,
     "tags": [
       "Marksman",
       "Mage"
@@ -1533,8 +1533,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.91,
-    "ap": 0.09,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Assassin"
@@ -1557,8 +1557,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.46,
-    "ap": 0.54,
+    "ad": 0.16,
+    "ap": 0.84,
     "tags": [
       "Mage"
     ]
@@ -1580,8 +1580,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Assassin"
     ]
@@ -1603,8 +1603,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman"
     ]
@@ -1626,8 +1626,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter"
     ]
@@ -1649,8 +1649,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.71,
+    "ap": 0.29,
     "tags": [
       "Marksman",
       "Mage"
@@ -1673,8 +1673,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.09,
-    "ap": 0.91,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Assassin",
       "Mage"
@@ -1697,8 +1697,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Assassin"
@@ -1721,8 +1721,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.57,
-    "ap": 0.43,
+    "ad": 0.19,
+    "ap": 0.81,
     "tags": [
       "Tank",
       "Support"
@@ -1769,8 +1769,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Mage"
     ]
@@ -1794,8 +1794,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.56,
+    "ap": 0.44,
     "tags": [
       "Assassin",
       "Mage"
@@ -1818,8 +1818,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman",
       "Assassin"
@@ -1842,8 +1842,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Support",
       "Mage"
@@ -1867,8 +1867,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -1893,8 +1893,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.42,
-    "ap": 0.58,
+    "ad": 0.1,
+    "ap": 0.9,
     "tags": [
       "Tank",
       "Mage"
@@ -1917,8 +1917,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -1941,8 +1941,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.33,
-    "ap": 0.67,
+    "ad": 0.03,
+    "ap": 0.97,
     "tags": [
       "Tank",
       "Support"
@@ -1965,8 +1965,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.83,
-    "ap": 0.17,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Assassin"
@@ -1990,8 +1990,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -2014,8 +2014,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Support",
       "Mage"
@@ -2038,8 +2038,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.71,
+    "ap": 0.29,
     "tags": [
       "Marksman",
       "Mage"
@@ -2062,8 +2062,8 @@
     "poke": 6.0,
     "scaling": 9.0,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Fighter",
       "Mage"
@@ -2086,8 +2086,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.11,
-    "ap": 0.89,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Support",
       "Mage"
@@ -2134,8 +2134,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Support",
       "Mage"
@@ -2158,8 +2158,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.54,
-    "ap": 0.46,
+    "ad": 0.61,
+    "ap": 0.39,
     "tags": [
       "Fighter",
       "Tank"
@@ -2182,8 +2182,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.4,
-    "ap": 0.6,
+    "ad": 0.23,
+    "ap": 0.77,
     "tags": [
       "Tank",
       "Support"
@@ -2207,8 +2207,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.1,
-    "ap": 0.9,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -2231,8 +2231,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.42,
-    "ap": 0.58,
+    "ad": 0.1,
+    "ap": 0.9,
     "tags": [
       "Assassin",
       "Mage"
@@ -2255,8 +2255,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Assassin"
@@ -2279,8 +2279,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.82,
-    "ap": 0.18,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Fighter",
       "Assassin"
@@ -2303,8 +2303,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Tank",
       "Mage"
@@ -2327,8 +2327,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.96,
+    "ap": 0.04,
     "tags": [
       "Fighter",
       "Tank"
@@ -2351,8 +2351,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.31,
-    "ap": 0.69,
+    "ad": 0.03,
+    "ap": 0.97,
     "tags": [
       "Mage",
       "Support"
@@ -2375,8 +2375,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.82,
+    "ap": 0.18,
     "tags": [
       "Tank"
     ]
@@ -2401,8 +2401,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Assassin"
@@ -2426,8 +2426,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.96,
+    "ap": 0.04,
     "tags": [
       "Tank",
       "Fighter"
@@ -2450,8 +2450,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Support",
       "Assassin"
@@ -2474,8 +2474,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.0,
-    "ap": 1.0,
+    "ad": 0.2,
+    "ap": 0.8,
     "tags": [
       "Assassin"
     ]
@@ -2497,8 +2497,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.82,
-    "ap": 0.18,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman",
       "Assassin"
@@ -2521,8 +2521,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Support"
     ]
@@ -2544,8 +2544,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.44,
-    "ap": 0.56,
+    "ad": 0.34,
+    "ap": 0.66,
     "tags": [
       "Tank"
     ]
@@ -2567,8 +2567,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Tank"
@@ -2591,8 +2591,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.0,
-    "ap": 0.0,
+    "ad": 0.12,
+    "ap": 0.12,
     "tags": [
       "Tank",
       "Support"
@@ -2615,8 +2615,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Support",
       "Mage"
@@ -2639,8 +2639,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Tank"
@@ -2664,8 +2664,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.78,
-    "ap": 0.22,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Assassin",
       "Fighter"
@@ -2688,8 +2688,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.89,
-    "ap": 0.11,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Assassin"
@@ -2713,8 +2713,8 @@
     "poke": 8.0,
     "scaling": 9.0,
     "teamfight": 7.5,
-    "ad": 0.27,
-    "ap": 0.73,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Fighter",
       "Mage"
@@ -2737,8 +2737,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -2760,8 +2760,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman",
       "Assassin"
@@ -2784,8 +2784,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.45,
-    "ap": 0.55,
+    "ad": 0.13,
+    "ap": 0.87,
     "tags": [
       "Tank"
     ]
@@ -2808,8 +2808,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.54,
-    "ap": 0.46,
+    "ad": 0.84,
+    "ap": 0.16,
     "tags": [
       "Support",
       "Marksman"
@@ -2834,7 +2834,7 @@
     "scaling": 7.5,
     "teamfight": 7.5,
     "ad": 0.0,
-    "ap": 0.0,
+    "ap": 1.0,
     "tags": [
       "Support",
       "Mage"
@@ -2857,8 +2857,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.89,
-    "ap": 0.11,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Tank"
@@ -2882,8 +2882,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.57,
-    "ap": 0.43,
+    "ad": 0.84,
+    "ap": 0.16,
     "tags": [
       "Assassin"
     ]
@@ -2929,8 +2929,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Tank"
@@ -2953,8 +2953,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.36,
-    "ap": 0.64,
+    "ad": 0.05,
+    "ap": 0.95,
     "tags": [
       "Tank",
       "Mage"
@@ -2977,8 +2977,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.82,
+    "ap": 0.18,
     "tags": [
       "Tank",
       "Fighter"
@@ -3001,8 +3001,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman"
     ]
@@ -3025,8 +3025,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.58,
-    "ap": 0.42,
+    "ad": 0.73,
+    "ap": 0.27,
     "tags": [
       "Tank",
       "Fighter"
@@ -3051,8 +3051,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.62,
-    "ap": 0.38,
+    "ad": 0.71,
+    "ap": 0.29,
     "tags": [
       "Marksman",
       "Mage"
@@ -3075,8 +3075,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.38,
-    "ap": 0.62,
+    "ad": 0.08,
+    "ap": 0.92,
     "tags": [
       "Support",
       "Mage"
@@ -3099,8 +3099,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.22,
-    "ap": 0.78,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Support",
       "Mage"
@@ -3125,8 +3125,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -3150,8 +3150,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.27,
-    "ap": 0.73,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Mage",
       "Assassin"
@@ -3174,8 +3174,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -3198,8 +3198,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.33,
-    "ap": 0.67,
+    "ad": 0.03,
+    "ap": 0.97,
     "tags": [
       "Tank",
       "Support"
@@ -3223,8 +3223,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.11,
-    "ap": 0.89,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -3247,8 +3247,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Assassin"
     ]
@@ -3271,8 +3271,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.44,
-    "ap": 0.56,
+    "ad": 0.34,
+    "ap": 0.66,
     "tags": [
       "Support",
       "Tank"
@@ -3297,8 +3297,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.42,
-    "ap": 0.58,
+    "ad": 0.35,
+    "ap": 0.65,
     "tags": [
       "Marksman",
       "Mage"
@@ -3321,8 +3321,8 @@
     "poke": 3.0,
     "scaling": 5.0,
     "teamfight": 7.5,
-    "ad": 0.45,
-    "ap": 0.55,
+    "ad": 0.37,
+    "ap": 0.63,
     "tags": [
       "Support",
       "Tank"
@@ -3346,8 +3346,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.64,
-    "ap": 0.36,
+    "ad": 0.96,
+    "ap": 0.04,
     "tags": [
       "Marksman",
       "Assassin"
@@ -3371,8 +3371,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.78,
-    "ap": 0.22,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Tank"
@@ -3395,8 +3395,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.83,
-    "ap": 0.17,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter",
       "Assassin"
@@ -3446,8 +3446,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Marksman",
       "Assassin"
@@ -3471,8 +3471,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.89,
+    "ap": 0.11,
     "tags": [
       "Fighter",
       "Tank"
@@ -3495,8 +3495,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Tank"
@@ -3519,8 +3519,8 @@
     "poke": 6.0,
     "scaling": 7.5,
     "teamfight": 9.5,
-    "ad": 0.64,
-    "ap": 0.36,
+    "ad": 0.73,
+    "ap": 0.27,
     "tags": [
       "Marksman",
       "Mage"
@@ -3544,8 +3544,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.91,
-    "ap": 0.09,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman",
       "Assassin"
@@ -3569,8 +3569,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -3593,8 +3593,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -3618,7 +3618,7 @@
     "scaling": 7.5,
     "teamfight": 7.5,
     "ad": 0.0,
-    "ap": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -3640,8 +3640,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Assassin"
@@ -3664,8 +3664,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.99,
+    "ap": 0.01,
     "tags": [
       "Fighter",
       "Assassin"
@@ -3688,8 +3688,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.17,
-    "ap": 0.83,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -3712,8 +3712,8 @@
     "poke": 8.0,
     "scaling": 9.0,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Mage",
       "Fighter"
@@ -3737,8 +3737,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.64,
-    "ap": 0.36,
+    "ad": 0.84,
+    "ap": 0.16,
     "tags": [
       "Fighter",
       "Tank"
@@ -3762,8 +3762,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.75,
-    "ap": 0.25,
+    "ad": 0.96,
+    "ap": 0.04,
     "tags": [
       "Fighter",
       "Tank"
@@ -3787,8 +3787,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.8,
-    "ap": 0.2,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Fighter",
       "Tank"
@@ -3811,8 +3811,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.91,
-    "ap": 0.09,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Marksman"
     ]
@@ -3835,8 +3835,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.09,
-    "ap": 0.91,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage",
       "Support"
@@ -3859,8 +3859,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Tank"
@@ -3885,8 +3885,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Assassin"
@@ -3910,8 +3910,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.67,
-    "ap": 0.33,
+    "ad": 0.95,
+    "ap": 0.05,
     "tags": [
       "Fighter",
       "Assassin"
@@ -3934,8 +3934,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.6,
-    "ap": 0.4,
+    "ad": 0.77,
+    "ap": 0.23,
     "tags": [
       "Fighter",
       "Tank"
@@ -3981,8 +3981,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.38,
-    "ap": 0.62,
+    "ad": 0.08,
+    "ap": 0.92,
     "tags": [
       "Support",
       "Mage"
@@ -4006,8 +4006,8 @@
     "poke": 5.0,
     "scaling": 6.5,
     "teamfight": 4.0,
-    "ad": 0.89,
-    "ap": 0.11,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Fighter"
     ]
@@ -4031,8 +4031,8 @@
     "poke": 3.0,
     "scaling": 6.5,
     "teamfight": 7.5,
-    "ad": 0.3,
-    "ap": 0.7,
+    "ad": 0.02,
+    "ap": 0.98,
     "tags": [
       "Tank",
       "Fighter"
@@ -4056,8 +4056,8 @@
     "poke": 5.0,
     "scaling": 5.0,
     "teamfight": 4.0,
-    "ad": 0.9,
-    "ap": 0.1,
+    "ad": 1.0,
+    "ap": 0.0,
     "tags": [
       "Assassin"
     ]
@@ -4079,8 +4079,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 6.0,
-    "ad": 0.73,
-    "ap": 0.27,
+    "ad": 0.98,
+    "ap": 0.02,
     "tags": [
       "Marksman"
     ]
@@ -4103,8 +4103,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.18,
-    "ap": 0.82,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -4126,8 +4126,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.2,
-    "ap": 0.8,
+    "ad": 0.01,
+    "ap": 0.99,
     "tags": [
       "Support",
       "Mage"
@@ -4150,8 +4150,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.11,
-    "ap": 0.89,
+    "ad": 0.0,
+    "ap": 1.0,
     "tags": [
       "Mage"
     ]
@@ -4173,8 +4173,8 @@
     "poke": 8.0,
     "scaling": 7.5,
     "teamfight": 7.5,
-    "ad": 0.33,
-    "ap": 0.67,
+    "ad": 0.04,
+    "ap": 0.96,
     "tags": [
       "Mage",
       "Support"

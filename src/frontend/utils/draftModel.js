@@ -192,25 +192,17 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
     ];
   }
 
-  // 6. Damage Distribution Profile
-  let blueDamage;
-  let redDamage;
-  if (isDefaultDraft) {
-    blueDamage = { ad: 45, ap: 50, trueDmg: 5 };
-    redDamage = { ad: 65, ap: 30, trueDmg: 5 };
-  } else {
-    const calcDamageSplit = (profiles) => {
-      const totAd = profiles.reduce((sum, p) => sum + (p.ad || 0.5), 0);
-      const totAp = profiles.reduce((sum, p) => sum + (p.ap || 0.5), 0);
-      const sum = Math.max(totAd + totAp, 0.1);
-      const ad = Math.round((totAd / sum) * 90);
-      const ap = Math.round((totAp / sum) * 90);
-      const trueDmg = Math.max(0, 100 - (ad + ap));
-      return { ad, ap, trueDmg };
-    };
-    blueDamage = calcDamageSplit(blueProfiles);
-    redDamage = calcDamageSplit(redProfiles);
-  }
+  // 6. Damage Distribution Profile (Direct pure AD/AP from cached DDragon attack & magic)
+  const calcDamageSplit = (profiles) => {
+    const totAd = profiles.reduce((sum, p) => sum + (p.ad || 0.5), 0);
+    const totAp = profiles.reduce((sum, p) => sum + (p.ap || 0.5), 0);
+    const sum = Math.max(totAd + totAp, 0.001);
+    const ad = Math.round((totAd / sum) * 100);
+    const ap = 100 - ad;
+    return { ad, ap, trueDmg: 0 };
+  };
+  const blueDamage = calcDamageSplit(blueProfiles);
+  const redDamage = calcDamageSplit(redProfiles);
 
   // 7. Lane Counter Matrix (5 roles: TOP, JGL, MID, BOT, SUP)
   const laneMatchups = bluePicks.map((bPick, idx) => {

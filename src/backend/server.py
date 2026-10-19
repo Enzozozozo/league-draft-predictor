@@ -110,8 +110,16 @@ def run_prediction(blue_picks_data, red_picks_data):
             {"name": "Poke & Siege", "blue": 5.5, "red": 3.0, "diff": 2.5, "advantageSide": "Blue", "advantageText": "Blue +2.5"},
             {"name": "Late-Game Scaling", "blue": 8.0, "red": 6.5, "diff": 1.5, "advantageSide": "Blue", "advantageText": "Blue +1.5"},
         ]
-        blue_dmg = {"ad": 45, "ap": 50, "trueDmg": 5}
-        red_dmg = {"ad": 65, "ap": 30, "trueDmg": 5}
+        blue_dmg = {
+            "ad": res.blue_composition.physical_dmg_pct,
+            "ap": res.blue_composition.magic_dmg_pct,
+            "trueDmg": 0.0,
+        }
+        red_dmg = {
+            "ad": res.red_composition.physical_dmg_pct,
+            "ap": res.red_composition.magic_dmg_pct,
+            "trueDmg": 0.0,
+        }
         primary_wc = {
             "title": "Disengage & Zone Control Priority",
             "summary": "Enemy engage is vulnerable to hard crowd control.",
@@ -249,6 +257,7 @@ class DraftHandler(BaseHTTPRequestHandler):
                 data = json.loads(body.decode("utf-8"))
                 blue_picks = data.get("bluePicks", [])
                 red_picks = data.get("redPicks", [])
+                logger.info("Predict Request - Blue: %s | Red: %s", [p.get("champion") for p in blue_picks], [p.get("champion") for p in red_picks])
                 result = run_prediction(blue_picks, red_picks)
                 self.send_response(200)
                 self._send_cors_headers()

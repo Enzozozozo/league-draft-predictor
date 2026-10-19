@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Trophy, TrendingUp } from 'lucide-react';
+import { Trophy, TrendingUp } from 'lucide-react';
 
 const ROLE_ICON_URLS = {
   TOP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png',
@@ -21,7 +21,6 @@ function VerdictHeader({
   redProb,
   delta,
   classification,
-  onModifyDraft,
 }) {
   const isBlueFavored = blueProb >= redProb;
   const favoredTeam = isBlueFavored ? 'Blue Side' : 'Red Side';
@@ -29,8 +28,8 @@ function VerdictHeader({
   const absDelta = Math.abs(delta).toFixed(1);
 
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl px-5 py-2.5 shadow-xl flex flex-col lg:flex-row items-center justify-between gap-4">
-      <div className="flex items-center gap-3.5">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl px-5 py-2.5 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5">
+      <div className="flex items-center gap-3.5 flex-shrink-0">
         <div
           className={`w-11 h-11 rounded-xl flex items-center justify-center border ${
             isBlueFavored
@@ -62,7 +61,7 @@ function VerdictHeader({
         </div>
       </div>
 
-      <div className="flex-1 w-full max-w-xl">
+      <div className="flex-1 w-full max-w-2xl">
         <div className="flex items-center justify-between text-xs font-mono font-bold mb-1.5">
           <span className="text-[#0AC8B9]">Blue {blueProb.toFixed(1)}%</span>
           <span className="text-[#E84057]">{redProb.toFixed(1)}% Red</span>
@@ -79,14 +78,6 @@ function VerdictHeader({
           <div className="absolute top-0 bottom-0 left-1/2 w-0.5 bg-white/80 -translate-x-1/2" />
         </div>
       </div>
-
-      <button
-        onClick={onModifyDraft}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold font-mono border border-slate-700 hover:border-[#C89B3C] transition-all active:scale-95 group"
-      >
-        <ArrowLeft className="w-4 h-4 text-[#C89B3C] group-hover:-translate-x-0.5 transition-transform" />
-        <span>Modify Draft</span>
-      </button>
     </div>
   );
 }
@@ -525,6 +516,8 @@ function TacticalCompositionCard({ tactical }) {
 }
 
 function DamageSplitCard({ blueDmg, redDmg }) {
+  const hasTrueDmg = (blueDmg?.trueDmg || 0) > 0 || (redDmg?.trueDmg || 0) > 0;
+
   return (
     <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 shadow-lg">
       <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800/70">
@@ -536,9 +529,11 @@ function DamageSplitCard({ blueDmg, redDmg }) {
           <span className="flex items-center gap-1 text-[#7A6DFF]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#7A6DFF]" /> Magic (AP)
           </span>
-          <span className="flex items-center gap-1 text-[#ECE8E1]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ECE8E1]" /> True
-          </span>
+          {hasTrueDmg && (
+            <span className="flex items-center gap-1 text-[#ECE8E1]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ECE8E1]" /> True
+            </span>
+          )}
         </div>
       </div>
       <div className="space-y-1.5 pt-1.5">
@@ -556,12 +551,16 @@ function DamageSplitCard({ blueDmg, redDmg }) {
             <div className="flex-1 h-2 rounded-full overflow-hidden flex bg-slate-950 border border-slate-800">
               <div style={{ width: `${row.d.ad}%` }} className="bg-[orange]" />
               <div style={{ width: `${row.d.ap}%` }} className="bg-[#7A6DFF]" />
-              <div style={{ width: `${row.d.trueDmg}%` }} className="bg-[#ECE8E1]" />
+              {row.d.trueDmg > 0 && (
+                <div style={{ width: `${row.d.trueDmg}%` }} className="bg-[#ECE8E1]" />
+              )}
             </div>
-            <div className="text-[11px] font-mono text-slate-300 w-44 text-right">
+            <div className="text-[11px] font-mono text-slate-300 w-36 text-right">
               <span className="text-[orange]">{row.d.ad}% AD</span> ·{' '}
-              <span className="text-[#7A6DFF]">{row.d.ap}% AP</span> ·{' '}
-              <span className="text-[#ECE8E1]/80">{row.d.trueDmg}% True</span>
+              <span className="text-[#7A6DFF]">{row.d.ap}% AP</span>
+              {row.d.trueDmg > 0 && (
+                <> · <span className="text-[#ECE8E1]/80">{row.d.trueDmg}% True</span></>
+              )}
             </div>
           </div>
         ))}
@@ -581,8 +580,8 @@ export default function Phase2AnalyticsDashboard({
   const classification = predictionData?.classification ?? 'Heavy Advantage';
   const laneMatchups = predictionData?.laneMatchups || [];
   const tactical = predictionData?.tacticalDimensions || [];
-  const blueDmg = predictionData?.blueDamage || { ad: 45, ap: 50, trueDmg: 5 };
-  const redDmg = predictionData?.redDamage || { ad: 65, ap: 30, trueDmg: 5 };
+  const blueDmg = predictionData?.blueDamage || { ad: 57, ap: 43, trueDmg: 0 };
+  const redDmg = predictionData?.redDamage || { ad: 52, ap: 48, trueDmg: 0 };
   const winCondition = predictionData?.primaryWinCondition;
   const powerSpikes = predictionData?.powerSpikes || [];
 
@@ -595,7 +594,6 @@ export default function Phase2AnalyticsDashboard({
           redProb={redProb}
           delta={delta}
           classification={classification}
-          onModifyDraft={onModifyDraft}
         />
       </div>
 
