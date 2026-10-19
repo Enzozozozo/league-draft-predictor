@@ -3,7 +3,6 @@
 api_key.txt
 *.key
 *RGAPI*
-notebooks/02_live_riot_api_evaluation.ipynb
 notebooks/*.local.ipynb
 
 # Python & Jupyter Cache
