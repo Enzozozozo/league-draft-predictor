@@ -56,15 +56,15 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
 
   // Check if default composition is active
   const isDefaultDraft =
-    bluePicks[0]?.champion === 'Aatrox' &&
-    bluePicks[1]?.champion === 'Lee Sin' &&
-    bluePicks[2]?.champion === 'Ahri' &&
-    bluePicks[3]?.champion === 'Jinx' &&
-    bluePicks[4]?.champion === 'Thresh' &&
-    redPicks[0]?.champion === 'Malphite' &&
-    redPicks[1]?.champion === 'Wukong' &&
-    redPicks[2]?.champion === 'Sylas' &&
-    redPicks[3]?.champion === 'Ezreal' &&
+    bluePicks[0]?.champion === 'Yorick' &&
+    bluePicks[1]?.champion === 'Sejuani' &&
+    bluePicks[2]?.champion === 'Smolder' &&
+    bluePicks[3]?.champion === 'Ziggs' &&
+    bluePicks[4]?.champion === 'Nautilus' &&
+    redPicks[0]?.champion === 'Camille' &&
+    redPicks[1]?.champion === 'Pantheon' &&
+    redPicks[2]?.champion === 'Galio' &&
+    redPicks[3]?.champion === 'Miss Fortune' &&
     redPicks[4]?.champion === 'Leona';
 
   let blueWinProb = 50.0;
@@ -216,26 +216,46 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
     const bChamp = getChampion(bPick.champion);
     const rChamp = getChampion(rPick.champion);
 
-    // Expected @15m Gold & Dynamic Lane State
+    // Expected @15m Gold & Tactical Matchup Badges
     const goldDiff15 = Math.round(diff * 85); // approx ~85g per 1% win rate delta
-    let laneDynamic = 'Even Skill Matchup';
-    if (diff >= 3.0) laneDynamic = 'Heavy Kill Pressure';
-    else if (diff >= 1.2) laneDynamic = 'Wave Priority';
-    else if (diff <= -3.0) laneDynamic = 'High Dive Risk';
-    else if (diff <= -1.2) laneDynamic = 'Defensive Farming';
+
+    let blueBadge = null;
+    let redBadge = null;
+    const bScaling = bChamp?.scaling ?? 5.0;
+    const rScaling = rChamp?.scaling ?? 5.0;
+
+    if (diff >= 3.0) {
+      blueBadge = 'HARD COUNTER';
+    } else if (diff <= -3.0) {
+      redBadge = 'HARD COUNTER';
+    } else if (diff >= 1.2) {
+      blueBadge = 'EARLY PRIO';
+    } else if (diff <= -1.2) {
+      redBadge = 'EARLY PRIO';
+    } else {
+      if (bScaling - rScaling >= 2.0) {
+        blueBadge = 'OUTSCALES';
+      } else if (rScaling - bScaling >= 2.0) {
+        redBadge = 'OUTSCALES';
+      } else {
+        blueBadge = 'SKILL';
+        redBadge = 'SKILL';
+      }
+    }
 
     return {
       role: bPick.role,
       blueChampion: bPick.champion,
       blueWinRate: bWr,
+      blueBadge,
       blueImage: bChamp?.image || `https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/${bPick.champion}.png`,
       redChampion: rPick.champion,
       redWinRate: rWr,
+      redBadge,
       redImage: rChamp?.image || `https://ddragon.leagueoflegends.com/cdn/16.20.1/img/champion/${rPick.champion}.png`,
       differential: diff,
       isBlueLean,
       goldDiff15,
-      laneDynamic,
       badgeText: isBlueLean ? `+${absDiff}% Blue Lean` : `-${absDiff}% Red Lean`,
     };
   });
@@ -250,6 +270,8 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
         'Red team brings high-commitment initiation (Malphite Unstoppable Force + Leona Solar Flare). Blue composition possesses superior disengage & peel (+3.5) with Thresh Flay/Box and Ahri Charm. Blue wins by nullifying initial dives and letting Jinx reach lethal reset thresholds.',
       blueKeys: ['Thresh Flay & Lantern', 'Ahri Charm Peel', 'Jinx Hypercarry Tethering'],
       redKeys: ['Malphite Blind Flank', 'Wukong Cyclone Follow-up', 'Bursting Jinx Pre-Teamfight'],
+      blueExecution: ['Thresh Flay & Lantern disengage', 'Ahri Charm peel on divers', 'Jinx hypercarry backline spacing'],
+      redExecution: ['Malphite blind flank angle', 'Wukong Cyclone knockup follow-up', 'Bursting Jinx before teamfights'],
     };
   } else {
     const engageDiff = tacticalDimensions.find(d => d.name === 'Hard Engage')?.diff || 0;
@@ -264,6 +286,8 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
           'Blue holds defensive kit priority. Force Red to overextend into objective chokepoints, absorb the primary burst with frontline peel, and counter-attack with ranged carries.',
         blueKeys: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game carry'],
         redKeys: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
+        blueExecution: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game hypercarry'],
+        redExecution: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
       };
     } else if (engageDiff > 2.0) {
       primaryWinCondition = {
@@ -273,6 +297,8 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
           'Blue has unstoppable front-to-back engage. Group aggressively around Dragon and Baron timers to force structured 5v5 teamfights before enemy poke can whittle health bars.',
         blueKeys: ['Stack Dragon soul priority', 'Initiate on isolated targets', 'Collapse with numbers advantage'],
         redKeys: ['Spread formations wide', 'Avoid choke points', 'Play 1-3-1 side lane pressure'],
+        blueExecution: ['Stack Dragon soul priority', 'Initiate decisively on isolated targets', 'Collapse with numbers advantage'],
+        redExecution: ['Spread formations wide', 'Avoid choke points in river', 'Play 1-3-1 side lane pressure'],
       };
     } else if (scalingDiff > 2.0) {
       primaryWinCondition = {
@@ -282,6 +308,8 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
           'Avoid high-risk skirmishes in the opening 15 minutes. Trade neutral objectives gracefully until 2-item core spikes allow Blue side carries to out-dps enemy frontline.',
         blueKeys: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
         redKeys: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
+        blueExecution: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
+        redExecution: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
       };
     } else {
       primaryWinCondition = {
@@ -291,6 +319,8 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
           'Both drafts have balanced strengths. The team that secures vision around mid-lane river transitions will control objective setup and dictate teamfight terms.',
         blueKeys: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
         redKeys: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
+        blueExecution: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
+        redExecution: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
       };
     }
   }
@@ -421,7 +451,7 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
 export async function predictDraftWithBackend(bluePicks, redPicks) {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     const endpoints = ['/api/predict', 'http://127.0.0.1:5001/api/predict'];
     let resp = null;
@@ -467,6 +497,39 @@ export async function predictDraftWithBackend(bluePicks, redPicks) {
     // server unreachable, use fallback
   }
 
-  // Graceful fallback to client-side calibrated engine
+    // Graceful fallback to client-side calibrated engine
   return calculateDraftPrediction(bluePicks, redPicks);
+}
+
+/**
+ * Asynchronously queries the LLM coach in the background to update WinConditionCard
+ * without blocking Phase 2 dashboard rendering.
+ */
+export async function fetchAsyncCoachAnalysis(bluePicks, redPicks, tacticalDimensions, blueDamage, redDamage) {
+  try {
+    const endpoints = ['/api/coach', 'http://127.0.0.1:5001/api/coach'];
+    for (const ep of endpoints) {
+      try {
+        const r = await fetch(ep, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bluePicks,
+            redPicks,
+            tacticalDimensions,
+            blueDamage,
+            redDamage,
+          }),
+        });
+        if (r.ok) {
+          return await r.json();
+        }
+      } catch {
+        // try next
+      }
+    }
+  } catch {
+    // silently return null
+  }
+  return null;
 }

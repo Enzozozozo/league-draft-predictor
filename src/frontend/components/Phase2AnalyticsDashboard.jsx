@@ -1,13 +1,6 @@
-import React, { useState } from 'react';
-import { Trophy, TrendingUp } from 'lucide-react';
-
-const ROLE_ICON_URLS = {
-  TOP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png',
-  JGL: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png',
-  MID: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png',
-  BOT: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png',
-  SUP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png',
-};
+import React from 'react';
+import { Trophy } from 'lucide-react';
+import { ROLE_ICON_URLS } from '../data/championsData';
 
 const SHORT_DIM_NAMES = {
   'Hard Engage': 'Engage',
@@ -16,22 +9,17 @@ const SHORT_DIM_NAMES = {
   'Late-Game Scaling': 'Scaling',
 };
 
-function VerdictHeader({
-  blueProb,
-  redProb,
-  delta,
-  classification,
-}) {
+function VerdictHeader({ blueProb, redProb, delta, classification }) {
   const isBlueFavored = blueProb >= redProb;
   const favoredTeam = isBlueFavored ? 'Blue Side' : 'Red Side';
   const favoredProb = isBlueFavored ? blueProb : redProb;
   const absDelta = Math.abs(delta).toFixed(1);
 
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl px-5 py-2.5 shadow-xl flex flex-col md:flex-row items-center justify-between gap-5">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl px-5 py-2 shadow-xl flex flex-col md:flex-row items-center justify-between gap-4">
       <div className="flex items-center gap-3.5 flex-shrink-0">
         <div
-          className={`w-11 h-11 rounded-xl flex items-center justify-center border ${
+          className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
             isBlueFavored
               ? 'bg-[#0AC8B9]/10 border-[#0AC8B9]/40 text-[#0AC8B9]'
               : 'bg-[#E84057]/10 border-[#E84057]/40 text-[#E84057]'
@@ -42,14 +30,14 @@ function VerdictHeader({
         <div>
           <div className="flex items-center gap-2.5">
             <span
-              className={`text-2xl font-extrabold font-mono tracking-tight ${
+              className={`text-xl font-extrabold font-mono tracking-tight ${
                 isBlueFavored ? 'text-[#0AC8B9]' : 'text-[#E84057]'
               }`}
             >
               {favoredProb.toFixed(1)}% {favoredTeam}
             </span>
             <span
-              className={`text-xs font-mono font-bold px-2.5 py-0.5 rounded-md border ${
+              className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border ${
                 isBlueFavored
                   ? 'bg-[#0AC8B9]/15 text-[#0AC8B9] border-[#0AC8B9]/35'
                   : 'bg-[#E84057]/15 text-[#E84057] border-[#E84057]/35'
@@ -62,11 +50,11 @@ function VerdictHeader({
       </div>
 
       <div className="flex-1 w-full max-w-2xl">
-        <div className="flex items-center justify-between text-xs font-mono font-bold mb-1.5">
+        <div className="flex items-center justify-between text-xs font-mono font-bold mb-1">
           <span className="text-[#0AC8B9]">Blue {blueProb.toFixed(1)}%</span>
           <span className="text-[#E84057]">{redProb.toFixed(1)}% Red</span>
         </div>
-        <div className="relative h-3 w-full bg-slate-950 rounded-full overflow-hidden flex border border-slate-800">
+        <div className="relative h-2.5 w-full bg-slate-950 rounded-full overflow-hidden flex border border-slate-800">
           <div
             className="h-full bg-gradient-to-r from-teal-600 to-[#0AC8B9] transition-all duration-700"
             style={{ width: `${blueProb}%` }}
@@ -82,18 +70,84 @@ function VerdictHeader({
   );
 }
 
-function LaneMatchupsCard({ laneMatchups, onEditSlot }) {
+function LaneChampionCell({ champion, image, badge, isBlue }) {
+  const teamColor = isBlue ? '#0AC8B9' : '#E84057';
+
+  const getBadgeClass = (tag) => {
+    switch (tag) {
+      case 'HARD COUNTER':
+        return isBlue
+          ? 'bg-[#0AC8B9]/20 text-[#0AC8B9] border-[#0AC8B9]/50 shadow-sm shadow-[#0AC8B9]/25 font-black'
+          : 'bg-[#E84057]/20 text-[#E84057] border-[#E84057]/50 shadow-sm shadow-[#E84057]/25 font-black';
+      case 'EARLY PRIO':
+        return 'bg-amber-500/15 text-amber-300 border-amber-500/40 font-bold';
+      case 'OUTSCALES':
+        return 'bg-purple-500/15 text-purple-300 border-purple-500/40 font-bold';
+      case 'SKILL':
+      default:
+        return 'bg-slate-800/80 text-slate-400 border-slate-700/80 font-semibold';
+    }
+  };
+
+  const textContent = (
+    <div className={`min-w-0 flex flex-col ${isBlue ? 'items-end text-right' : 'items-start text-left'}`}>
+      <div className="text-sm font-bold text-slate-100 truncate max-w-[140px]">
+        {champion || 'Empty'}
+      </div>
+      <div className={`flex items-center gap-1.5 mt-0.5 ${isBlue ? 'justify-end' : 'justify-start'}`}>
+        {badge ? (
+          <span
+            className={`text-[9px] font-mono px-1.5 py-0.5 rounded border tracking-wider uppercase whitespace-nowrap ${getBadgeClass(
+              badge
+            )}`}
+          >
+            {badge}
+          </span>
+        ) : null}
+      </div>
+    </div>
+  );
+
+  const avatar = (
+    <div
+      className="w-10 h-10 rounded-xl overflow-hidden border-2 bg-slate-950 flex-shrink-0 shadow-md"
+      style={{ borderColor: `${teamColor}B3` }}
+    >
+      <img src={image} alt={champion} className="w-full h-full object-cover scale-[1.08]" />
+    </div>
+  );
+
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3.5 flex flex-col justify-between h-full shadow-lg">
-      <div className="grid grid-cols-[1fr_80px_40px_80px_1fr] items-center text-xs font-mono uppercase tracking-wider text-slate-400 pb-2 border-b border-slate-800/80">
-        <span className="text-[#0AC8B9] font-bold text-left pl-1">Blue Side Pick</span>
-        <span />
-        <span className="text-slate-400 font-semibold text-center text-[11px]">Lane</span>
-        <span />
-        <span className="text-[#E84057] font-bold text-right pr-1">Red Side Pick</span>
+    <div
+      className={`flex items-center gap-2.5 w-full min-w-0 select-none ${
+        isBlue ? 'justify-end' : 'justify-start'
+      }`}
+    >
+      {isBlue ? (
+        <>
+          {textContent}
+          {avatar}
+        </>
+      ) : (
+        <>
+          {avatar}
+          {textContent}
+        </>
+      )}
+    </div>
+  );
+}
+
+function LaneMatchupsCard({ laneMatchups }) {
+  return (
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 flex flex-col justify-between h-full shadow-lg">
+      <div className="grid grid-cols-[1fr_130px_1fr] items-center text-xs font-mono uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800/80 px-2">
+        <span className="text-[#0AC8B9] font-bold text-right pr-4">BLUE SIDE</span>
+        <span className="text-slate-400 font-semibold text-center text-[11px]">PRIORITY</span>
+        <span className="text-[#E84057] font-bold text-left pl-4">RED SIDE</span>
       </div>
 
-      <div className="flex-1 min-h-0 flex flex-col justify-between py-1.5 gap-2">
+      <div className="flex-1 min-h-0 flex flex-col justify-between py-1 gap-1.5">
         {laneMatchups.map((m, idx) => {
           const role = m.role || 'TOP';
           const isBlue = m.isBlueLean;
@@ -101,123 +155,67 @@ function LaneMatchupsCard({ laneMatchups, onEditSlot }) {
           const goldVal = m.goldDiff15 ?? Math.round((m.differential ?? 0) * 85);
           const absGold = Math.abs(goldVal);
           const goldText = goldVal >= 0 ? `+${absGold}g @15m` : `-${absGold}g @15m`;
-          const dynamicText = m.laneDynamic || (isBlue ? 'Wave Priority' : 'Defensive Farming');
+
+          // Dynamic badge resolution from model differential
+          const diffSigned = m.differential != null ? (m.isBlueLean ? m.differential : -m.differential) : 0;
+          const blueBadge =
+            m.blueBadge ||
+            (diffSigned >= 3.0 ? 'HARD COUNTER' : diffSigned >= 1.2 ? 'EARLY PRIO' : Math.abs(diffSigned) < 1.2 ? 'SKILL' : null);
+          const redBadge =
+            m.redBadge ||
+            (diffSigned <= -3.0 ? 'HARD COUNTER' : diffSigned <= -1.2 ? 'EARLY PRIO' : Math.abs(diffSigned) < 1.2 ? 'SKILL' : null);
+
+          const isEven = Math.abs(Number(absDiff)) < 0.1;
 
           return (
             <div
               key={role}
-              className="grid grid-cols-[1fr_80px_40px_80px_1fr] items-center px-3 py-2 rounded-xl bg-slate-900/60 border border-slate-800/70 hover:border-slate-750 transition-colors"
+              className="grid grid-cols-[1fr_130px_1fr] items-center px-2.5 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800/70"
             >
-              {/* 1. Blue Champion: Name, WR, and Lane Dynamic Badge */}
-              <button
-                type="button"
-                onClick={() => onEditSlot?.('blue', idx, role)}
-                className="flex items-center justify-end gap-3 group text-right min-w-0"
-              >
-                <div className="min-w-0">
-                  <div className="text-sm font-bold text-slate-100 group-hover:text-[#0AC8B9] transition-colors truncate">
-                    {m.blueChampion}
-                  </div>
-                  <div className="flex items-center justify-end gap-1.5 mt-0.5">
-                    <span className="text-[11px] font-mono text-[#0AC8B9]/90 font-semibold">
-                      {m.blueWinRate}% WR
-                    </span>
-                    {isBlue && (
-                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#0AC8B9]/15 text-[#0AC8B9] border border-[#0AC8B9]/30">
-                        {dynamicText}
-                      </span>
-                    )}
-                  </div>
-                </div>
+              <LaneChampionCell
+                champion={m.blueChampion}
+                image={m.blueImage}
+                badge={blueBadge}
+                isBlue={true}
+              />
 
-                {/* Outer frame: clean color border, clips internal black sprite border */}
-                <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-[#0AC8B9]/70 group-hover:border-[#0AC8B9] bg-slate-950 flex-shrink-0 transition-transform group-hover:scale-105 shadow-md">
-                  <img
-                    src={m.blueImage}
-                    alt={m.blueChampion}
-                    className="w-full h-full object-cover scale-[1.08]"
-                  />
-                </div>
-              </button>
-
-              {/* 2. Blue Winrate & Gold Differential: Centered between Blue portrait & Role Icon */}
-              <div className="flex flex-col items-center justify-center select-none">
-                <span
-                  className={`text-xs font-mono font-bold whitespace-nowrap ${
-                    isBlue ? 'text-[#0AC8B9]' : 'text-transparent'
-                  }`}
-                >
-                  {isBlue ? `+${absDiff}%` : ''}
-                </span>
-                <span
-                  className={`text-[9px] font-mono whitespace-nowrap mt-0.5 ${
-                    isBlue ? 'text-amber-400 font-semibold' : 'text-transparent'
-                  }`}
-                >
-                  {isBlue ? goldText : ''}
-                </span>
-              </div>
-
-              {/* 3. Center Role Icon */}
-              <div className="flex items-center justify-center select-none">
-                <div className="w-8 h-8 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center flex-shrink-0 shadow-inner">
+              {/* Solution B: Unified Center Comparison Hub */}
+              <div className="flex flex-col items-center justify-center select-none px-1 text-center">
+                <div className="w-6 h-6 rounded-md bg-slate-950 border border-slate-800 flex items-center justify-center flex-shrink-0 shadow-inner mb-0.5">
                   <img
                     src={ROLE_ICON_URLS[role] || ROLE_ICON_URLS.TOP}
                     alt={role}
-                    className="w-4 h-4 object-contain opacity-90"
-                  />
-                </div>
-              </div>
-
-              {/* 4. Red Winrate & Gold Differential: Centered between Role Icon & Red portrait */}
-              <div className="flex flex-col items-center justify-center select-none">
-                <span
-                  className={`text-xs font-mono font-bold whitespace-nowrap ${
-                    !isBlue ? 'text-[#E84057]' : 'text-transparent'
-                  }`}
-                >
-                  {!isBlue ? `+${absDiff}%` : ''}
-                </span>
-                <span
-                  className={`text-[9px] font-mono whitespace-nowrap mt-0.5 ${
-                    !isBlue ? 'text-amber-400 font-semibold' : 'text-transparent'
-                  }`}
-                >
-                  {!isBlue ? `+${absGold}g @15m` : ''}
-                </span>
-              </div>
-
-              {/* 5. Red Champion: Portrait, Name, WR, and Lane Dynamic Badge */}
-              <button
-                type="button"
-                onClick={() => onEditSlot?.('red', idx, role)}
-                className="flex items-center justify-start gap-3 group text-left min-w-0"
-              >
-                {/* Outer frame: clean color border, clips internal black sprite border */}
-                <div className="w-11 h-11 rounded-xl overflow-hidden border-2 border-[#E84057]/70 group-hover:border-[#E84057] bg-slate-950 flex-shrink-0 transition-transform group-hover:scale-105 shadow-md">
-                  <img
-                    src={m.redImage}
-                    alt={m.redChampion}
-                    className="w-full h-full object-cover scale-[1.08]"
+                    className="w-3.5 h-3.5 object-contain opacity-90"
                   />
                 </div>
 
-                <div className="min-w-0">
-                  <div className="text-sm font-bold text-slate-100 group-hover:text-[#E84057] transition-colors truncate">
-                    {m.redChampion}
-                  </div>
-                  <div className="flex items-center justify-start gap-1.5 mt-0.5">
-                    {!isBlue && (
-                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#E84057]/15 text-[#E84057] border border-[#E84057]/30">
-                        {dynamicText}
-                      </span>
-                    )}
-                    <span className="text-[11px] font-mono text-[#E84057]/90 font-semibold">
-                      {m.redWinRate}% WR
+                {!isEven ? (
+                  <div className="flex flex-col items-center leading-tight">
+                    <span
+                      className={`text-[11px] font-mono font-extrabold flex items-center gap-1 ${
+                        isBlue ? 'text-[#0AC8B9]' : 'text-[#E84057]'
+                      }`}
+                    >
+                      {isBlue ? `◀ +${absDiff}%` : `+${absDiff}% ▶`}
+                    </span>
+                    <span className="text-[10px] font-mono text-amber-400 font-semibold mt-0.5">
+                      {isBlue ? goldText : `+${absGold}g @15m`}
                     </span>
                   </div>
-                </div>
-              </button>
+                ) : (
+                  <div className="flex flex-col items-center leading-tight text-slate-500 font-mono text-[10px]">
+                    <span className="font-semibold text-slate-400">EVEN</span>
+                    <span className="text-[9px] text-slate-500 mt-0.5">±0g @15m</span>
+                  </div>
+                )}
+              </div>
+
+              <LaneChampionCell
+                champion={m.redChampion}
+                image={m.redImage}
+                badge={redBadge}
+                isBlue={false}
+              />
             </div>
           );
         })}
@@ -226,13 +224,41 @@ function LaneMatchupsCard({ laneMatchups, onEditSlot }) {
   );
 }
 
+function ExecutionBlock({ title, color, items, isLoading, pulseTexts }) {
+  return (
+    <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/60 flex flex-col justify-between">
+      <div className="text-[10px] font-mono font-bold uppercase mb-1 flex items-center gap-1.5" style={{ color }}>
+        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+        <span>{title}</span>
+      </div>
+      {isLoading ? (
+        <ul className="space-y-1.5 text-[11px] text-slate-400/80 font-mono">
+          {pulseTexts.map((txt, i) => (
+            <li key={i} className="flex items-center gap-2 animate-pulse" style={{ animationDelay: `${i * 150}ms` }}>
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color, opacity: 0.6 }} />
+              <span className="break-words whitespace-normal">{txt}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="space-y-1 text-[11px] text-slate-300">
+          {(items || []).slice(0, 3).map((item, i) => (
+            <li key={i} className="leading-snug break-words whitespace-normal">
+              • {item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
-
-function WinConditionCard({ winCondition }) {
+function WinConditionCard({ winCondition, isCoachLoading }) {
   if (!winCondition) return null;
+  const isLoading = isCoachLoading || !winCondition.coachModel;
 
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 shadow-lg flex flex-col justify-between">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg flex flex-col justify-between">
       <div className="border-b border-slate-800/70 pb-1.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -243,37 +269,42 @@ function WinConditionCard({ winCondition }) {
           </div>
           <span className="text-[10px] font-mono text-amber-300/80">Macro Priority</span>
         </div>
-        <div className="text-sm font-bold text-amber-300/90 mt-1">
-          {winCondition.title}
+        <div className="text-sm font-bold text-amber-300/90 mt-0.5 break-words whitespace-normal">
+          {isLoading ? (
+            <span className="flex items-center gap-2 text-amber-300/70 font-mono text-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              <span>Analysing match dynamics...</span>
+            </span>
+          ) : (
+            winCondition.title
+          )}
         </div>
-        <p className="text-xs text-slate-400 mt-0.5 leading-snug">
-          {winCondition.summary}
+        <p className="text-xs text-slate-400 mt-1 leading-relaxed break-words whitespace-normal">
+          {isLoading ? (
+            <span className="text-slate-500 font-mono text-[11px] animate-pulse">
+              Synthesizing champion archetypes, damage curves, and wave tempo...
+            </span>
+          ) : (
+            winCondition.summary
+          )}
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 pt-1.5">
-        <div className="p-2 px-2.5 rounded-xl bg-slate-900/60 border border-slate-800/60">
-          <div className="text-[10px] font-mono font-bold text-[#0AC8B9] uppercase mb-0.5 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0AC8B9]" />
-            Blue Execution
-          </div>
-          <ul className="space-y-0.5 text-[11px] text-slate-400">
-            <li className="truncate">• Lorem ipsum dolor sit</li>
-            <li className="truncate">• Lorem consectetur elit</li>
-            <li className="truncate">• Lorem tempor incidunt</li>
-          </ul>
-        </div>
-        <div className="p-2 px-2.5 rounded-xl bg-slate-900/60 border border-slate-800/60">
-          <div className="text-[10px] font-mono font-bold text-[#E84057] uppercase mb-0.5 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E84057]" />
-            Red Execution
-          </div>
-          <ul className="space-y-0.5 text-[11px] text-slate-400">
-            <li className="truncate">• Lorem ipsum dolor sit</li>
-            <li className="truncate">• Lorem consectetur elit</li>
-            <li className="truncate">• Lorem tempor incidunt</li>
-          </ul>
-        </div>
+        <ExecutionBlock
+          title="Blue Execution"
+          color="#0AC8B9"
+          items={winCondition.blueExecution}
+          isLoading={isLoading}
+          pulseTexts={['Analysing wave tempo...', 'Analysing engage angles...', 'Analysing backline tethering...']}
+        />
+        <ExecutionBlock
+          title="Red Execution"
+          color="#E84057"
+          items={winCondition.redExecution}
+          isLoading={isLoading}
+          pulseTexts={['Analysing counter-engage...', 'Analysing flank routes...', 'Analysing objective timing...']}
+        />
       </div>
     </div>
   );
@@ -286,35 +317,30 @@ function PowerCurvesCard({ powerSpikes }) {
   const midSpike = powerSpikes.find((p) => p.phase.includes('Mid')) || powerSpikes[1];
   const lateSpike = powerSpikes.find((p) => p.phase.includes('Late')) || powerSpikes[2];
 
-  // Spread (Blue advantage minus Red advantage). Positive = Blue leads (Top), Negative = Red leads (Bottom)
-  const dEarly = (earlySpike?.blueAdv ?? 50) - (earlySpike?.redAdv ?? 50); // e.g. -4
-  const dMid = (midSpike?.blueAdv ?? 50) - (midSpike?.redAdv ?? 50);       // e.g. +10
-  const dLate = (lateSpike?.blueAdv ?? 50) - (lateSpike?.redAdv ?? 50);     // e.g. +24
+  const dEarly = (earlySpike?.blueAdv ?? 50) - (earlySpike?.redAdv ?? 50);
+  const dMid = (midSpike?.blueAdv ?? 50) - (midSpike?.redAdv ?? 50);
+  const dLate = (lateSpike?.blueAdv ?? 50) - (lateSpike?.redAdv ?? 50);
 
-  // Height = 60, Midpoint Baseline Y = 30
-  // Top region (y < 30) = Blue
-  // Bottom region (y > 30) = Red
-  const clampY = (spread) => {
-    const raw = 30 - spread * 0.65;
-    return Math.min(48, Math.max(12, raw));
-  };
+  const clampY = (spread) => Math.min(50, Math.max(10, 30 - spread * 0.7));
 
-  const p0 = { x: 20, y: Math.round(clampY(dEarly * 0.35)) };
-  const p1 = { x: 105, y: Math.round(clampY(dEarly)) };
-  const p2 = { x: 215, y: Math.round(clampY(dMid)) };
-  const p3 = { x: 335, y: Math.round(clampY(dLate)) };
+  // Spans full width from x=0 to x=360
+  const p0 = { x: 0, y: Math.round(clampY(dEarly * 0.25)) };
+  const p1 = { x: 90, y: Math.round(clampY(dEarly)) };
+  const p2 = { x: 210, y: Math.round(clampY(dMid)) };
+  const p3 = { x: 330, y: Math.round(clampY(dLate)) };
+  const p4 = { x: 360, y: Math.round(clampY(dLate * 1.05)) };
 
   const cp01x = Math.round((p0.x + p1.x) / 2);
   const cp12x = Math.round((p1.x + p2.x) / 2);
   const cp23x = Math.round((p2.x + p3.x) / 2);
+  const cp34x = Math.round((p3.x + p4.x) / 2);
 
-  const curvePath = `M ${p0.x} ${p0.y} C ${cp01x} ${p0.y}, ${cp01x} ${p1.y}, ${p1.x} ${p1.y} C ${cp12x} ${p1.y}, ${cp12x} ${p2.y}, ${p2.x} ${p2.y} C ${cp23x} ${p2.y}, ${cp23x} ${p3.y}, ${p3.x} ${p3.y}`;
-  const areaPath = `${curvePath} L ${p3.x} 30 L ${p0.x} 30 Z`;
+  const curvePath = `M ${p0.x} ${p0.y} C ${cp01x} ${p0.y}, ${cp01x} ${p1.y}, ${p1.x} ${p1.y} C ${cp12x} ${p1.y}, ${cp12x} ${p2.y}, ${p2.x} ${p2.y} C ${cp23x} ${p2.y}, ${cp23x} ${p3.y}, ${p3.x} ${p3.y} C ${cp34x} ${p3.y}, ${cp34x} ${p4.y}, ${p4.x} ${p4.y}`;
+  const areaPath = `${curvePath} L 360 30 L 0 30 Z`;
 
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 shadow-lg flex flex-col justify-between">
-      {/* Header with clear team orientation */}
-      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800/70">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg flex flex-col justify-between w-full">
+      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-800/70">
         <span className="font-bold text-slate-300">Game Phase Power Curve</span>
         <div className="flex items-center gap-3 text-[10px] font-normal">
           <span className="flex items-center gap-1 text-[#0AC8B9]">
@@ -326,11 +352,13 @@ function PowerCurvesCard({ powerSpikes }) {
         </div>
       </div>
 
-      {/* Clean Minimalist Line Graph */}
       <div className="w-full py-1 select-none">
-        <svg viewBox="0 0 360 60" className="w-full h-auto max-h-[56px] overflow-visible">
+        <svg
+          viewBox="0 0 360 60"
+          preserveAspectRatio="none"
+          className="w-full h-14 overflow-visible block"
+        >
           <defs>
-            {/* Instant color switch at exact midpoint Y = 30 (50%): Top Blue, Bottom Red */}
             <linearGradient id="curveLineGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="60">
               <stop offset="0" stopColor="#0AC8B9" />
               <stop offset="0.5" stopColor="#0AC8B9" />
@@ -339,94 +367,58 @@ function PowerCurvesCard({ powerSpikes }) {
             </linearGradient>
 
             <linearGradient id="curveAreaGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="60">
-              <stop offset="0" stopColor="#0AC8B9" stopOpacity="0.16" />
+              <stop offset="0" stopColor="#0AC8B9" stopOpacity="0.18" />
               <stop offset="0.5" stopColor="#0AC8B9" stopOpacity="0.02" />
               <stop offset="0.5" stopColor="#E84057" stopOpacity="0.02" />
-              <stop offset="1" stopColor="#E84057" stopOpacity="0.16" />
+              <stop offset="1" stopColor="#E84057" stopOpacity="0.18" />
             </linearGradient>
           </defs>
 
-          {/* Neutral Baseline (Parity at y = 30) */}
-          <line
-            x1="18"
-            y1="30"
-            x2="342"
-            y2="30"
-            stroke="#334155"
-            strokeDasharray="3 3"
-            strokeWidth="1"
-          />
+          {/* Baseline across full width */}
+          <line x1="0" y1="30" x2="360" y2="30" stroke="#334155" strokeDasharray="3 3" strokeWidth="1" />
 
           {/* Vertical Guides */}
-          {[105, 215, 335].map((x) => (
-            <line
-              key={x}
-              x1={x}
-              y1="8"
-              x2={x}
-              y2="50"
-              stroke="#1E293B"
-              strokeDasharray="2 2"
-              strokeWidth="1"
-            />
+          {[90, 210, 330].map((x) => (
+            <line key={x} x1={x} y1="6" x2={x} y2="52" stroke="#1E293B" strokeDasharray="2 2" strokeWidth="1" />
           ))}
 
-          {/* Subtle Area Fill */}
+          {/* Area Fill */}
           <path d={areaPath} fill="url(#curveAreaGrad)" />
 
-          {/* Simple Clean Curve Line */}
-          <path
-            d={curvePath}
-            fill="none"
-            stroke="url(#curveLineGrad)"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-          />
+          {/* Main Curve Line across entire width */}
+          <path d={curvePath} fill="none" stroke="url(#curveLineGrad)" strokeWidth="2" strokeLinecap="round" />
 
-          {/* Datapoint Dots: Color strictly follows position relative to midpoint */}
+          {/* Datapoints */}
           {[
             { p: p1, isBlue: p1.y < 30 },
             { p: p2, isBlue: p2.y < 30 },
             { p: p3, isBlue: p3.y < 30 },
-          ].map((node, i) => {
-            const color = node.isBlue ? '#0AC8B9' : '#E84057';
-            return (
-              <circle
-                key={i}
-                cx={node.p.x}
-                cy={node.p.y}
-                r="3.5"
-                fill={color}
-                stroke="#0B121E"
-                strokeWidth="1.5"
-              />
-            );
-          })}
+          ].map((node, i) => (
+            <circle
+              key={i}
+              cx={node.p.x}
+              cy={node.p.y}
+              r="3.5"
+              fill={node.isBlue ? '#0AC8B9' : '#E84057'}
+              stroke="#0B121E"
+              strokeWidth="1.5"
+            />
+          ))}
 
-          {/* Clean X-Axis Time Labels */}
-          <text x="20" y="58" textAnchor="middle" fill="#64748B" fontSize="8" fontFamily="monospace">
-            0m
-          </text>
-          <text x="105" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">
-            15m
-          </text>
-          <text x="215" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">
-            25m
-          </text>
-          <text x="335" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">
-            35m+
-          </text>
+          <text x="12" y="58" textAnchor="middle" fill="#64748B" fontSize="8" fontFamily="monospace">0m</text>
+          <text x="90" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">15m</text>
+          <text x="210" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">25m</text>
+          <text x="330" y="58" textAnchor="middle" fill="#94A3B8" fontSize="8" fontFamily="monospace">35m+</text>
         </svg>
       </div>
 
-      {/* Phase Summary Cards: 3 Columns matching TacticalCompositionCard */}
-      <div className="grid grid-cols-3 gap-2 pt-1.5 border-t border-slate-800/70">
+      <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-800/70 w-full">
         {powerSpikes.map((ps) => {
           const isBlue = ps.favoredSide === 'Blue';
           return (
             <div
               key={ps.phase}
-              className="p-1.5 px-2 rounded-xl bg-slate-900/60 border border-slate-800/60 flex flex-col justify-between min-h-[46px]"
+              className="p-1.5 px-2 rounded-xl bg-slate-900/60 border border-slate-800/60 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between text-[10px]">
                 <span className="text-slate-300 font-medium">
@@ -458,8 +450,8 @@ function PowerCurvesCard({ powerSpikes }) {
 
 function TacticalCompositionCard({ tactical }) {
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 shadow-lg">
-      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800/70">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg w-full">
+      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-800/70">
         <span className="font-bold text-slate-300">Tactical Composition Edge</span>
         <span className="text-[10px] text-slate-500 font-normal">Score (0 - 10)</span>
       </div>
@@ -473,7 +465,7 @@ function TacticalCompositionCard({ tactical }) {
           return (
             <div
               key={dim.name}
-              className="p-1.5 px-2 rounded-xl bg-slate-900/60 border border-slate-800/60 flex flex-col items-center text-center justify-between min-h-[76px]"
+              className="p-1.5 px-2 rounded-xl bg-slate-900/60 border border-slate-800/60 flex flex-col items-center text-center justify-between min-h-[66px]"
             >
               <span className="text-[10px] text-slate-300 font-medium truncate w-full">
                 {SHORT_DIM_NAMES[dim.name] || dim.name}
@@ -486,7 +478,6 @@ function TacticalCompositionCard({ tactical }) {
                 {dim.advantageText}
               </span>
 
-              {/* Micro Ratio Bar */}
               <div className="w-full px-1">
                 <div className="flex justify-between text-[9px] font-mono text-slate-400 mb-0.5">
                   <span className={isBlue ? 'text-slate-200 font-medium' : 'text-slate-500'}>
@@ -497,14 +488,8 @@ function TacticalCompositionCard({ tactical }) {
                   </span>
                 </div>
                 <div className="h-1 rounded-full overflow-hidden flex bg-slate-950 border border-slate-800">
-                  <div
-                    style={{ width: `${bluePct}%` }}
-                    className="bg-[#0AC8B9]"
-                  />
-                  <div
-                    style={{ width: `${redPct}%` }}
-                    className="bg-[#E84057]"
-                  />
+                  <div style={{ width: `${bluePct}%` }} className="bg-[#0AC8B9]" />
+                  <div style={{ width: `${redPct}%` }} className="bg-[#E84057]" />
                 </div>
               </div>
             </div>
@@ -519,19 +504,19 @@ function DamageSplitCard({ blueDmg, redDmg }) {
   const hasTrueDmg = (blueDmg?.trueDmg || 0) > 0 || (redDmg?.trueDmg || 0) > 0;
 
   return (
-    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 shadow-lg">
-      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1.5 border-b border-slate-800/70">
+    <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg w-full">
+      <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-800/70">
         <span>Damage Type Breakdown</span>
         <div className="flex items-center gap-2.5 text-[10px]">
-          <span className="flex items-center gap-1 text-[orange]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[orange]" /> Physical (AD)
+          <span className="flex items-center gap-1 text-amber-500">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500" /> Physical (AD)
           </span>
-          <span className="flex items-center gap-1 text-[#7A6DFF]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#7A6DFF]" /> Magic (AP)
+          <span className="flex items-center gap-1 text-indigo-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" /> Magic (AP)
           </span>
           {hasTrueDmg && (
-            <span className="flex items-center gap-1 text-[#ECE8E1]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#ECE8E1]" /> True
+            <span className="flex items-center gap-1 text-slate-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-300" /> True
             </span>
           )}
         </div>
@@ -549,17 +534,17 @@ function DamageSplitCard({ blueDmg, redDmg }) {
               {row.label}
             </span>
             <div className="flex-1 h-2 rounded-full overflow-hidden flex bg-slate-950 border border-slate-800">
-              <div style={{ width: `${row.d.ad}%` }} className="bg-[orange]" />
-              <div style={{ width: `${row.d.ap}%` }} className="bg-[#7A6DFF]" />
+              <div style={{ width: `${row.d.ad}%` }} className="bg-amber-500" />
+              <div style={{ width: `${row.d.ap}%` }} className="bg-indigo-400" />
               {row.d.trueDmg > 0 && (
-                <div style={{ width: `${row.d.trueDmg}%` }} className="bg-[#ECE8E1]" />
+                <div style={{ width: `${row.d.trueDmg}%` }} className="bg-slate-300" />
               )}
             </div>
             <div className="text-[11px] font-mono text-slate-300 w-36 text-right">
-              <span className="text-[orange]">{row.d.ad}% AD</span> ·{' '}
-              <span className="text-[#7A6DFF]">{row.d.ap}% AP</span>
+              <span className="text-amber-400">{row.d.ad}% AD</span> ·{' '}
+              <span className="text-indigo-400">{row.d.ap}% AP</span>
               {row.d.trueDmg > 0 && (
-                <> · <span className="text-[#ECE8E1]/80">{row.d.trueDmg}% True</span></>
+                <> · <span className="text-slate-300">{row.d.trueDmg}% True</span></>
               )}
             </div>
           </div>
@@ -571,8 +556,7 @@ function DamageSplitCard({ blueDmg, redDmg }) {
 
 export default function Phase2AnalyticsDashboard({
   predictionData,
-  onModifyDraft,
-  onEditSlot,
+  isCoachLoading,
 }) {
   const blueProb = predictionData?.blueWinProb ?? 54.2;
   const redProb = predictionData?.redWinProb ?? 45.8;
@@ -586,7 +570,7 @@ export default function Phase2AnalyticsDashboard({
   const powerSpikes = predictionData?.powerSpikes || [];
 
   return (
-    <div className="flex-1 min-h-0 flex flex-col gap-2.5 max-w-7xl mx-auto w-full h-full max-h-full">
+    <div className="flex-1 min-h-0 flex flex-col gap-2 max-w-7xl mx-auto w-full h-full max-h-full">
       {/* 1. Verdict Top Bar */}
       <div className="flex-shrink-0">
         <VerdictHeader
@@ -597,22 +581,21 @@ export default function Phase2AnalyticsDashboard({
         />
       </div>
 
-      {/* 2. Main Analytics Body: 2-Column Balanced Arena bounded to screen limits */}
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 lg:grid-rows-1 gap-3 items-stretch h-full max-h-full overflow-hidden">
+      {/* 2. Main Analytics Body: 2-Column Balanced Arena */}
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-2.5 items-stretch h-full max-h-full overflow-hidden">
         {/* Left Column (7 cols): Hero Lane Matchups */}
         <div className="lg:col-span-7 flex flex-col min-h-0 h-full max-h-full">
           <LaneMatchupsCard
             laneMatchups={laneMatchups}
-            onEditSlot={onEditSlot}
           />
         </div>
 
-        {/* Right Column (5 cols): Screen-limited Tactical Cards with smooth Hextech scroll container */}
-        <div className="lg:col-span-5 flex flex-col justify-between gap-2 min-h-0 h-full max-h-full overflow-y-auto pr-1">
-          <div className="flex-shrink-0"><WinConditionCard winCondition={winCondition} /></div>
-          <div className="flex-shrink-0"><PowerCurvesCard powerSpikes={powerSpikes} /></div>
-          <div className="flex-shrink-0"><TacticalCompositionCard tactical={tactical} /></div>
-          <div className="flex-shrink-0"><DamageSplitCard blueDmg={blueDmg} redDmg={redDmg} /></div>
+        {/* Right Column (5 cols): 4 Tactical Cards cleanly fitted without vertical overflow */}
+        <div className="lg:col-span-5 flex flex-col justify-between gap-2 min-h-0 h-full max-h-full overflow-y-auto pr-0.5">
+          <WinConditionCard winCondition={winCondition} isCoachLoading={isCoachLoading} />
+          <PowerCurvesCard powerSpikes={powerSpikes} />
+          <TacticalCompositionCard tactical={tactical} />
+          <DamageSplitCard blueDmg={blueDmg} redDmg={redDmg} />
         </div>
       </div>
     </div>

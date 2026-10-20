@@ -11,20 +11,44 @@ export const ROLES = [
   { key: 'SUP', label: 'Sup' },
 ];
 
+export const ROLE_ICON_URLS = {
+  TOP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png',
+  JGL: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png',
+  MID: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png',
+  BOT: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png',
+  SUP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png',
+};
+
 export const DEFAULT_BLUE_PICKS = [
-  { role: 'TOP', champion: 'Aatrox', archetype: 'Juggernaut', winRate: 51.2 },
-  { role: 'JGL', champion: 'Lee Sin', archetype: 'Diver', winRate: 50.4 },
-  { role: 'MID', champion: 'Ahri', archetype: 'Burst Mage', winRate: 51.8 },
-  { role: 'BOT', champion: 'Jinx', archetype: 'Hypercarry', winRate: 48.9 },
-  { role: 'SUP', champion: 'Thresh', archetype: 'Catcher', winRate: 49.5 },
+  { role: 'TOP', champion: 'Yorick', archetype: 'Juggernaut', winRate: 54.1 },
+  { role: 'JGL', champion: 'Sejuani', archetype: 'Vanguard Tank', winRate: 51.0 },
+  { role: 'MID', champion: 'Smolder', archetype: 'Marksman', winRate: 49.9 },
+  { role: 'BOT', champion: 'Ziggs', archetype: 'Artillery Mage', winRate: 52.5 },
+  { role: 'SUP', champion: 'Nautilus', archetype: 'Vanguard Tank', winRate: 50.2 },
 ];
 
 export const DEFAULT_RED_PICKS = [
-  { role: 'TOP', champion: 'Malphite', archetype: 'Vanguard Tank', winRate: 49.8 },
-  { role: 'JGL', champion: 'Wukong', archetype: 'Skirmisher', winRate: 53.1 },
-  { role: 'MID', champion: 'Sylas', archetype: 'Burst Bruiser', winRate: 50.2 },
-  { role: 'BOT', champion: 'Ezreal', archetype: 'Poke Marksman', winRate: 52.4 },
-  { role: 'SUP', champion: 'Leona', archetype: 'Vanguard Tank', winRate: 51.1 },
+  { role: 'TOP', champion: 'Camille', archetype: 'Diver', winRate: 50.1 },
+  { role: 'JGL', champion: 'Pantheon', archetype: 'Diver', winRate: 49.3 },
+  { role: 'MID', champion: 'Galio', archetype: 'Warden Tank', winRate: 51.6 },
+  { role: 'BOT', champion: 'Miss Fortune', archetype: 'Marksman', winRate: 51.4 },
+  { role: 'SUP', champion: 'Leona', archetype: 'Vanguard Tank', winRate: 52.5 },
+];
+
+export const EMPTY_BLUE_PICKS = [
+  { role: 'TOP', champion: null, archetype: '', winRate: null },
+  { role: 'JGL', champion: null, archetype: '', winRate: null },
+  { role: 'MID', champion: null, archetype: '', winRate: null },
+  { role: 'BOT', champion: null, archetype: '', winRate: null },
+  { role: 'SUP', champion: null, archetype: '', winRate: null },
+];
+
+export const EMPTY_RED_PICKS = [
+  { role: 'TOP', champion: null, archetype: '', winRate: null },
+  { role: 'JGL', champion: null, archetype: '', winRate: null },
+  { role: 'MID', champion: null, archetype: '', winRate: null },
+  { role: 'BOT', champion: null, archetype: '', winRate: null },
+  { role: 'SUP', champion: null, archetype: '', winRate: null },
 ];
 
 const championMap = new Map(

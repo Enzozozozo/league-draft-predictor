@@ -1,39 +1,64 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import Phase1DraftLobby from './components/Phase1DraftLobby';
 import Phase2AnalyticsDashboard from './components/Phase2AnalyticsDashboard';
 import {
   DEFAULT_BLUE_PICKS,
   DEFAULT_RED_PICKS,
+  EMPTY_BLUE_PICKS,
+  EMPTY_RED_PICKS,
   CHAMPIONS,
-  getChampion,
 } from './data/championsData';
-import { calculateDraftPrediction, predictDraftWithBackend } from './utils/draftModel';
+import {
+  calculateDraftPrediction,
+  predictDraftWithBackend,
+  fetchAsyncCoachAnalysis,
+} from './utils/draftModel';
 
 export default function App() {
-  // Required React State (Per Specification)
   const [currentPhase, setCurrentPhase] = useState('draft'); // 'draft' | 'analytics'
   const [bluePicks, setBluePicks] = useState(DEFAULT_BLUE_PICKS);
   const [redPicks, setRedPicks] = useState(DEFAULT_RED_PICKS);
-  const [activeSlot, setActiveSlot] = useState({ team: 'blue', index: 0 }); // { team: 'blue' | 'red', index: 0-4 }
-  const [searchQuery, setSearchQuery] = useState('');
-  const [roleFilter, setRoleFilter] = useState('ALL'); // 'ALL' | 'TOP' | 'JGL' | 'MID' | 'BOT' | 'SUP'
+  const [activeSlot, setActiveSlot] = useState(null); // null on initial load = no role selected
   const [predictionData, setPredictionData] = useState(() =>
     calculateDraftPrediction(DEFAULT_BLUE_PICKS, DEFAULT_RED_PICKS)
   );
 
   const [draggedChampion, setDraggedChampion] = useState(null);
+  const [isPredicting, setIsPredicting] = useState(false);
+  const [isCoachLoading, setIsCoachLoading] = useState(false);
 
-  // Recalculate prediction data whenever picks change
+  // Recalculate prediction data locally as instant preview in draft mode
   useEffect(() => {
-    const result = calculateDraftPrediction(bluePicks, redPicks);
-    setPredictionData(result);
-  }, [bluePicks, redPicks]);
+    if (currentPhase === 'draft') {
+      const result = calculateDraftPrediction(bluePicks, redPicks);
+      setPredictionData(result);
+    }
+  }, [bluePicks, redPicks, currentPhase]);
+
+  // Prevent global Ctrl+A from selecting the entire application window outside of text inputs
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'a' || e.key === 'A')) {
+        const tag = e.target?.tagName;
+        const isInput =
+          tag === 'INPUT' ||
+          tag === 'TEXTAREA' ||
+          Boolean(e.target?.isContentEditable);
+        if (!isInput) {
+          e.preventDefault();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Assign a champion to a specific (team, index) position slot (via click or drag-and-drop)
   const handleAssignChampionToSlot = useCallback(
-    (champ, targetTeam = activeSlot.team, targetIndex = activeSlot.index, sourceSlot = null) => {
+    (champ, targetTeam = activeSlot?.team, targetIndex = activeSlot?.index, sourceSlot = null) => {
       if (!champ) return;
+      if (!targetTeam || targetIndex == null || targetIndex < 0) return;
 
       const setTeamPicks = targetTeam === 'blue' ? setBluePicks : setRedPicks;
 
@@ -77,40 +102,83 @@ export default function App() {
     [activeSlot]
   );
 
-  // Clicking a champion in the grid assigns it to the currently selected position slot
+  // Clicking a champion in the grid assigns it to the currently selected position slot (or first unfilled slot)
   const handleSelectChampion = useCallback(
     (champ) => {
-      handleAssignChampionToSlot(champ, activeSlot.team, activeSlot.index);
+      if (!champ) return;
+      if (activeSlot && activeSlot.team && activeSlot.index != null) {
+        handleAssignChampionToSlot(champ, activeSlot.team, activeSlot.index);
+        return;
+      }
+      // If no slot is selected yet, assign to first unfilled slot on Blue, then Red
+      const blueEmptyIdx = bluePicks.findIndex((p) => !p.champion);
+      if (blueEmptyIdx !== -1) {
+        handleAssignChampionToSlot(champ, 'blue', blueEmptyIdx);
+        return;
+      }
+      const redEmptyIdx = redPicks.findIndex((p) => !p.champion);
+      if (redEmptyIdx !== -1) {
+        handleAssignChampionToSlot(champ, 'red', redEmptyIdx);
+        return;
+      }
+      // If all are filled and user clicks a champion without a selection, select Blue TOP
+      handleAssignChampionToSlot(champ, 'blue', 0);
     },
-    [handleAssignChampionToSlot, activeSlot]
+    [handleAssignChampionToSlot, activeSlot, bluePicks, redPicks]
   );
 
-  // Trigger inference and transition to Phase 2 (Analytics)
+  // Trigger inference and transition to Phase 2 (Analytics) INSTANTLY, then stream coach insights
   const handlePredictWinrate = useCallback(async () => {
-    // Tries Python backend first, then client calibrated fallback
-    const result = await predictDraftWithBackend(bluePicks, redPicks);
-    setPredictionData(result);
-    setCurrentPhase('analytics');
-    // Scroll smoothly to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setIsPredicting(true);
+    try {
+      // 1. Instant predict: Joblib model runs in < 20ms
+      const result = await predictDraftWithBackend(bluePicks, redPicks);
+      setPredictionData(result);
+      setCurrentPhase('analytics');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 2. Asynchronous Coach Fetch: Query Groq in background without blocking screen
+      setIsCoachLoading(true);
+      fetchAsyncCoachAnalysis(
+        bluePicks,
+        redPicks,
+        result.tacticalDimensions,
+        result.blueDamage,
+        result.redDamage
+      ).then((coachResult) => {
+        if (coachResult) {
+          setPredictionData((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              primaryWinCondition: {
+                ...prev.primaryWinCondition,
+                title: coachResult.title || prev.primaryWinCondition.title,
+                summary: coachResult.summary || prev.primaryWinCondition.summary,
+                blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
+                redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
+                coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
+              },
+            };
+          });
+        }
+      }).finally(() => {
+        setIsCoachLoading(false);
+      });
+    } finally {
+      setIsPredicting(false);
+    }
   }, [bluePicks, redPicks]);
 
-  // Reset to default draft
+  // Reset clears all champion picks to empty slate (reactive effect updates predictionData automatically)
   const handleResetDefault = useCallback(() => {
-    setBluePicks(DEFAULT_BLUE_PICKS);
-    setRedPicks(DEFAULT_RED_PICKS);
-    setActiveSlot({ team: 'blue', index: 0 });
-    setSearchQuery('');
-    setRoleFilter('ALL');
-    const result = calculateDraftPrediction(
-      DEFAULT_BLUE_PICKS,
-      DEFAULT_RED_PICKS
-    );
-    setPredictionData(result);
+    setBluePicks(EMPTY_BLUE_PICKS);
+    setRedPicks(EMPTY_RED_PICKS);
+    setActiveSlot(null);
   }, []);
 
   // Randomize competitive drafts
-  const handleRandomizeDraft = useCallback(() => {
+  const handleRandomizeDraft = useCallback(async () => {
     const rolesList = ['TOP', 'JGL', 'MID', 'BOT', 'SUP'];
 
     const pickForRole = (role, usedChamps) => {
@@ -139,16 +207,36 @@ export default function App() {
 
     setBluePicks(newBlue);
     setRedPicks(newRed);
-    const result = calculateDraftPrediction(newBlue, newRed);
+    const result = await predictDraftWithBackend(newBlue, newRed);
     setPredictionData(result);
-  }, []);
 
-  const handleEditSlotFromAnalytics = useCallback((team, index, role) => {
-    setActiveSlot({ team, index });
-    if (role) {
-      setRoleFilter(role);
-    }
-    setCurrentPhase('draft');
+    setIsCoachLoading(true);
+    fetchAsyncCoachAnalysis(
+      newBlue,
+      newRed,
+      result.tacticalDimensions,
+      result.blueDamage,
+      result.redDamage
+    ).then((coachResult) => {
+      if (coachResult) {
+        setPredictionData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            primaryWinCondition: {
+              ...prev.primaryWinCondition,
+              title: coachResult.title || prev.primaryWinCondition.title,
+              summary: coachResult.summary || prev.primaryWinCondition.summary,
+              blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
+              redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
+              coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
+            },
+          };
+        });
+      }
+    }).finally(() => {
+      setIsCoachLoading(false);
+    });
   }, []);
 
   return (
@@ -172,38 +260,36 @@ export default function App() {
             redPicks={redPicks}
             activeSlot={activeSlot}
             setActiveSlot={setActiveSlot}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            roleFilter={roleFilter}
-            setRoleFilter={setRoleFilter}
             onSelectChampion={handleSelectChampion}
             onAssignChampionToSlot={handleAssignChampionToSlot}
             draggedChampion={draggedChampion}
             setDraggedChampion={setDraggedChampion}
             onPredictWinrate={handlePredictWinrate}
+            isPredicting={isPredicting}
           />
         ) : (
           <Phase2AnalyticsDashboard
             predictionData={predictionData}
-            onModifyDraft={() => setCurrentPhase('draft')}
-            onEditSlot={handleEditSlotFromAnalytics}
+            isCoachLoading={isCoachLoading}
           />
         )}
 
       </main>
 
-      {/* Footer / Engineering Signature */}
-      <footer className="border-t border-slate-900 bg-[#050811]/90 text-xs text-slate-500 font-mono py-1.5 px-6 sm:px-10 lg:px-14 xl:px-16 flex-shrink-0">
-        <div className="max-w-[1800px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span>GroupShuffleSplit Zero-Leakage • Isotonically Calibrated RF</span>
+      {/* Footer: Shown only on Analytics Studio, keeping Draft Lobby 100% full-bleed and zero-scroll */}
+      {currentPhase === 'analytics' && (
+        <footer className="border-t border-slate-900 bg-[#050811]/90 text-xs text-slate-500 font-mono py-1.5 px-6 sm:px-10 lg:px-14 xl:px-16 flex-shrink-0">
+          <div className="max-w-[1800px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span>GroupShuffleSplit Zero-Leakage • Isotonically Calibrated RF</span>
+            </div>
+            <div>
+              Data Dragon CDN v16.20.1 • 173 Champions • Match-V5 Schema Ingestion
+            </div>
           </div>
-          <div>
-            Data Dragon CDN v16.20.1 • 173 Champions • Match-V5 Schema Ingestion
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
 
     </div>
   );

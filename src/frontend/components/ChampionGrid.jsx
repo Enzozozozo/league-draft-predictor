@@ -1,12 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Search, X, Sparkles, Filter, ChevronRight } from 'lucide-react';
 import { CHAMPIONS, ROLES } from '../data/championsData';
 
 export default function ChampionGrid({
-  searchQuery,
-  setSearchQuery,
-  roleFilter,
-  setRoleFilter,
   activeSlot,
   bluePicks,
   redPicks,
@@ -14,9 +10,13 @@ export default function ChampionGrid({
   draggedChampion,
   setDraggedChampion,
   onPredictWinrate,
+  isPredicting = false,
 }) {
-  const isBlue = activeSlot.team === 'blue';
-  const activeTeamPicks = isBlue ? bluePicks : redPicks;
+  const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('ALL');
+
+  const isBlue = activeSlot?.team === 'blue';
+  const activeTeamPicks = activeSlot ? (isBlue ? bluePicks : redPicks) : null;
 
   // Map of champion name -> role on Blue and Red teams
   const blueRoleByChamp = useMemo(() => {
@@ -83,11 +83,17 @@ export default function ChampionGrid({
     });
   }, [searchQuery, roleFilter]);
 
-  const activeTargetName = `${activeSlot.team.toUpperCase()} ${
-    activeTeamPicks[activeSlot.index]?.role || 'TOP'
-  }`;
+  const activeTargetName = activeSlot
+    ? `${activeSlot.team.toUpperCase()} ${activeTeamPicks?.[activeSlot.index]?.role || 'TOP'}`
+    : null;
 
   const handleDragStart = (e, champ) => {
+    // Clear any active window selection to prevent dragging multi-element text/page selection
+    if (typeof window !== 'undefined' && window.getSelection) {
+      window.getSelection().removeAllRanges();
+    }
+    e.stopPropagation();
+
     const transferObj = {
       champion: champ,
       sourceSlot: null,
@@ -104,6 +110,10 @@ export default function ChampionGrid({
       setDraggedChampion(null);
     }
   };
+
+  const isDraftComplete =
+    bluePicks.every((p) => Boolean(p.champion)) &&
+    redPicks.every((p) => Boolean(p.champion));
 
   return (
     <div className="bg-[#0B121E]/95 rounded-2xl px-2.5 py-3 border border-slate-800 shadow-2xl flex flex-col gap-2.5 h-full min-h-0">
@@ -169,11 +179,16 @@ export default function ChampionGrid({
         {filteredChampions.map((champ) => {
           const champLower = champ.name.toLowerCase();
           const isCurrentlyActiveSlot =
+            Boolean(activeTeamPicks && activeSlot && activeSlot.index != null) &&
             activeTeamPicks[activeSlot.index]?.champion?.toLowerCase() === champLower;
           const blueRole = blueRoleByChamp.get(champLower);
           const redRole = redRoleByChamp.get(champLower);
           const isBeingDragged =
             draggedChampion?.champion?.name?.toLowerCase() === champLower;
+
+          const assignTooltip = activeTargetName
+            ? `Click to assign to ${activeTargetName}, or drag & drop into any position slot`
+            : 'Click to assign or drag & drop into any position slot';
 
           return (
             <div
@@ -182,7 +197,7 @@ export default function ChampionGrid({
               onDragStart={(e) => handleDragStart(e, champ)}
               onDragEnd={handleDragEnd}
               onClick={() => onSelectChampion(champ)}
-              title={`${champ.name} (${champ.winRate}% WR) — Click to assign to ${activeTargetName}, or drag & drop into any position slot`}
+              title={`${champ.name} (${champ.winRate}% WR) — ${assignTooltip}`}
               className={`group flex flex-col items-center select-none cursor-grab active:cursor-grabbing transition-transform duration-150 ${
                 isBeingDragged ? 'opacity-50 scale-95' : 'hover:scale-[1.03]'
               }`}
@@ -250,11 +265,32 @@ export default function ChampionGrid({
       <div className="flex-shrink-0">
         <button
           onClick={onPredictWinrate}
-          className="w-full group relative py-2.5 px-6 rounded-xl font-hextech font-bold text-sm tracking-widest uppercase text-slate-950 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:via-amber-300 hover:to-amber-500 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2.5 pulse-gold border border-amber-300/60"
+          disabled={isPredicting || !isDraftComplete}
+          className={`w-full group relative py-2.5 px-6 rounded-xl font-hextech font-bold text-sm tracking-widest uppercase transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2.5 border ${
+            isPredicting
+              ? 'bg-amber-600/60 border-amber-500/40 cursor-wait text-slate-900 opacity-80'
+              : isDraftComplete
+              ? 'text-slate-950 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:via-amber-300 hover:to-amber-500 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 pulse-gold border-amber-300/60 cursor-pointer'
+              : 'bg-slate-900/90 border-slate-800 text-slate-500 cursor-not-allowed opacity-60'
+          }`}
         >
-          <Sparkles className="w-4 h-4 text-slate-950 group-hover:rotate-12 transition-transform" />
-          <span>PREDICT WINRATE & RUN INFERENCE</span>
-          <ChevronRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
+          {isPredicting ? (
+            <>
+              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              <span>CONSULTING AI COACH & RUNNING INFERENCE...</span>
+            </>
+          ) : !isDraftComplete ? (
+            <>
+              <Sparkles className="w-4 h-4 text-slate-600" />
+              <span>LOCK IN ALL PICKS</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4 text-slate-950 group-hover:rotate-12 transition-transform" />
+              <span>PREDICT WINRATE & RUN INFERENCE</span>
+              <ChevronRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
+            </>
+          )}
         </button>
       </div>
 

@@ -11,6 +11,7 @@ from urllib.parse import urlparse
 
 from .ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
 from .champion_data import ChampionDataManager
+from .llm_coach import analyze_draft_with_coach
 from .schemas import (
     MatchDraft,
     MatchDraftMetadata,
@@ -41,8 +42,8 @@ def run_prediction(blue_picks_data, red_picks_data):
     red_names = [p.get("champion") for p in red_picks_data]
 
     is_default = (
-        blue_names == ["Aatrox", "Lee Sin", "Ahri", "Jinx", "Thresh"] and
-        red_names == ["Malphite", "Wukong", "Sylas", "Ezreal", "Leona"]
+        blue_names == ["Yorick", "Sejuani", "Smolder", "Ziggs", "Nautilus"] and
+        red_names == ["Camille", "Pantheon", "Galio", "Miss Fortune", "Leona"]
     )
 
     blue_picks = []
@@ -121,11 +122,11 @@ def run_prediction(blue_picks_data, red_picks_data):
             "trueDmg": 0.0,
         }
         primary_wc = {
-            "title": "Disengage & Zone Control Priority",
-            "summary": "Enemy engage is vulnerable to hard crowd control.",
-            "details": "Red team brings high-commitment initiation (Malphite Unstoppable Force + Leona Solar Flare). Blue composition possesses superior disengage & peel (+3.5) with Thresh Flay/Box and Ahri Charm. Blue wins by nullifying initial dives and letting Jinx reach lethal reset thresholds.",
-            "blueKeys": ["Thresh Flay & Lantern", "Ahri Charm Peel", "Jinx Hypercarry Tethering"],
-            "redKeys": ["Malphite Blind Flank", "Wukong Cyclone Follow-up", "Bursting Jinx Pre-Teamfight"],
+            "title": "Tactical Composition Strategy",
+            "summary": "Analyzing compositional dynamics...",
+            "details": "",
+            "blueKeys": [],
+            "redKeys": [],
         }
     else:
         blue_win_prob = res.blue_win_probability
@@ -186,15 +187,36 @@ def run_prediction(blue_picks_data, red_picks_data):
             "redKeys": red_wc,
         }
 
+    # Fast fallback win condition for instantaneous response
+    primary_wc["blueExecution"] = primary_wc.get("blueKeys", [])
+    primary_wc["redExecution"] = primary_wc.get("redKeys", [])
+
     lane_matchups = []
     for mu in res.lane_matchups:
+        diff_signed = mu.lane_differential if mu.edge_side == TeamSide.BLUE else -mu.lane_differential
+        blue_badge = None
+        red_badge = None
+        if diff_signed >= 3.0:
+            blue_badge = "HARD COUNTER"
+        elif diff_signed <= -3.0:
+            red_badge = "HARD COUNTER"
+        elif diff_signed >= 1.2:
+            blue_badge = "EARLY PRIO"
+        elif diff_signed <= -1.2:
+            red_badge = "EARLY PRIO"
+        else:
+            blue_badge = "SKILL"
+            red_badge = "SKILL"
+
         lane_matchups.append({
             "role": mu.role.value,
             "blueChampion": mu.blue_champ_name,
             "blueWinRate": mu.blue_champ_wr,
+            "blueBadge": blue_badge,
             "blueImage": f"https://ddragon.leagueoflegends.com/cdn/{cdm.latest_version}/img/champion/{cdm.id_to_data.get(mu.blue_champ_id, {}).get('id', mu.blue_champ_name)}.png",
             "redChampion": mu.red_champ_name,
             "redWinRate": mu.red_champ_wr,
+            "redBadge": red_badge,
             "redImage": f"https://ddragon.leagueoflegends.com/cdn/{cdm.latest_version}/img/champion/{cdm.id_to_data.get(mu.red_champ_id, {}).get('id', mu.red_champ_name)}.png",
             "differential": mu.lane_differential,
             "isBlueLean": (mu.edge_side == TeamSide.BLUE),
@@ -216,6 +238,33 @@ def run_prediction(blue_picks_data, red_picks_data):
         "primaryWinCondition": primary_wc,
         "ddragonVersion": cdm.latest_version,
     }
+
+
+def run_coach_analysis(blue_picks_data, red_picks_data, tactical_dims, blue_dmg, red_dmg):
+    """Asynchronous endpoint specifically for deep LLM coach evaluation."""
+    blue_picks = []
+    for p in blue_picks_data:
+        cid = name_to_id.get(p.get("champion", "").lower(), 266)
+        blue_picks.append(cid)
+
+    red_picks = []
+    for p in red_picks_data:
+        cid = name_to_id.get(p.get("champion", "").lower(), 54)
+        red_picks.append(cid)
+
+    blue_profiles = [cdm.get_profile(cid) for cid in blue_picks]
+    red_profiles = [cdm.get_profile(cid) for cid in red_picks]
+
+    return analyze_draft_with_coach(
+        blue_picks_data,
+        red_picks_data,
+        blue_profiles,
+        red_profiles,
+        tactical_dims,
+        blue_dmg,
+        red_dmg,
+        cdm.id_to_data
+    )
 
 
 class DraftHandler(BaseHTTPRequestHandler):
@@ -250,14 +299,14 @@ class DraftHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         parsed = urlparse(self.path)
+        content_length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_length)
+
         if parsed.path == "/api/predict":
-            content_length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(content_length)
             try:
                 data = json.loads(body.decode("utf-8"))
                 blue_picks = data.get("bluePicks", [])
                 red_picks = data.get("redPicks", [])
-                logger.info("Predict Request - Blue: %s | Red: %s", [p.get("champion") for p in blue_picks], [p.get("champion") for p in red_picks])
                 result = run_prediction(blue_picks, red_picks)
                 self.send_response(200)
                 self._send_cors_headers()
@@ -271,11 +320,34 @@ class DraftHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+        elif parsed.path == "/api/coach":
+            try:
+                data = json.loads(body.decode("utf-8"))
+                blue_picks = data.get("bluePicks", [])
+                red_picks = data.get("redPicks", [])
+                tactical = data.get("tacticalDimensions", [])
+                blue_dmg = data.get("blueDamage", {})
+                red_dmg = data.get("redDamage", {})
+                coach_result = run_coach_analysis(blue_picks, red_picks, tactical, blue_dmg, red_dmg)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(coach_result).encode("utf-8"))
+            except Exception as e:
+                logger.error("Coach analysis failed: %s", e)
+                self.send_response(500)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()
 
     def log_message(self, format, *args):
+        # Quiet standard HTTP access logging to keep terminal clean
+        return
         logger.info("%s - %s", self.address_string(), format % args)
 
 

@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import { getChampion } from '../data/championsData';
-
-const ROLE_ICON_URLS = {
-  TOP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-top.png',
-  JGL: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-jungle.png',
-  MID: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-middle.png',
-  BOT: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-bottom.png',
-  SUP: 'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-utility.png',
-};
+import { getChampion, ROLE_ICON_URLS } from '../data/championsData';
 
 function RoleIcon({ role, fullRoleName }) {
   const iconUrl = ROLE_ICON_URLS[role] || ROLE_ICON_URLS.TOP;
@@ -33,12 +25,17 @@ export default function DraftSlotCard({
 }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const isBlue = team === 'blue';
-  const champData = getChampion(pick.champion);
+  const hasChampion = Boolean(pick.champion);
+  const champData = hasChampion ? getChampion(pick.champion) : null;
 
-  // Fallback image url
-  const imgUrl =
-    champData?.image ||
-    `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${pick.champion}.png`;
+  // Empty slot placeholder: Riot Clash fill position icon
+  const emptyPlaceholderUrl =
+    'https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-clash/global/default/assets/images/position-selector/positions/icon-position-fill.png';
+
+  const imgUrl = hasChampion
+    ? champData?.image ||
+      `https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${pick.champion}.png`
+    : emptyPlaceholderUrl;
 
   const roleNameMap = {
     TOP: 'TOP',
@@ -51,6 +48,16 @@ export default function DraftSlotCard({
   const fullRoleName = roleNameMap[pick.role] || pick.role;
 
   const handleDragStart = (e) => {
+    if (!hasChampion) {
+      e.preventDefault();
+      return;
+    }
+    // Clear any active window selection to prevent dragging multi-element text/page selection
+    if (typeof window !== 'undefined' && window.getSelection) {
+      window.getSelection().removeAllRanges();
+    }
+    e.stopPropagation();
+
     const champPayload = champData || {
       name: pick.champion,
       archetype: pick.archetype || 'Specialist',
@@ -115,7 +122,7 @@ export default function DraftSlotCard({
 
   return (
     <div
-      draggable
+      draggable={hasChampion}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragOver={handleDragOver}
@@ -128,8 +135,8 @@ export default function DraftSlotCard({
           ? 'bg-amber-500/15 border-amber-400 ring-2 ring-amber-400 scale-[1.01]'
           : isActive
           ? isBlue
-            ? 'bg-slate-900/95 border-2 border-[#0AC8B9]'
-            : 'bg-slate-900/95 border-2 border-[#E84057]'
+            ? 'bg-slate-900/95 border-2 border-[#0AC8B9] shadow-lg shadow-[#0AC8B9]/20'
+            : 'bg-slate-900/95 border-2 border-[#E84057] shadow-lg shadow-[#E84057]/20'
           : draggedChampion
           ? isBlue
             ? 'bg-[#0B121E]/90 border-[#0AC8B9]/40 border-dashed hover:border-[#0AC8B9]'
@@ -139,23 +146,6 @@ export default function DraftSlotCard({
           : 'bg-[#0B121E]/90 border-slate-800 hover:border-[#E84057]/50 hover:bg-slate-900/50'
       }`}
     >
-      {/* Active or Drop Target badge */}
-      {(isActive || isDragOver) && (
-        <div
-          className={`absolute -top-2 ${
-            isBlue ? 'left-3' : 'right-3'
-          } px-2 py-0.2 rounded-full text-[9px] font-sans font-bold uppercase tracking-wider text-slate-950 ${
-            isDragOver
-              ? 'bg-amber-400'
-              : isBlue
-              ? 'bg-[#0AC8B9]'
-              : 'bg-[#E84057]'
-          }`}
-        >
-          {isDragOver ? `Drop into ${fullRoleName}` : `Selected • ${fullRoleName}`}
-        </div>
-      )}
-
       <div
         className={`flex items-center justify-between gap-3.5 ${
           isBlue ? 'flex-row text-left' : 'flex-row-reverse text-right'
@@ -164,7 +154,7 @@ export default function DraftSlotCard({
         {/* Champion Square Avatar */}
         <div className="relative flex-shrink-0">
           <div
-            className={`w-16 h-16 xl:w-[70px] xl:h-[70px] rounded-xl overflow-hidden border-2 bg-slate-950 ${
+            className={`w-16 h-16 xl:w-[70px] xl:h-[70px] rounded-xl overflow-hidden border-2 bg-slate-950 flex items-center justify-center ${
               isDragOver
                 ? 'border-amber-400'
                 : isActive
@@ -178,21 +168,28 @@ export default function DraftSlotCard({
           >
             <img
               src={imgUrl}
-              alt={pick.champion}
+              alt={pick.champion || fullRoleName}
               draggable={false}
-              className="w-full h-full object-cover pointer-events-none"
+              className={`w-full h-full object-cover pointer-events-none ${
+                hasChampion ? '' : 'p-3 opacity-30 grayscale brightness-75'
+              }`}
               onError={(e) => {
-                e.currentTarget.src =
-                  'https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/Aatrox.png';
+                e.currentTarget.src = emptyPlaceholderUrl;
               }}
             />
           </div>
         </div>
 
-        {/* Champion Name */}
+        {/* Champion Name or Empty Placeholder */}
         <div className="flex-1 min-w-0">
-          <div className="text-base xl:text-lg font-bold font-sans text-slate-100 truncate group-hover:text-amber-200 transition-colors">
-            {pick.champion}
+          <div
+            className={`text-base xl:text-lg font-bold font-sans truncate transition-colors ${
+              hasChampion
+                ? 'text-slate-100 group-hover:text-amber-200'
+                : 'text-slate-500 italic text-sm'
+            }`}
+          >
+            {hasChampion ? pick.champion : 'Pick Champion...'}
           </div>
         </div>
 
