@@ -2,14 +2,14 @@ DirectoryIndex index.html index.php
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  RewriteBase /draft/
   
-  # Forward /api calls to the local Python backend service on port 5001
+  # Forward /draft/api calls to the local Python backend service on port 5001
   <IfModule mod_proxy.c>
     RewriteRule ^api/(.*)$ http://127.0.0.1:5001/api/$1 [P,L]
   </IfModule>
 
-  # Prevent /api requests from falling back to React's index.html
+  # Prevent /draft/api requests from falling back to React's index.html
   RewriteRule ^api(/.*)?$ - [L]
 
   # Serve existing static files and directories directly

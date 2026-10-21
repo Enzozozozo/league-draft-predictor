@@ -325,6 +325,7 @@ const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 const getEndpoints = (path) => {
   const list = [];
   if (API_BASE) list.push(`${API_BASE}${path}`);
+  list.push(`/draft${path}`);
   list.push(path);
   list.push(`http://127.0.0.1:5001${path}`);
   return Array.from(new Set(list));
