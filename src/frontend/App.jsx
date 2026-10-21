@@ -162,10 +162,10 @@ export default function App() {
     });
   }, []);
 
-  // Switch to the analytics view immediately using the local prediction, then upgrade it with the
-  // backend model and stream the LLM coach in the background. Nothing here blocks the redirect.
+  // Switch to the analytics view immediately, set loading state, and fetch predictions
   const handlePredictWinrate = useCallback(async () => {
     setCurrentPhase('analytics');
+    setIsCoachLoading(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     const result = await predictDraftWithBackend(bluePicks, redPicks);
