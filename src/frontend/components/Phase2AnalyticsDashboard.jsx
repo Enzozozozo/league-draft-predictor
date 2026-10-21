@@ -267,7 +267,7 @@ function ExecutionBlock({ title, color, items, isLoading, pulseTexts }) {
 
 function WinConditionCard({ winCondition, isCoachLoading }) {
   if (!winCondition) return null;
-  const isLoading = isCoachLoading || !winCondition.coachModel;
+  const isLoading = Boolean(isCoachLoading);
 
   return (
     <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg flex flex-col justify-between">
@@ -279,7 +279,9 @@ function WinConditionCard({ winCondition, isCoachLoading }) {
               Draft Win Condition
             </h3>
           </div>
-          <span className="text-[10px] font-mono text-amber-300/80">Macro Priority</span>
+          <span className="text-[10px] font-mono text-amber-300/80">
+            {winCondition.coachModel ? `AI Coach (${winCondition.coachModel})` : 'Macro Priority'}
+          </span>
         </div>
         <div className="text-sm font-bold text-amber-300/90 mt-0.5 break-words whitespace-normal">
           {isLoading ? (

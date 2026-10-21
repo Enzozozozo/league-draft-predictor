@@ -152,7 +152,7 @@ export default function App() {
               summary: coachResult.summary || prev.primaryWinCondition.summary,
               blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
               redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
-              coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
+              coachModel: coachResult.model || (coachResult.isLLM ? 'Groq AI' : 'Tactical Engine'),
             },
           };
         });
