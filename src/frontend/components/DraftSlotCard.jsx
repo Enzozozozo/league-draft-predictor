@@ -183,7 +183,7 @@ export default function DraftSlotCard({
         {/* Champion Name or Empty Placeholder */}
         <div className="flex-1 min-w-0">
           <div
-            className={`text-base xl:text-lg font-bold font-sans truncate transition-colors ${
+            className={`text-base xl:text-lg font-bold font-sans leading-tight break-words whitespace-normal transition-colors ${
               hasChampion
                 ? 'text-slate-100 group-hover:text-amber-200'
                 : 'text-slate-500 italic text-sm'

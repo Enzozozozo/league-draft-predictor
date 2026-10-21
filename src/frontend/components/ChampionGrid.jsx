@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, X, Sparkles, Filter, ChevronRight } from 'lucide-react';
+import { Search, X, Filter, ChevronRight } from 'lucide-react';
 import { CHAMPIONS, ROLES } from '../data/championsData';
 
 export default function ChampionGrid({
@@ -121,32 +121,10 @@ export default function ChampionGrid({
       {/* Search Header & Role Filter Pills */}
       <div className="space-y-2 flex-shrink-0 px-0.5">
         
-        {/* Search & Role Filter Row */}
+        {/* Role Filter & Search Rows */}
         <div className="flex flex-col gap-2">
-          {/* Search Input Bar */}
-          <div className="relative w-full">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-              <Search className="w-4 h-4" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search champion (e.g. Ahri, Aatrox)..."
-              className="w-full bg-[#070B13] border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono focus:outline-none focus:border-[#C89B3C] focus:ring-1 focus:ring-[#C89B3C]/50 transition-all shadow-inner"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
           {/* Role Filter Buttons */}
-          <div className="flex items-center justify-between gap-1 flex-wrap">
+          <div className="flex items-center justify-start gap-1 flex-wrap">
             <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mr-1 flex items-center gap-1">
               <Filter className="w-3 h-3 text-amber-400" />
               Role:
@@ -169,6 +147,28 @@ export default function ChampionGrid({
                 );
               })}
             </div>
+          </div>
+
+          {/* Search Input Bar */}
+          <div className="relative w-full">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <Search className="w-4 h-4" />
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search champion (e.g. Ahri, Aatrox)..."
+              className="w-full bg-[#070B13] border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 font-mono focus:outline-none focus:border-[#C89B3C] focus:ring-1 focus:ring-[#C89B3C]/50 transition-all shadow-inner"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -242,7 +242,7 @@ export default function ChampionGrid({
               </div>
 
               {/* Champion Name */}
-              <span className="text-[11px] font-semibold block truncate w-full text-center mt-1 text-slate-200 group-hover:text-amber-200 leading-tight">
+              <span className="text-[11px] font-semibold block break-words whitespace-normal w-full text-center mt-1 text-slate-200 group-hover:text-amber-200 leading-tight">
                 {champ.name}
               </span>
 
@@ -266,7 +266,7 @@ export default function ChampionGrid({
         <button
           onClick={onPredictWinrate}
           disabled={isPredicting || !isDraftComplete}
-          className={`w-full group relative py-2.5 px-6 rounded-xl font-hextech font-bold text-sm tracking-widest uppercase transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2.5 border ${
+          className={`w-full group relative py-2.5 px-6 rounded-xl font-bold font-sans text-sm tracking-widest uppercase transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2.5 border ${
             isPredicting
               ? 'bg-amber-600/60 border-amber-500/40 cursor-wait text-slate-900 opacity-80'
               : isDraftComplete
@@ -280,14 +280,10 @@ export default function ChampionGrid({
               <span>CONSULTING AI COACH & RUNNING INFERENCE...</span>
             </>
           ) : !isDraftComplete ? (
-            <>
-              <Sparkles className="w-4 h-4 text-slate-600" />
-              <span>LOCK IN ALL PICKS</span>
-            </>
+            <span>LOCK IN ALL PICKS</span>
           ) : (
             <>
-              <Sparkles className="w-4 h-4 text-slate-950 group-hover:rotate-12 transition-transform" />
-              <span>PREDICT WINRATE & RUN INFERENCE</span>
+              <span>GET WINRATE & METRICS</span>
               <ChevronRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
             </>
           )}

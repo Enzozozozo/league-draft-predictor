@@ -23,19 +23,44 @@ Rules:
 1. Base advice on champion tags and differentials.
 2. Focus on wave tempo, choke points, flank vision. No ability/item names.
 3. Max 18 words per bullet. Raw JSON only.
+4. Each spikeNote explains why the favored side leads that game phase, max 10 words.
 """
 
 COACH_USER_PROMPT_TEMPLATE = """Blue: {blue_team_summary}
 Red: {red_team_summary}
 Diffs: Dmg(B:{blue_ad}%AD/{blue_ap}%AP, R:{red_ad}%AD/{red_ap}%AP), Engage({engage_adv}), Peel({disengage_adv}), Poke({poke_adv}), Scaling({scaling_adv})
+Power curve: {spike_summary}
 
 Schema:
 {{
   "title": "Strategy title (max 4 words)",
   "summary": "1-sentence macro directive",
   "blueExecution": ["Priority 1", "Priority 2", "Priority 3"],
-  "redExecution": ["Priority 1", "Priority 2", "Priority 3"]
+  "redExecution": ["Priority 1", "Priority 2", "Priority 3"],
+  "spikeNotes": ["Early game note", "Mid game note", "Late game note"]
 }}"""
+
+
+def _format_spike_summary(power_spikes: List[Dict[str, Any]]) -> str:
+    if not power_spikes:
+        return "n/a"
+    return ", ".join(
+        f"{s.get('phase', 'Phase')} {s.get('favoredSide', 'Even')} {s.get('delta', '')}".strip()
+        for s in power_spikes
+    )
+
+
+def _fallback_spike_notes(power_spikes: List[Dict[str, Any]]) -> List[str]:
+    """Deterministic per-phase notes used when the LLM is offline or returns malformed data."""
+    templates = [
+        "{side} lane priority and jungle tempo lead.",
+        "{side} sets up objectives and wins first fights.",
+        "{side} scaling and teamfight edge takes over.",
+    ]
+    return [
+        templates[i].format(side=(power_spikes[i].get("favoredSide", "Blue") if i < len(power_spikes) else "Blue"))
+        for i in range(3)
+    ]
 
 
 def _generate_heuristic_fallback(
@@ -44,6 +69,7 @@ def _generate_heuristic_fallback(
     tactical_dims: List[Dict[str, Any]],
     blue_dmg: Dict[str, Any],
     red_dmg: Dict[str, Any],
+    power_spikes: List[Dict[str, Any]],
 ) -> Dict[str, Any]:
     """Generates a high-signal deterministic coaching response if LLM is offline or unconfigured."""
     b_names = [p.get("name", "Ally") for p in blue_profiles]
@@ -122,6 +148,7 @@ def _generate_heuristic_fallback(
         "summary": summary,
         "blueExecution": blue_exec,
         "redExecution": red_exec,
+        "spikeNotes": _fallback_spike_notes(power_spikes),
     }
 
 
@@ -133,6 +160,7 @@ def analyze_draft_with_coach(
     tactical_dims: List[Dict[str, Any]],
     blue_dmg: Dict[str, Any],
     red_dmg: Dict[str, Any],
+    power_spikes: List[Dict[str, Any]],
     cdm_id_to_data: Dict[int, Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Coordinates context extraction, LLM prompt generation, Groq API call, and validation."""
@@ -164,7 +192,7 @@ def analyze_draft_with_coach(
     # If no Groq API key is configured, return the deterministic heuristic fallback immediately
     if not api_key:
         logger.info("No GROQ_API_KEY found in environment; using deterministic heuristic coach.")
-        return _generate_heuristic_fallback(blue_profiles, red_profiles, tactical_dims, blue_dmg, red_dmg)
+        return _generate_heuristic_fallback(blue_profiles, red_profiles, tactical_dims, blue_dmg, red_dmg, power_spikes)
 
     user_prompt = COACH_USER_PROMPT_TEMPLATE.format(
         blue_team_summary=blue_summary,
@@ -177,6 +205,7 @@ def analyze_draft_with_coach(
         disengage_adv=dis.get("advantageText", "Even"),
         poke_adv=poke.get("advantageText", "Even"),
         scaling_adv=scal.get("advantageText", "Even"),
+        spike_summary=_format_spike_summary(power_spikes),
     )
 
     headers = {
@@ -190,7 +219,7 @@ def analyze_draft_with_coach(
             {"role": "user", "content": user_prompt},
         ],
         "temperature": 0.4,
-        "max_tokens": 200,
+        "max_tokens": 400,
         "response_format": {"type": "json_object"},
     }
 
@@ -207,6 +236,9 @@ def analyze_draft_with_coach(
             summary = parsed.get("summary", "Execute strategic map movements around key objective timers.")
             b_exec = parsed.get("blueExecution", [])
             r_exec = parsed.get("redExecution", [])
+            spike_notes = parsed.get("spikeNotes", [])
+            if not (isinstance(spike_notes, list) and len(spike_notes) >= 3):
+                spike_notes = _fallback_spike_notes(power_spikes)
 
             if isinstance(b_exec, list) and len(b_exec) >= 2 and isinstance(r_exec, list) and len(r_exec) >= 2:
                 logger.info("Successfully received LLM draft analysis from Groq.")
@@ -215,6 +247,7 @@ def analyze_draft_with_coach(
                     "summary": summary,
                     "blueExecution": b_exec[:3],
                     "redExecution": r_exec[:3],
+                    "spikeNotes": [str(n) for n in spike_notes[:3]],
                     "isLLM": True,
                     "model": DEFAULT_MODEL,
                 }
@@ -225,4 +258,4 @@ def analyze_draft_with_coach(
     except Exception as e:
         logger.warning("Groq API call encountered exception (%s); deploying deterministic fallback.", e)
 
-    return _generate_heuristic_fallback(blue_profiles, red_profiles, tactical_dims, blue_dmg, red_dmg)
+    return _generate_heuristic_fallback(blue_profiles, red_profiles, tactical_dims, blue_dmg, red_dmg, power_spikes)

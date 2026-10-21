@@ -29,7 +29,7 @@ export default {
         }
       },
       fontFamily: {
-        hextech: ['Cinzel', 'serif'],
+        hextech: ['Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],
       },

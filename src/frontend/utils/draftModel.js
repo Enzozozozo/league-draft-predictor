@@ -54,36 +54,17 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
   const p3 = b4b5 - r5;
   const draftMomentum = 0.20 * p1 + 0.35 * p2 + 0.45 * p3;
 
-  // Check if default composition is active
-  const isDefaultDraft =
-    bluePicks[0]?.champion === 'Yorick' &&
-    bluePicks[1]?.champion === 'Sejuani' &&
-    bluePicks[2]?.champion === 'Smolder' &&
-    bluePicks[3]?.champion === 'Ziggs' &&
-    bluePicks[4]?.champion === 'Nautilus' &&
-    redPicks[0]?.champion === 'Camille' &&
-    redPicks[1]?.champion === 'Pantheon' &&
-    redPicks[2]?.champion === 'Galio' &&
-    redPicks[3]?.champion === 'Miss Fortune' &&
-    redPicks[4]?.champion === 'Leona';
-
   let blueWinProb = 50.0;
   let deltaSpread = 0.0;
 
-  if (isDefaultDraft) {
-    // Exact spec values from user requirements and Option 2 SaaS analytics view
-    blueWinProb = 54.2;
-    deltaSpread = 4.2;
-  } else {
-    // Dynamic calibrated model simulation based on 15 pre-game features
-    const midAdv = (Number(bluePicks[2]?.winRate) || 50) - (Number(redPicks[2]?.winRate) || 50);
-    const totalSynergy = midAdv + teamAdv;
-    
-    // Scale features into realistic empirical range (44% to 56%)
-    const rawDelta = (teamAdv * 0.8) + (draftMomentum * 0.4) + (totalSynergy * 0.3);
-    deltaSpread = Math.max(-8.5, Math.min(8.5, Number(rawDelta.toFixed(1))));
-    blueWinProb = Number((50.0 + deltaSpread).toFixed(1));
-  }
+  // Dynamic calibrated model simulation based on 15 pre-game features
+  const midAdv = (Number(bluePicks[2]?.winRate) || 50) - (Number(redPicks[2]?.winRate) || 50);
+  const totalSynergy = midAdv + teamAdv;
+  
+  // Scale features into realistic empirical range (44% to 56%)
+  const rawDelta = (teamAdv * 0.8) + (draftMomentum * 0.4) + (totalSynergy * 0.3);
+  deltaSpread = Math.max(-8.5, Math.min(8.5, Number(rawDelta.toFixed(1))));
+  blueWinProb = Number((50.0 + deltaSpread).toFixed(1));
 
   const redWinProb = Number((100.0 - blueWinProb).toFixed(1));
 
@@ -108,89 +89,52 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
   const calcMean = (arr, key) => arr.reduce((sum, p) => sum + (p[key] || 5), 0) / arr.length;
 
   let tacticalDimensions;
-  if (isDefaultDraft) {
-    tacticalDimensions = [
-      {
-        name: 'Hard Engage',
-        blue: 4.0,
-        red: 8.5,
-        diff: -4.5,
-        advantageSide: 'Red',
-        advantageText: 'Red +4.5',
-      },
-      {
-        name: 'Disengage & Peel',
-        blue: 7.0,
-        red: 3.5,
-        diff: 3.5,
-        advantageSide: 'Blue',
-        advantageText: 'Blue +3.5',
-      },
-      {
-        name: 'Poke & Siege',
-        blue: 5.5,
-        red: 3.0,
-        diff: 2.5,
-        advantageSide: 'Blue',
-        advantageText: 'Blue +2.5',
-      },
-      {
-        name: 'Late-Game Scaling',
-        blue: 8.0,
-        red: 6.5,
-        diff: 1.5,
-        advantageSide: 'Blue',
-        advantageText: 'Blue +1.5',
-      },
-    ];
-  } else {
-    const bEngage = Number(calcMean(blueProfiles, 'engage').toFixed(1));
-    const rEngage = Number(calcMean(redProfiles, 'engage').toFixed(1));
+  const bEngage = Number(calcMean(blueProfiles, 'engage').toFixed(1));
+  const rEngage = Number(calcMean(redProfiles, 'engage').toFixed(1));
 
-    const bDisengage = Number(calcMean(blueProfiles, 'disengage').toFixed(1));
-    const rDisengage = Number(calcMean(redProfiles, 'disengage').toFixed(1));
+  const bDisengage = Number(calcMean(blueProfiles, 'disengage').toFixed(1));
+  const rDisengage = Number(calcMean(redProfiles, 'disengage').toFixed(1));
 
-    const bPoke = Number(calcMean(blueProfiles, 'poke').toFixed(1));
-    const rPoke = Number(calcMean(redProfiles, 'poke').toFixed(1));
+  const bPoke = Number(calcMean(blueProfiles, 'poke').toFixed(1));
+  const rPoke = Number(calcMean(redProfiles, 'poke').toFixed(1));
 
-    const bScaling = Number(calcMean(blueProfiles, 'scaling').toFixed(1));
-    const rScaling = Number(calcMean(redProfiles, 'scaling').toFixed(1));
+  const bScaling = Number(calcMean(blueProfiles, 'scaling').toFixed(1));
+  const rScaling = Number(calcMean(redProfiles, 'scaling').toFixed(1));
 
-    tacticalDimensions = [
-      {
-        name: 'Hard Engage',
-        blue: bEngage,
-        red: rEngage,
-        diff: Number((bEngage - rEngage).toFixed(1)),
-        advantageSide: bEngage >= rEngage ? 'Blue' : 'Red',
-        advantageText: `${bEngage >= rEngage ? 'Blue' : 'Red'} +${Math.abs(bEngage - rEngage).toFixed(1)}`,
-      },
-      {
-        name: 'Disengage & Peel',
-        blue: bDisengage,
-        red: rDisengage,
-        diff: Number((bDisengage - rDisengage).toFixed(1)),
-        advantageSide: bDisengage >= rDisengage ? 'Blue' : 'Red',
-        advantageText: `${bDisengage >= rDisengage ? 'Blue' : 'Red'} +${Math.abs(bDisengage - rDisengage).toFixed(1)}`,
-      },
-      {
-        name: 'Poke & Siege',
-        blue: bPoke,
-        red: rPoke,
-        diff: Number((bPoke - rPoke).toFixed(1)),
-        advantageSide: bPoke >= rPoke ? 'Blue' : 'Red',
-        advantageText: `${bPoke >= rPoke ? 'Blue' : 'Red'} +${Math.abs(bPoke - rPoke).toFixed(1)}`,
-      },
-      {
-        name: 'Late-Game Scaling',
-        blue: bScaling,
-        red: rScaling,
-        diff: Number((bScaling - rScaling).toFixed(1)),
-        advantageSide: bScaling >= rScaling ? 'Blue' : 'Red',
-        advantageText: `${bScaling >= rScaling ? 'Blue' : 'Red'} +${Math.abs(bScaling - rScaling).toFixed(1)}`,
-      },
-    ];
-  }
+  tacticalDimensions = [
+    {
+      name: 'Hard Engage',
+      blue: bEngage,
+      red: rEngage,
+      diff: Number((bEngage - rEngage).toFixed(1)),
+      advantageSide: bEngage >= rEngage ? 'Blue' : 'Red',
+      advantageText: `${bEngage >= rEngage ? 'Blue' : 'Red'} +${Math.abs(bEngage - rEngage).toFixed(1)}`,
+    },
+    {
+      name: 'Disengage & Peel',
+      blue: bDisengage,
+      red: rDisengage,
+      diff: Number((bDisengage - rDisengage).toFixed(1)),
+      advantageSide: bDisengage >= rDisengage ? 'Blue' : 'Red',
+      advantageText: `${bDisengage >= rDisengage ? 'Blue' : 'Red'} +${Math.abs(bDisengage - rDisengage).toFixed(1)}`,
+    },
+    {
+      name: 'Poke & Siege',
+      blue: bPoke,
+      red: rPoke,
+      diff: Number((bPoke - rPoke).toFixed(1)),
+      advantageSide: bPoke >= rPoke ? 'Blue' : 'Red',
+      advantageText: `${bPoke >= rPoke ? 'Blue' : 'Red'} +${Math.abs(bPoke - rPoke).toFixed(1)}`,
+    },
+    {
+      name: 'Late-Game Scaling',
+      blue: bScaling,
+      red: rScaling,
+      diff: Number((bScaling - rScaling).toFixed(1)),
+      advantageSide: bScaling >= rScaling ? 'Blue' : 'Red',
+      advantageText: `${bScaling >= rScaling ? 'Blue' : 'Red'} +${Math.abs(bScaling - rScaling).toFixed(1)}`,
+    },
+  ];
 
   // 6. Damage Distribution Profile (Direct pure AD/AP from cached DDragon attack & magic)
   const calcDamageSplit = (profiles) => {
@@ -262,157 +206,89 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
 
   // 8. Primary Win Condition Alert Card
   let primaryWinCondition;
-  if (isDefaultDraft) {
+  const engageDiff = tacticalDimensions.find(d => d.name === 'Hard Engage')?.diff || 0;
+  const peelDiff = tacticalDimensions.find(d => d.name === 'Disengage & Peel')?.diff || 0;
+  const scalingDiff = tacticalDimensions.find(d => d.name === 'Late-Game Scaling')?.diff || 0;
+
+  if (peelDiff > 1.5 && engageDiff < -1.0) {
     primaryWinCondition = {
-      title: 'Disengage & Zone Control Priority',
-      summary: 'Enemy engage is vulnerable to hard crowd control.',
+      title: 'Counter-Engage & Peel Supremacy',
+      summary: 'Enemy initiation is heavily vulnerable to crowd control resets.',
       details:
-        'Red team brings high-commitment initiation (Malphite Unstoppable Force + Leona Solar Flare). Blue composition possesses superior disengage & peel (+3.5) with Thresh Flay/Box and Ahri Charm. Blue wins by nullifying initial dives and letting Jinx reach lethal reset thresholds.',
-      blueKeys: ['Thresh Flay & Lantern', 'Ahri Charm Peel', 'Jinx Hypercarry Tethering'],
-      redKeys: ['Malphite Blind Flank', 'Wukong Cyclone Follow-up', 'Bursting Jinx Pre-Teamfight'],
-      blueExecution: ['Thresh Flay & Lantern disengage', 'Ahri Charm peel on divers', 'Jinx hypercarry backline spacing'],
-      redExecution: ['Malphite blind flank angle', 'Wukong Cyclone knockup follow-up', 'Bursting Jinx before teamfights'],
+        'Blue holds defensive kit priority. Force Red to overextend into objective chokepoints, absorb the primary burst with frontline peel, and counter-attack with ranged carries.',
+      blueKeys: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game carry'],
+      redKeys: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
+      blueExecution: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game hypercarry'],
+      redExecution: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
+    };
+  } else if (engageDiff > 2.0) {
+    primaryWinCondition = {
+      title: 'Decisive 5v5 Hard Engage',
+      summary: 'Blue side commands massive teamfight initiation superiority.',
+      details:
+        'Blue has unstoppable front-to-back engage. Group aggressively around Dragon and Baron timers to force structured 5v5 teamfights before enemy poke can whittle health bars.',
+      blueKeys: ['Stack Dragon soul priority', 'Initiate on isolated targets', 'Collapse with numbers advantage'],
+      redKeys: ['Spread formations wide', 'Avoid choke points', 'Play 1-3-1 side lane pressure'],
+      blueExecution: ['Stack Dragon soul priority', 'Initiate decisively on isolated targets', 'Collapse with numbers advantage'],
+      redExecution: ['Spread formations wide', 'Avoid choke points in river', 'Play 1-3-1 side lane pressure'],
+    };
+  } else if (scalingDiff > 2.0) {
+    primaryWinCondition = {
+      title: 'Late-Game Scaling Spike',
+      summary: 'Blue holds decisive mathematical late-game hypercarry edge.',
+      details:
+        'Avoid high-risk skirmishes in the opening 15 minutes. Trade neutral objectives gracefully until 2-item core spikes allow Blue side carries to out-dps enemy frontline.',
+      blueKeys: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
+      redKeys: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
+      blueExecution: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
+      redExecution: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
     };
   } else {
-    const engageDiff = tacticalDimensions.find(d => d.name === 'Hard Engage')?.diff || 0;
-    const peelDiff = tacticalDimensions.find(d => d.name === 'Disengage & Peel')?.diff || 0;
-    const scalingDiff = tacticalDimensions.find(d => d.name === 'Late-Game Scaling')?.diff || 0;
-
-    if (peelDiff > 1.5 && engageDiff < -1.0) {
-      primaryWinCondition = {
-        title: 'Counter-Engage & Peel Supremacy',
-        summary: 'Enemy initiation is heavily vulnerable to crowd control resets.',
-        details:
-          'Blue holds defensive kit priority. Force Red to overextend into objective chokepoints, absorb the primary burst with frontline peel, and counter-attack with ranged carries.',
-        blueKeys: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game carry'],
-        redKeys: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
-        blueExecution: ['Layer crowd control on primary diver', 'Maintain vision in river corridors', 'Protect late-game hypercarry'],
-        redExecution: ['Coordinate multi-threat dive', 'Find flank angles over pit walls', 'Bait disengage cooldowns'],
-      };
-    } else if (engageDiff > 2.0) {
-      primaryWinCondition = {
-        title: 'Decisive 5v5 Hard Engage',
-        summary: 'Blue side commands massive teamfight initiation superiority.',
-        details:
-          'Blue has unstoppable front-to-back engage. Group aggressively around Dragon and Baron timers to force structured 5v5 teamfights before enemy poke can whittle health bars.',
-        blueKeys: ['Stack Dragon soul priority', 'Initiate on isolated targets', 'Collapse with numbers advantage'],
-        redKeys: ['Spread formations wide', 'Avoid choke points', 'Play 1-3-1 side lane pressure'],
-        blueExecution: ['Stack Dragon soul priority', 'Initiate decisively on isolated targets', 'Collapse with numbers advantage'],
-        redExecution: ['Spread formations wide', 'Avoid choke points in river', 'Play 1-3-1 side lane pressure'],
-      };
-    } else if (scalingDiff > 2.0) {
-      primaryWinCondition = {
-        title: 'Late-Game Scaling Spike',
-        summary: 'Blue holds decisive mathematical late-game hypercarry edge.',
-        details:
-          'Avoid high-risk skirmishes in the opening 15 minutes. Trade neutral objectives gracefully until 2-item core spikes allow Blue side carries to out-dps enemy frontline.',
-        blueKeys: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
-        redKeys: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
-        blueExecution: ['Preserve minion wave states', 'Farm toward core 3-item timings', 'Avoid coinflip invades'],
-        redExecution: ['Accelerate early herald tempo', 'Invade jungle camps', 'End game before 28 minutes'],
-      };
-    } else {
-      primaryWinCondition = {
-        title: 'Macro Lane Differential & Pick Execution',
-        summary: 'Even compositional draft. Lane matchup tempo dictates dragon prio.',
-        details:
-          'Both drafts have balanced strengths. The team that secures vision around mid-lane river transitions will control objective setup and dictate teamfight terms.',
-        blueKeys: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
-        redKeys: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
-        blueExecution: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
-        redExecution: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
-      };
-    }
+    primaryWinCondition = {
+      title: 'Macro Lane Differential & Pick Execution',
+      summary: 'Even compositional draft. Lane matchup tempo dictates dragon prio.',
+      details:
+        'Both drafts have balanced strengths. The team that secures vision around mid-lane river transitions will control objective setup and dictate teamfight terms.',
+      blueKeys: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
+      redKeys: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
+      blueExecution: ['Win bot-side river priority', 'Establish deep jungle vision', 'Synchronize ultimate cooldowns'],
+      redExecution: ['Punish isolated side laners', 'Control neutral objective timers', 'Force skirmishes around buffs'],
+    };
   }
 
   // 9. Power Curves / Phase Spikes (Early: 0-15m, Mid: 15-25m, Late: 25m+)
   let powerSpikes;
-  if (isDefaultDraft) {
-    powerSpikes = [
-      {
-        phase: 'Early Game',
-        timeframe: '0 - 15m',
-        blueAdv: 48,
-        redAdv: 52,
-        favoredSide: 'Red',
-        delta: '+4%',
-        label: 'Red Laning Pressure',
-        details: 'Lorem ipsum dolor sit',
-      },
-      {
-        phase: 'Mid Game',
-        timeframe: '15 - 25m',
-        blueAdv: 55,
-        redAdv: 45,
-        favoredSide: 'Blue',
-        delta: '+10%',
-        label: 'Blue 2-Item Spike',
-        details: 'Lorem consectetur elit',
-      },
-      {
-        phase: 'Late Game',
-        timeframe: '25m+',
-        blueAdv: 62,
-        redAdv: 38,
-        favoredSide: 'Blue',
-        delta: '+24%',
-        label: 'Blue Hypercarry Peak',
-        details: 'Lorem tempor incidunt',
-      },
-    ];
-  } else {
-    // Dynamic calculation based on lane matchups, tactical dimensions & overall winrate
-    const totalGoldDiff15 = laneMatchups.reduce((acc, m) => acc + (m.goldDiff15 || 0), 0);
-    const earlyBlue = Math.min(75, Math.max(25, Math.round(50 + (totalGoldDiff15 / 120))));
-    const earlyRed = 100 - earlyBlue;
+  // Dynamic calculation based on lane matchups, tactical dimensions & overall winrate
+  const totalGoldDiff15 = laneMatchups.reduce((acc, m) => acc + (m.goldDiff15 || 0), 0);
+  const earlyBlue = Math.min(75, Math.max(25, Math.round(50 + (totalGoldDiff15 / 120))));
+  const earlyRed = 100 - earlyBlue;
 
-    const scalingDiff = tacticalDimensions.find(d => d.name === 'Late-Game Scaling')?.diff || 0;
-    const lateBlue = Math.min(80, Math.max(20, Math.round(50 + (scalingDiff * 5.5))));
-    const lateRed = 100 - lateBlue;
+  const lateBlue = Math.min(80, Math.max(20, Math.round(50 + (scalingDiff * 5.5))));
+  const lateRed = 100 - lateBlue;
 
-    const engageDiff = tacticalDimensions.find(d => d.name === 'Hard Engage')?.diff || 0;
-    const midBlue = Math.min(75, Math.max(25, Math.round(50 + (engageDiff * 2.5) + ((blueWinProb - 50) * 0.35))));
-    const midRed = 100 - midBlue;
+  const midBlue = Math.min(75, Math.max(25, Math.round(50 + (engageDiff * 2.5) + ((blueWinProb - 50) * 0.35))));
+  const midRed = 100 - midBlue;
 
-    const createSpike = (phase, timeframe, bVal, rVal, loremNote) => {
-      const favoredSide = bVal >= rVal ? 'Blue' : 'Red';
-      const deltaVal = Math.abs(bVal - rVal);
-      return {
-        phase,
-        timeframe,
-        blueAdv: bVal,
-        redAdv: rVal,
-        favoredSide,
-        delta: `+${deltaVal}%`,
-        label: `${favoredSide} Spike`,
-        details: loremNote,
-      };
+  const createSpike = (phase, timeframe, bVal, rVal) => {
+    const favoredSide = bVal >= rVal ? 'Blue' : 'Red';
+    const deltaVal = Math.abs(bVal - rVal);
+    return {
+      phase,
+      timeframe,
+      blueAdv: bVal,
+      redAdv: rVal,
+      favoredSide,
+      delta: `+${deltaVal}%`,
+      label: `${favoredSide} Spike`,
+      details: '',
     };
+  };
 
-    powerSpikes = [
-      createSpike(
-        'Early Game',
-        '0 - 15m',
-        earlyBlue,
-        earlyRed,
-        'Lorem ipsum dolor sit'
-      ),
-      createSpike(
-        'Mid Game',
-        '15 - 25m',
-        midBlue,
-        midRed,
-        'Lorem consectetur elit'
-      ),
-      createSpike(
-        'Late Game',
-        '25m+',
-        lateBlue,
-        lateRed,
-        'Lorem tempor incidunt'
-      ),
-    ];
-  }
+  powerSpikes = [
+    createSpike('Early Game', '0 - 15m', earlyBlue, earlyRed),
+    createSpike('Mid Game', '15 - 25m', midBlue, midRed),
+    createSpike('Late Game', '25m+', lateBlue, lateRed),
+  ];
 
   return {
     source: 'Client Calibrated Model (Offline Safe)',
@@ -444,6 +320,16 @@ export function calculateDraftPrediction(bluePicks, redPicks) {
   };
 }
 
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+
+const getEndpoints = (path) => {
+  const list = [];
+  if (API_BASE) list.push(`${API_BASE}${path}`);
+  list.push(path);
+  list.push(`http://127.0.0.1:5001${path}`);
+  return Array.from(new Set(list));
+};
+
 /**
  * Predicts winrate trying the live Python AI model first,
  * and falling back automatically to the client-side engine if the server is offline.
@@ -453,7 +339,7 @@ export async function predictDraftWithBackend(bluePicks, redPicks) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const endpoints = ['/api/predict', 'http://127.0.0.1:5001/api/predict'];
+    const endpoints = getEndpoints('/api/predict');
     let resp = null;
 
     for (const ep of endpoints) {
@@ -505,9 +391,9 @@ export async function predictDraftWithBackend(bluePicks, redPicks) {
  * Asynchronously queries the LLM coach in the background to update WinConditionCard
  * without blocking Phase 2 dashboard rendering.
  */
-export async function fetchAsyncCoachAnalysis(bluePicks, redPicks, tacticalDimensions, blueDamage, redDamage) {
+export async function fetchAsyncCoachAnalysis(bluePicks, redPicks, tacticalDimensions, blueDamage, redDamage, powerSpikes) {
   try {
-    const endpoints = ['/api/coach', 'http://127.0.0.1:5001/api/coach'];
+    const endpoints = getEndpoints('/api/coach');
     for (const ep of endpoints) {
       try {
         const r = await fetch(ep, {
@@ -519,6 +405,7 @@ export async function fetchAsyncCoachAnalysis(bluePicks, redPicks, tacticalDimen
             tacticalDimensions,
             blueDamage,
             redDamage,
+            powerSpikes,
           }),
         });
         if (r.ok) {

@@ -16,30 +16,9 @@ export default function Header({
         
         {/* 1. Left: Brand & Crest */}
         <div className="flex items-center gap-3">
-          <div className="relative group cursor-pointer">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 via-amber-600 to-amber-900 p-0.5 shadow-md shadow-amber-500/20">
-              <div className="w-full h-full bg-[#091428] rounded-[6px] flex items-center justify-center border border-amber-500/40">
-                <span className="font-hextech font-bold text-xs tracking-wider text-amber-300">
-                  LDP
-                </span>
-              </div>
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#091428]" title="Model Active" />
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm sm:text-base font-bold tracking-wider font-hextech text-slate-100 flex items-center gap-2">
-                <span className="text-hextech-gold">League Draft Predictor</span>
-              </h1>
-              <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                v14.10.1 Calibrated
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 hidden sm:block">
-              {currentPhase === 'draft' ? 'Phase 1: Hextech Tournament Draft Lobby' : 'Phase 2: SaaS Calibrated Studio'}
-            </p>
-          </div>
+          <h1 className="text-sm sm:text-base font-bold tracking-tight text-slate-100">
+            <span className="text-hextech-gold">League Draft Predictor</span>
+          </h1>
         </div>
 
         {/* 2. Center: Summoner / Riot ID Bar (Centered horizontally across navbar) */}
@@ -71,9 +50,10 @@ export default function Header({
           {currentPhase === 'analytics' ? (
             <button
               onClick={() => setCurrentPhase('draft')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900/90 hover:bg-slate-800 text-amber-300 border border-amber-500/40 hover:border-amber-400 transition-all active:scale-95 shadow-md shadow-amber-500/10"
+              title="Return to draft lobby"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/60 transition-all active:scale-95"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
+              <ChevronLeft className="w-3.5 h-3.5 text-amber-400" />
               <span>Edit Draft Lobby</span>
             </button>
           ) : (

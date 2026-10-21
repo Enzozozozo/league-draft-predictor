@@ -91,7 +91,7 @@ function LaneChampionCell({ champion, image, badge, isBlue }) {
 
   const textContent = (
     <div className={`min-w-0 flex flex-col ${isBlue ? 'items-end text-right' : 'items-start text-left'}`}>
-      <div className="text-sm font-bold text-slate-100 truncate max-w-[140px]">
+      <div className="text-sm font-bold text-slate-100 leading-tight break-words whitespace-normal max-w-[140px]">
         {champion || 'Empty'}
       </div>
       <div className={`flex items-center gap-1.5 mt-0.5 ${isBlue ? 'justify-end' : 'justify-start'}`}>
@@ -138,6 +138,18 @@ function LaneChampionCell({ champion, image, badge, isBlue }) {
   );
 }
 
+const LANE_ROLES_DEFAULT = ['TOP', 'JGL', 'MID', 'BOT', 'SUP'];
+
+function normalizeRoleKey(rawRole, idx) {
+  if (!rawRole) return LANE_ROLES_DEFAULT[idx] || 'TOP';
+  const upper = String(rawRole).trim().toUpperCase();
+  if (upper === 'JUNGLE') return 'JGL';
+  if (upper === 'MIDDLE') return 'MID';
+  if (upper === 'BOTTOM' || upper === 'ADC') return 'BOT';
+  if (upper === 'UTILITY' || upper === 'SUPPORT') return 'SUP';
+  return upper;
+}
+
 function LaneMatchupsCard({ laneMatchups }) {
   return (
     <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-3 flex flex-col justify-between h-full shadow-lg">
@@ -149,7 +161,7 @@ function LaneMatchupsCard({ laneMatchups }) {
 
       <div className="flex-1 min-h-0 flex flex-col justify-between py-1 gap-1.5">
         {laneMatchups.map((m, idx) => {
-          const role = m.role || 'TOP';
+          const role = normalizeRoleKey(m.role, idx);
           const isBlue = m.isBlueLean;
           const absDiff = Math.abs(m.differential ?? 0).toFixed(1);
           const goldVal = m.goldDiff15 ?? Math.round((m.differential ?? 0) * 85);
@@ -169,7 +181,7 @@ function LaneMatchupsCard({ laneMatchups }) {
 
           return (
             <div
-              key={role}
+              key={`${role}-${idx}`}
               className="grid grid-cols-[1fr_130px_1fr] items-center px-2.5 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800/70"
             >
               <LaneChampionCell
@@ -183,7 +195,7 @@ function LaneMatchupsCard({ laneMatchups }) {
               <div className="flex flex-col items-center justify-center select-none px-1 text-center">
                 <div className="w-6 h-6 rounded-md bg-slate-950 border border-slate-800 flex items-center justify-center flex-shrink-0 shadow-inner mb-0.5">
                   <img
-                    src={ROLE_ICON_URLS[role] || ROLE_ICON_URLS.TOP}
+                    src={ROLE_ICON_URLS[role] || ROLE_ICON_URLS[LANE_ROLES_DEFAULT[idx]] || ROLE_ICON_URLS.TOP}
                     alt={role}
                     className="w-3.5 h-3.5 object-contain opacity-90"
                   />
@@ -273,7 +285,7 @@ function WinConditionCard({ winCondition, isCoachLoading }) {
           {isLoading ? (
             <span className="flex items-center gap-2 text-amber-300/70 font-mono text-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              <span>Analysing match dynamics...</span>
+              <span>Evaluating draft strategy...</span>
             </span>
           ) : (
             winCondition.title
@@ -282,7 +294,7 @@ function WinConditionCard({ winCondition, isCoachLoading }) {
         <p className="text-xs text-slate-400 mt-1 leading-relaxed break-words whitespace-normal">
           {isLoading ? (
             <span className="text-slate-500 font-mono text-[11px] animate-pulse">
-              Synthesizing champion archetypes, damage curves, and wave tempo...
+              Computing matchup interactions...
             </span>
           ) : (
             winCondition.summary
@@ -296,21 +308,21 @@ function WinConditionCard({ winCondition, isCoachLoading }) {
           color="#0AC8B9"
           items={winCondition.blueExecution}
           isLoading={isLoading}
-          pulseTexts={['Analysing wave tempo...', 'Analysing engage angles...', 'Analysing backline tethering...']}
+          pulseTexts={['Checking objective priority...', 'Crashing herald into a wall...', 'Missing mythics...']}
         />
         <ExecutionBlock
           title="Red Execution"
           color="#E84057"
           items={winCondition.redExecution}
           isLoading={isLoading}
-          pulseTexts={['Analysing counter-engage...', 'Analysing flank routes...', 'Analysing objective timing...']}
+          pulseTexts={['Buying oracle lens...', 'Queueing ARAM...', '/all ggez...']}
         />
       </div>
     </div>
   );
 }
 
-function PowerCurvesCard({ powerSpikes }) {
+function PowerCurvesCard({ powerSpikes, isCoachLoading }) {
   if (!powerSpikes || powerSpikes.length === 0) return null;
 
   const earlySpike = powerSpikes.find((p) => p.phase.includes('Early')) || powerSpikes[0];
@@ -436,10 +448,14 @@ function PowerCurvesCard({ powerSpikes }) {
                 >
                   {ps.favoredSide} {ps.delta}
                 </span>
-                <span className="text-[9px] text-slate-400 truncate max-w-[80px] text-right">
-                  {ps.details}
-                </span>
               </div>
+              <p className="text-[10px] leading-snug text-slate-400 mt-0.5 break-words whitespace-normal min-h-[2.5em]">
+                {isCoachLoading && !ps.details ? (
+                  <span className="text-slate-500 font-mono animate-pulse">Evaluating phase...</span>
+                ) : (
+                  ps.details
+                )}
+              </p>
             </div>
           );
         })}
@@ -593,7 +609,7 @@ export default function Phase2AnalyticsDashboard({
         {/* Right Column (5 cols): 4 Tactical Cards cleanly fitted without vertical overflow */}
         <div className="lg:col-span-5 flex flex-col justify-between gap-2 min-h-0 h-full max-h-full overflow-y-auto pr-0.5">
           <WinConditionCard winCondition={winCondition} isCoachLoading={isCoachLoading} />
-          <PowerCurvesCard powerSpikes={powerSpikes} />
+          <PowerCurvesCard powerSpikes={powerSpikes} isCoachLoading={isCoachLoading} />
           <TacticalCompositionCard tactical={tactical} />
           <DamageSplitCard blueDmg={blueDmg} redDmg={redDmg} />
         </div>

@@ -6,7 +6,7 @@ Loads `models/league_mobalytics_clone.joblib` and evaluates live 5v5 composition
 
 import json
 import logging
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse
 
 from .ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
@@ -34,6 +34,14 @@ ROLE_MAP = {
     "MID": Role.MIDDLE,
     "BOT": Role.BOTTOM,
     "SUP": Role.UTILITY,
+}
+
+ROLE_REVERSE_MAP = {
+    Role.TOP: "TOP",
+    Role.JUNGLE: "JGL",
+    Role.MIDDLE: "MID",
+    Role.BOTTOM: "BOT",
+    Role.UTILITY: "SUP",
 }
 
 
@@ -209,7 +217,7 @@ def run_prediction(blue_picks_data, red_picks_data):
             red_badge = "SKILL"
 
         lane_matchups.append({
-            "role": mu.role.value,
+            "role": ROLE_REVERSE_MAP.get(mu.role, mu.role.value if hasattr(mu.role, 'value') else str(mu.role)),
             "blueChampion": mu.blue_champ_name,
             "blueWinRate": mu.blue_champ_wr,
             "blueBadge": blue_badge,
@@ -240,7 +248,7 @@ def run_prediction(blue_picks_data, red_picks_data):
     }
 
 
-def run_coach_analysis(blue_picks_data, red_picks_data, tactical_dims, blue_dmg, red_dmg):
+def run_coach_analysis(blue_picks_data, red_picks_data, tactical_dims, blue_dmg, red_dmg, power_spikes):
     """Asynchronous endpoint specifically for deep LLM coach evaluation."""
     blue_picks = []
     for p in blue_picks_data:
@@ -263,6 +271,7 @@ def run_coach_analysis(blue_picks_data, red_picks_data, tactical_dims, blue_dmg,
         tactical_dims,
         blue_dmg,
         red_dmg,
+        power_spikes,
         cdm.id_to_data
     )
 
@@ -328,7 +337,8 @@ class DraftHandler(BaseHTTPRequestHandler):
                 tactical = data.get("tacticalDimensions", [])
                 blue_dmg = data.get("blueDamage", {})
                 red_dmg = data.get("redDamage", {})
-                coach_result = run_coach_analysis(blue_picks, red_picks, tactical, blue_dmg, red_dmg)
+                power_spikes = data.get("powerSpikes", [])
+                coach_result = run_coach_analysis(blue_picks, red_picks, tactical, blue_dmg, red_dmg, power_spikes)
                 self.send_response(200)
                 self._send_cors_headers()
                 self.send_header("Content-Type", "application/json")
@@ -353,7 +363,7 @@ class DraftHandler(BaseHTTPRequestHandler):
 
 def main():
     port = 5001
-    server = HTTPServer(("127.0.0.1", port), DraftHandler)
+    server = ThreadingHTTPServer(("127.0.0.1", port), DraftHandler)
     logger.info("Draft Predictor API Server running on http://127.0.0.1:%d", port)
     logger.info("Ready to accept /api/predict requests from React frontend.")
     try:

@@ -25,7 +25,6 @@ export default function App() {
   );
 
   const [draggedChampion, setDraggedChampion] = useState(null);
-  const [isPredicting, setIsPredicting] = useState(false);
   const [isCoachLoading, setIsCoachLoading] = useState(false);
 
   // Recalculate prediction data locally as instant preview in draft mode
@@ -127,48 +126,52 @@ export default function App() {
     [handleAssignChampionToSlot, activeSlot, bluePicks, redPicks]
   );
 
-  // Trigger inference and transition to Phase 2 (Analytics) INSTANTLY, then stream coach insights
-  const handlePredictWinrate = useCallback(async () => {
-    setIsPredicting(true);
-    try {
-      // 1. Instant predict: Joblib model runs in < 20ms
-      const result = await predictDraftWithBackend(bluePicks, redPicks);
-      setPredictionData(result);
-      setCurrentPhase('analytics');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Merges the LLM coach's response into the current prediction without blocking the UI
+  const streamCoachInsights = useCallback((blue, red, result) => {
+    setIsCoachLoading(true);
+    fetchAsyncCoachAnalysis(
+      blue,
+      red,
+      result.tacticalDimensions,
+      result.blueDamage,
+      result.redDamage,
+      result.powerSpikes
+    ).then((coachResult) => {
+      if (coachResult) {
+        setPredictionData((prev) => {
+          if (!prev) return prev;
+          const notes = coachResult.spikeNotes;
+          return {
+            ...prev,
+            powerSpikes: notes
+              ? prev.powerSpikes.map((spike, i) => ({ ...spike, details: notes[i] || spike.details }))
+              : prev.powerSpikes,
+            primaryWinCondition: {
+              ...prev.primaryWinCondition,
+              title: coachResult.title || prev.primaryWinCondition.title,
+              summary: coachResult.summary || prev.primaryWinCondition.summary,
+              blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
+              redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
+              coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
+            },
+          };
+        });
+      }
+    }).finally(() => {
+      setIsCoachLoading(false);
+    });
+  }, []);
 
-      // 2. Asynchronous Coach Fetch: Query Groq in background without blocking screen
-      setIsCoachLoading(true);
-      fetchAsyncCoachAnalysis(
-        bluePicks,
-        redPicks,
-        result.tacticalDimensions,
-        result.blueDamage,
-        result.redDamage
-      ).then((coachResult) => {
-        if (coachResult) {
-          setPredictionData((prev) => {
-            if (!prev) return prev;
-            return {
-              ...prev,
-              primaryWinCondition: {
-                ...prev.primaryWinCondition,
-                title: coachResult.title || prev.primaryWinCondition.title,
-                summary: coachResult.summary || prev.primaryWinCondition.summary,
-                blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
-                redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
-                coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
-              },
-            };
-          });
-        }
-      }).finally(() => {
-        setIsCoachLoading(false);
-      });
-    } finally {
-      setIsPredicting(false);
-    }
-  }, [bluePicks, redPicks]);
+  // Switch to the analytics view immediately using the local prediction, then upgrade it with the
+  // backend model and stream the LLM coach in the background. Nothing here blocks the redirect.
+  const handlePredictWinrate = useCallback(async () => {
+    setCurrentPhase('analytics');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const result = await predictDraftWithBackend(bluePicks, redPicks);
+    setPredictionData(result);
+    streamCoachInsights(bluePicks, redPicks, result);
+  }, [bluePicks, redPicks, streamCoachInsights]);
 
   // Reset clears all champion picks to empty slate (reactive effect updates predictionData automatically)
   const handleResetDefault = useCallback(() => {
@@ -178,7 +181,7 @@ export default function App() {
   }, []);
 
   // Randomize competitive drafts
-  const handleRandomizeDraft = useCallback(async () => {
+  const handleRandomizeDraft = useCallback(() => {
     const rolesList = ['TOP', 'JGL', 'MID', 'BOT', 'SUP'];
 
     const pickForRole = (role, usedChamps) => {
@@ -207,36 +210,6 @@ export default function App() {
 
     setBluePicks(newBlue);
     setRedPicks(newRed);
-    const result = await predictDraftWithBackend(newBlue, newRed);
-    setPredictionData(result);
-
-    setIsCoachLoading(true);
-    fetchAsyncCoachAnalysis(
-      newBlue,
-      newRed,
-      result.tacticalDimensions,
-      result.blueDamage,
-      result.redDamage
-    ).then((coachResult) => {
-      if (coachResult) {
-        setPredictionData((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            primaryWinCondition: {
-              ...prev.primaryWinCondition,
-              title: coachResult.title || prev.primaryWinCondition.title,
-              summary: coachResult.summary || prev.primaryWinCondition.summary,
-              blueExecution: coachResult.blueExecution || prev.primaryWinCondition.blueExecution,
-              redExecution: coachResult.redExecution || prev.primaryWinCondition.redExecution,
-              coachModel: coachResult.isLLM ? coachResult.model : prev.primaryWinCondition.coachModel,
-            },
-          };
-        });
-      }
-    }).finally(() => {
-      setIsCoachLoading(false);
-    });
   }, []);
 
   return (
@@ -250,7 +223,7 @@ export default function App() {
         onRandomizeDraft={handleRandomizeDraft}
       />
 
-      {/* Main Interactive Container: Both Phase 1 and Phase 2 fit on a single screen with generous edge padding */}
+      {/* Main Interactive Container: Both the draft and analytics views fit on a single screen with generous edge padding */}
       <main className="flex-1 min-h-0 w-full max-w-[1800px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 py-1.5 flex flex-col">
         
         {/* Phase State Machine Switching */}
@@ -265,7 +238,6 @@ export default function App() {
             draggedChampion={draggedChampion}
             setDraggedChampion={setDraggedChampion}
             onPredictWinrate={handlePredictWinrate}
-            isPredicting={isPredicting}
           />
         ) : (
           <Phase2AnalyticsDashboard
@@ -275,21 +247,6 @@ export default function App() {
         )}
 
       </main>
-
-      {/* Footer: Shown only on Analytics Studio, keeping Draft Lobby 100% full-bleed and zero-scroll */}
-      {currentPhase === 'analytics' && (
-        <footer className="border-t border-slate-900 bg-[#050811]/90 text-xs text-slate-500 font-mono py-1.5 px-6 sm:px-10 lg:px-14 xl:px-16 flex-shrink-0">
-          <div className="max-w-[1800px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>GroupShuffleSplit Zero-Leakage • Isotonically Calibrated RF</span>
-            </div>
-            <div>
-              Data Dragon CDN v16.20.1 • 173 Champions • Match-V5 Schema Ingestion
-            </div>
-          </div>
-        </footer>
-      )}
 
     </div>
   );
