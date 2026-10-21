@@ -12,6 +12,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
+# On shared cPanel hosts (/dev/shm is restricted), ensure temp folder is in home directory
+os.environ.setdefault("JOBLIB_TEMP_FOLDER", os.path.join(PROJECT_ROOT, ".cache"))
+
 from dotenv import load_dotenv
 load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
 
@@ -90,4 +93,4 @@ def coach():
 application = app
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5001, debug=True)
+    app.run(host="127.0.0.1", port=5001, debug=False, use_reloader=False)
