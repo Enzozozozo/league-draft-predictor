@@ -13,7 +13,7 @@ CACHE_DIR = BASE_DIR / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Path to the user's trained joblib model
-DEFAULT_MODEL_PATH = BASE_DIR / "models" / "league_mobalytics_clone.joblib"
+DEFAULT_MODEL_PATH = BASE_DIR / "models" / "league_draft_iter1.joblib"
 
 
 def get_model_path() -> Path:

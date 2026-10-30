@@ -154,20 +154,29 @@ class MobalyticsJoblibModel(DraftModelInterface):
             self.is_loaded = False
 
     def get_model_name(self) -> str:
-        return "league_mobalytics_clone (Calibrated Random Forest + Tactical Engine)"
+        return "league_draft_iter1 (Calibrated Random Forest - 11 Orthogonal Features)"
 
     # -------------------------------------------------------------------------
     # Feature Construction (Reproducing compute_draft_features from training)
     # -------------------------------------------------------------------------
     def build_feature_vector(self, draft: MatchDraft, player_side: TeamSide = TeamSide.BLUE) -> pd.DataFrame:
-        """Converts the draft into the 15 features expected by the random forest."""
+        """Converts the draft into the 11 orthogonal features from leagueguessing_v2.
+
+        Features:
+        1. team_adv: Tanh-saturated 5v5 draft advantage, with pilot mastery conditioning.
+        2. team_synergy_delta: Vectorized net 10-pair Wilson score combo lift.
+        3. elastic_mastery: Pilot log-mastery weighted by empirical champion elasticity.
+        4. keystone_wr: Historical viability of the pilot's primary keystone rune.
+        5. is_blue: Map side indicator (1 = Blue, 0 = Red).
+        6-11. Net class archetype deltas (delta_tanks, delta_assassins, delta_mages,
+              delta_marksmans, delta_supports, delta_fighters).
+        """
         is_blue = (player_side == TeamSide.BLUE)
 
         # Champion IDs for Blue (B1..B5) and Red (R1..R5)
         blue_cids = draft.blue_team.champion_ids
         red_cids = draft.red_team.champion_ids
 
-        # Pad to 5 if needed
         while len(blue_cids) < 5:
             blue_cids.append(1)
         while len(red_cids) < 5:
@@ -176,53 +185,17 @@ class MobalyticsJoblibModel(DraftModelInterface):
         def get_cwr(cid: int) -> float:
             return self.champ_wr_dict.get(cid, 0.50)
 
-        # Pick phase calculations
-        b1_wr = get_cwr(blue_cids[0])
-        r1r2_wr = np.mean([get_cwr(red_cids[0]), get_cwr(red_cids[1])])
-        b2b3_wr = np.mean([get_cwr(blue_cids[1]), get_cwr(blue_cids[2])])
-        r3r4_wr = np.mean([get_cwr(red_cids[2]), get_cwr(red_cids[3])])
-        b4b5_wr = np.mean([get_cwr(blue_cids[3]), get_cwr(blue_cids[4])])
-        r5_wr = get_cwr(red_cids[4])
-
-        raw_p1 = b1_wr - r1r2_wr
-        raw_p2 = b2b3_wr - r3r4_wr
-        raw_p3 = b4b5_wr - r5_wr
-
+        # 1. 5v5 Team Overall Baseline Win Rates
         blue_total_wr = np.mean([get_cwr(c) for c in blue_cids[:5]])
         red_total_wr = np.mean([get_cwr(c) for c in red_cids[:5]])
         raw_team_adv = blue_total_wr - red_total_wr
-
-        # Align to perspective of chosen team
-        adv_p1 = raw_p1 if is_blue else -raw_p1
-        adv_p2 = raw_p2 if is_blue else -raw_p2
-        adv_p3 = raw_p3 if is_blue else -raw_p3
         team_adv = raw_team_adv if is_blue else -raw_team_adv
-        my_team_wr = blue_total_wr if is_blue else red_total_wr
-        enemy_team_wr = red_total_wr if is_blue else blue_total_wr
 
-        # 5 Role Counterpart Deltas (Top, Jng, Mid, Bot, Sup)
-        delta_top = get_cwr(blue_cids[0]) - get_cwr(red_cids[0])
-        delta_jng = get_cwr(blue_cids[1]) - get_cwr(red_cids[1])
-        delta_mid = get_cwr(blue_cids[2]) - get_cwr(red_cids[2])
-        delta_bot = get_cwr(blue_cids[3]) - get_cwr(red_cids[3])
-        delta_sup = get_cwr(blue_cids[4]) - get_cwr(red_cids[4])
-        raw_matchup_avg = (delta_top + delta_jng + delta_mid + delta_bot + delta_sup) / 5.0
-        matchup_delta_avg = raw_matchup_avg if is_blue else -raw_matchup_avg
-
-        # Option B: Pair Synergy Across All 10 Pairs per Team
-        b_combos = list(combinations(blue_cids[:5], 2))
-        r_combos = list(combinations(red_cids[:5], 2))
-        blue_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in b_combos)
-        red_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in r_combos)
-        raw_synergy_delta = blue_syn - red_syn
-        team_synergy_delta = raw_synergy_delta if is_blue else -raw_synergy_delta
-
-        # Pilot Champion ID & Mastery (from perspective team primary carry or pick[0])
+        # 2. Pilot Mastery Conditioning on team_adv
         primary_picks = draft.blue_team.picks if is_blue else draft.red_team.picks
         pilot_cid = primary_picks[0].champion_id if primary_picks else (blue_cids[2] if is_blue else red_cids[2])
         pilot_mastery = getattr(primary_picks[0], "mastery_points", 50000.0) if primary_picks else 50000.0
 
-        # Mastery Conditioning on team_adv
         log_pts = np.log1p(pilot_mastery)
         mastery_tier = 1.0 / (1.0 + np.exp(-(log_pts - np.log1p(25000.0)) / 2.0))
         mastery_dev = mastery_tier - 0.5
@@ -231,28 +204,22 @@ class MobalyticsJoblibModel(DraftModelInterface):
         persp_adv_conditioned = team_adv + pilot_wr_delta
         team_adv_saturated = float(np.tanh(10.0 * persp_adv_conditioned))
 
-        # Lane Matchup (Primary carry / mid lane fallback for legacy models)
-        my_champ_wr = get_cwr(blue_cids[2] if is_blue else red_cids[2])
-        enemy_champ_wr = get_cwr(red_cids[2] if is_blue else blue_cids[2])
-        champ_adv = my_champ_wr - enemy_champ_wr
+        # 3. Vectorized 10-Pair Synergy Delta (Wilson Score Lift)
+        b_combos = list(combinations(blue_cids[:5], 2))
+        r_combos = list(combinations(red_cids[:5], 2))
+        blue_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in b_combos)
+        red_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in r_combos)
+        raw_synergy_delta = blue_syn - red_syn
+        team_synergy_delta = raw_synergy_delta if is_blue else -raw_synergy_delta
 
-        # Runes and Spells
+        # 4. Pilot Elastic Mastery & Keystone Viability
+        elastic_mastery = log_pts * elasticity
         keystone_wr = 0.50
-        spell_synergy = 0.50
         if primary_picks:
             sample_pick = primary_picks[0]
             keystone_wr = self.keystone_wr_dict.get(sample_pick.primary_keystone_id, 0.50)
-            s1_wr = self.spell1_wr_dict.get(sample_pick.summoner1_id, 0.50)
-            s2_wr = self.spell2_wr_dict.get(sample_pick.summoner2_id, 0.50)
-            spell_synergy = 0.5 * (s1_wr + s2_wr)
 
-        log_mastery = np.log1p(pilot_mastery)
-        elastic_mastery = log_mastery * elasticity
-        mastery_champ_synergy = log_mastery * my_champ_wr
-        draft_momentum = 0.20 * adv_p1 + 0.35 * adv_p2 + 0.45 * adv_p3
-        total_synergy = matchup_delta_avg + draft_momentum + team_synergy_delta
-
-        # Archetype Class Deltas (Tanks, Assassins, Mages, Marksmen, Supports, Fighters)
+        # 5. Net Class Archetype Deltas
         archetype_classes = ["Tank", "Assassin", "Mage", "Marksman", "Support", "Fighter"]
         archetype_deltas = {}
         for cls in archetype_classes:
@@ -262,30 +229,14 @@ class MobalyticsJoblibModel(DraftModelInterface):
             archetype_deltas[f"delta_{cls.lower()}s"] = delta_cnt
 
         features = {
-            # V2 11-Feature Matrix
             "team_adv": team_adv_saturated,
             "team_synergy_delta": team_synergy_delta,
             "elastic_mastery": elastic_mastery,
             "keystone_wr": keystone_wr,
             "is_blue": int(is_blue),
             **archetype_deltas,
-            # Legacy compatibility fallbacks for v1 models
-            "matchup_delta_avg": matchup_delta_avg,
-            "my_team_wr": my_team_wr,
-            "enemy_team_wr": enemy_team_wr,
-            "adv_p1": adv_p1,
-            "adv_p2": adv_p2,
-            "adv_p3": adv_p3,
-            "draft_momentum": draft_momentum,
-            "total_synergy": total_synergy,
-            "log_mastery": log_mastery,
-            "mastery_champ_synergy": mastery_champ_synergy,
-            "spell_synergy": spell_synergy,
-            "champ_adv": champ_adv,
-            "my_champ_wr": my_champ_wr,
         }
 
-        # Match exact ordering from training
         ordered_cols = self.feature_names or list(features.keys())
         return pd.DataFrame([features])[ordered_cols]
 
