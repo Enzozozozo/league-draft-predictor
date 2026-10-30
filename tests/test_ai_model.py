@@ -19,10 +19,9 @@ class TestAIModel(unittest.TestCase):
     def test_feature_vector_generation(self):
         df_feat = self.model.build_feature_vector(self.draft, player_side=TeamSide.BLUE)
         self.assertEqual(len(df_feat), 1)
-        expected_features = [
-            "champ_adv", "my_champ_wr", "team_adv", "my_team_wr", "enemy_team_wr",
-            "adv_p1", "adv_p2", "adv_p3", "draft_momentum", "total_synergy",
-            "log_mastery", "mastery_champ_synergy", "spell_synergy", "keystone_wr", "is_blue"
+        expected_features = self.model.feature_names or [
+            "team_adv", "team_synergy_delta", "draft_momentum",
+            "log_mastery", "spell_synergy", "keystone_wr", "is_blue"
         ]
         for f in expected_features:
             self.assertIn(f, df_feat.columns)

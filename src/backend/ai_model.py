@@ -14,6 +14,7 @@ import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
+from itertools import combinations
 
 import numpy as np
 import pandas as pd
@@ -54,8 +55,10 @@ class MonotonicCalibratedForest:
             raw_p = proba[:, 1]
         else:
             raw_p = proba
-        cal_p = np.clip(self.calibrator.transform(raw_p), 0.01, 0.99)
-        return np.column_stack([1 - cal_p, cal_p])
+        if self.calibrator is not None:
+            cal_p = np.clip(self.calibrator.transform(raw_p), 0.01, 0.99)
+            return np.column_stack([1 - cal_p, cal_p])
+        return np.column_stack([1 - raw_p, raw_p]) if proba.ndim == 1 or proba.shape[1] == 1 else proba
 
     def predict(self, X):
         return (self.predict_proba(X)[:, 1] >= 0.50).astype(int)
@@ -96,9 +99,12 @@ class MobalyticsJoblibModel(DraftModelInterface):
         self.imputer = None
         self.feature_names: List[str] = []
         self.champ_wr_dict: Dict[int, float] = {}
+        self.synergy_dict: Dict[Tuple[int, int], float] = {}
         self.keystone_wr_dict: Dict[int, float] = {}
         self.spell1_wr_dict: Dict[int, float] = {}
         self.spell2_wr_dict: Dict[int, float] = {}
+        self.champ_classes: Dict[int, Any] = {}
+        self.champ_mastery_elasticity: Dict[int, float] = {}
         self.optimal_threshold: float = 0.50
         self.is_loaded = False
 
@@ -120,9 +126,12 @@ class MobalyticsJoblibModel(DraftModelInterface):
                 self.imputer = self.pipeline.get("imputer")
                 self.feature_names = self.pipeline.get("feature_names", [])
                 self.champ_wr_dict = self.pipeline.get("champ_wr_dict", {})
+                self.synergy_dict = self.pipeline.get("synergy_dict", {})
                 self.keystone_wr_dict = self.pipeline.get("keystone_wr_dict", {})
                 self.spell1_wr_dict = self.pipeline.get("spell1_wr_dict", {})
                 self.spell2_wr_dict = self.pipeline.get("spell2_wr_dict", {})
+                self.champ_classes = self.pipeline.get("champ_classes", {})
+                self.champ_mastery_elasticity = self.pipeline.get("champ_mastery_elasticity", {})
                 self.optimal_threshold = self.pipeline.get("optimal_threshold", 0.50)
                 self.is_loaded = True
                 logger.info(
@@ -191,13 +200,43 @@ class MobalyticsJoblibModel(DraftModelInterface):
         my_team_wr = blue_total_wr if is_blue else red_total_wr
         enemy_team_wr = red_total_wr if is_blue else blue_total_wr
 
-        # Lane Matchup (Focus on primary carry / mid lane or average lane diff)
+        # 5 Role Counterpart Deltas (Top, Jng, Mid, Bot, Sup)
+        delta_top = get_cwr(blue_cids[0]) - get_cwr(red_cids[0])
+        delta_jng = get_cwr(blue_cids[1]) - get_cwr(red_cids[1])
+        delta_mid = get_cwr(blue_cids[2]) - get_cwr(red_cids[2])
+        delta_bot = get_cwr(blue_cids[3]) - get_cwr(red_cids[3])
+        delta_sup = get_cwr(blue_cids[4]) - get_cwr(red_cids[4])
+        raw_matchup_avg = (delta_top + delta_jng + delta_mid + delta_bot + delta_sup) / 5.0
+        matchup_delta_avg = raw_matchup_avg if is_blue else -raw_matchup_avg
+
+        # Option B: Pair Synergy Across All 10 Pairs per Team
+        b_combos = list(combinations(blue_cids[:5], 2))
+        r_combos = list(combinations(red_cids[:5], 2))
+        blue_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in b_combos)
+        red_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in r_combos)
+        raw_synergy_delta = blue_syn - red_syn
+        team_synergy_delta = raw_synergy_delta if is_blue else -raw_synergy_delta
+
+        # Pilot Champion ID & Mastery (from perspective team primary carry or pick[0])
+        primary_picks = draft.blue_team.picks if is_blue else draft.red_team.picks
+        pilot_cid = primary_picks[0].champion_id if primary_picks else (blue_cids[2] if is_blue else red_cids[2])
+        pilot_mastery = getattr(primary_picks[0], "mastery_points", 50000.0) if primary_picks else 50000.0
+
+        # Mastery Conditioning on team_adv
+        log_pts = np.log1p(pilot_mastery)
+        mastery_tier = 1.0 / (1.0 + np.exp(-(log_pts - np.log1p(25000.0)) / 2.0))
+        mastery_dev = mastery_tier - 0.5
+        elasticity = self.champ_mastery_elasticity.get(pilot_cid, 0.05)
+        pilot_wr_delta = (mastery_dev * elasticity) / 5.0
+        persp_adv_conditioned = team_adv + pilot_wr_delta
+        team_adv_saturated = float(np.tanh(10.0 * persp_adv_conditioned))
+
+        # Lane Matchup (Primary carry / mid lane fallback for legacy models)
         my_champ_wr = get_cwr(blue_cids[2] if is_blue else red_cids[2])
         enemy_champ_wr = get_cwr(red_cids[2] if is_blue else blue_cids[2])
         champ_adv = my_champ_wr - enemy_champ_wr
 
         # Runes and Spells
-        primary_picks = draft.blue_team.picks if is_blue else draft.red_team.picks
         keystone_wr = 0.50
         spell_synergy = 0.50
         if primary_picks:
@@ -207,15 +246,31 @@ class MobalyticsJoblibModel(DraftModelInterface):
             s2_wr = self.spell2_wr_dict.get(sample_pick.summoner2_id, 0.50)
             spell_synergy = 0.5 * (s1_wr + s2_wr)
 
-        log_mastery = np.log1p(50000.0)  # Default solo queue median mastery
+        log_mastery = np.log1p(pilot_mastery)
+        elastic_mastery = log_mastery * elasticity
         mastery_champ_synergy = log_mastery * my_champ_wr
-        total_synergy = champ_adv + team_adv
         draft_momentum = 0.20 * adv_p1 + 0.35 * adv_p2 + 0.45 * adv_p3
+        total_synergy = matchup_delta_avg + draft_momentum + team_synergy_delta
+
+        # Archetype Class Deltas (Tanks, Assassins, Mages, Marksmen, Supports, Fighters)
+        archetype_classes = ["Tank", "Assassin", "Mage", "Marksman", "Support", "Fighter"]
+        archetype_deltas = {}
+        for cls in archetype_classes:
+            b_cnt = sum(1 if cls in self.champ_classes.get(c, set()) else 0 for c in blue_cids[:5])
+            r_cnt = sum(1 if cls in self.champ_classes.get(c, set()) else 0 for c in red_cids[:5])
+            delta_cnt = (b_cnt - r_cnt) if is_blue else (r_cnt - b_cnt)
+            archetype_deltas[f"delta_{cls.lower()}s"] = delta_cnt
 
         features = {
-            "champ_adv": champ_adv,
-            "my_champ_wr": my_champ_wr,
-            "team_adv": team_adv,
+            # V2 11-Feature Matrix
+            "team_adv": team_adv_saturated,
+            "team_synergy_delta": team_synergy_delta,
+            "elastic_mastery": elastic_mastery,
+            "keystone_wr": keystone_wr,
+            "is_blue": int(is_blue),
+            **archetype_deltas,
+            # Legacy compatibility fallbacks for v1 models
+            "matchup_delta_avg": matchup_delta_avg,
             "my_team_wr": my_team_wr,
             "enemy_team_wr": enemy_team_wr,
             "adv_p1": adv_p1,
@@ -226,8 +281,8 @@ class MobalyticsJoblibModel(DraftModelInterface):
             "log_mastery": log_mastery,
             "mastery_champ_synergy": mastery_champ_synergy,
             "spell_synergy": spell_synergy,
-            "keystone_wr": keystone_wr,
-            "is_blue": int(is_blue),
+            "champ_adv": champ_adv,
+            "my_champ_wr": my_champ_wr,
         }
 
         # Match exact ordering from training
