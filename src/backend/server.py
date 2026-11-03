@@ -8,9 +8,10 @@ import json
 import logging
 import os
 import signal
+import socket
 from pathlib import Path
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 from .ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
 from .champion_data import ChampionDataManager
@@ -478,9 +479,9 @@ class DraftHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(resp).encode("utf-8"))
         elif parsed.path in ("/api/player-match", "/api/summoner-draft", "/draft/api/player-match", "/draft/api/summoner-draft"):
             try:
-                data = json.loads(body.decode("utf-8"))
-                riot_id = data.get("riotId", "").strip()
-                region = data.get("region", "SEA").strip()
+                qs = parse_qs(parsed.query)
+                riot_id = qs.get("riotId", [""])[0].strip()
+                region = qs.get("region", ["SEA"])[0].strip()
                 resp = handle_player_match_request(riot_id, region)
                 self.send_response(200)
                 self._send_cors_headers()
@@ -638,36 +639,82 @@ class DraftHandler(BaseHTTPRequestHandler):
         logger.info("%s - %s", self.address_string(), format % args)
 
 
+class ReusableThreadingServer(ThreadingHTTPServer):
+    allow_reuse_address = True
+
+    def server_bind(self):
+        try:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        except Exception:
+            pass
+        if hasattr(socket, "SO_REUSEPORT"):
+            try:
+                self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+            except Exception:
+                pass
+        super().server_bind()
+
+
 def kill_old_instances(port=5001):
     """Terminates any existing backend process owned by the current user to prevent [Errno 98] Address in use."""
     my_pid = os.getpid()
+    port_hex = f"{port:04X}"
+    inodes = set()
+    for tcp_path in ("/proc/net/tcp", "/proc/net/tcp6"):
+        p = Path(tcp_path)
+        if p.exists():
+            try:
+                for line in p.read_text(encoding="utf-8", errors="ignore").splitlines():
+                    parts = line.split()
+                    if len(parts) > 9 and parts[1].endswith(":" + port_hex):
+                        inodes.add(f"socket:[{parts[9]}]")
+            except Exception:
+                pass
+
     proc_dir = Path("/proc")
     if not proc_dir.exists():
         return
+
     for entry in proc_dir.iterdir():
         if not entry.name.isdigit():
             continue
         pid = int(entry.name)
         if pid == my_pid:
             continue
-        try:
-            cmdline_file = entry / "cmdline"
-            if cmdline_file.exists():
-                cmd = cmdline_file.read_bytes().decode("utf-8", errors="ignore")
-                if ("src.backend.server" in cmd or "server.py" in cmd) and "kill" not in cmd:
-                    logger.info("Terminating old server process %d", pid)
-                    os.kill(pid, 9)
-        except Exception:
-            pass
+        killed = False
+        if inodes:
+            fd_dir = entry / "fd"
+            if fd_dir.exists():
+                try:
+                    for fd in fd_dir.iterdir():
+                        try:
+                            if os.readlink(str(fd)) in inodes:
+                                logger.info("Terminating process %d holding socket on port %d", pid, port)
+                                os.kill(pid, signal.SIGKILL)
+                                killed = True
+                                break
+                        except Exception:
+                            pass
+                except Exception:
+                    pass
+        if not killed:
+            try:
+                cmdline_file = entry / "cmdline"
+                if cmdline_file.exists():
+                    cmd = cmdline_file.read_bytes().decode("utf-8", errors="ignore")
+                    if ("src.backend.server" in cmd or "server.py" in cmd) and "kill" not in cmd:
+                        logger.info("Terminating old server process %d", pid)
+                        os.kill(pid, signal.SIGKILL)
+            except Exception:
+                pass
     import time
-    time.sleep(0.8)
+    time.sleep(1.0)
 
 
 def main():
     port = 5001
     kill_old_instances(port)
-    ThreadingHTTPServer.allow_reuse_address = True
-    server = ThreadingHTTPServer(("127.0.0.1", port), DraftHandler)
+    server = ReusableThreadingServer(("127.0.0.1", port), DraftHandler)
     logger.info("Draft Predictor API Server running on http://127.0.0.1:%d", port)
     logger.info("Ready to accept /api/predict requests from React frontend.")
     try:
