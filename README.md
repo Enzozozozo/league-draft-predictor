@@ -1,4 +1,4 @@
-# League Draft Predictor
+# DRAFTJUDGE
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -66,6 +66,12 @@ This highlights an intentional architectural trade-off: the model calculates lan
 * **Conclusion**: Evaluating independent win rates provides a robust macro baseline (+/- 6%) without overfitting patch data, but specific head-to-head kit counters and mechanical execution dictate high-variance solo-queue outcomes.
 
 </details>
+
+---
+
+## Legal
+
+DRAFTJUDGE is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
 
 ---
 

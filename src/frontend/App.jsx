@@ -25,6 +25,7 @@ export default function App() {
   );
 
   const [draggedChampion, setDraggedChampion] = useState(null);
+  const [isPredicting, setIsPredicting] = useState(false);
   const [isCoachLoading, setIsCoachLoading] = useState(false);
 
   // Recalculate prediction data locally as instant preview in draft mode
@@ -162,22 +163,34 @@ export default function App() {
     });
   }, []);
 
-  // Switch to the analytics view immediately, set loading state, and fetch predictions
+  // Run predictions first while showing loading indicator on the hero button, then transition to analytics smoothly
   const handlePredictWinrate = useCallback(async () => {
-    setCurrentPhase('analytics');
-    setIsCoachLoading(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    const result = await predictDraftWithBackend(bluePicks, redPicks);
-    setPredictionData(result);
-    streamCoachInsights(bluePicks, redPicks, result);
+    setIsPredicting(true);
+    try {
+      const result = await predictDraftWithBackend(bluePicks, redPicks);
+      setPredictionData(result);
+      setCurrentPhase('analytics');
+      setIsCoachLoading(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      streamCoachInsights(bluePicks, redPicks, result);
+    } catch (err) {
+      console.error('Backend prediction failed, using fallback:', err);
+      const fallback = calculateDraftPrediction(bluePicks, redPicks);
+      setPredictionData(fallback);
+      setCurrentPhase('analytics');
+    } finally {
+      setIsPredicting(false);
+    }
   }, [bluePicks, redPicks, streamCoachInsights]);
 
-  // Reset clears all champion picks to empty slate (reactive effect updates predictionData automatically)
+  // Reset clears all champion picks to empty slate (no champion icon)
   const handleResetDefault = useCallback(() => {
-    setBluePicks(EMPTY_BLUE_PICKS);
-    setRedPicks(EMPTY_RED_PICKS);
+    const emptyBlue = EMPTY_BLUE_PICKS.map((p) => ({ ...p }));
+    const emptyRed = EMPTY_RED_PICKS.map((p) => ({ ...p }));
+    setBluePicks(emptyBlue);
+    setRedPicks(emptyRed);
     setActiveSlot(null);
+    setPredictionData(calculateDraftPrediction(emptyBlue, emptyRed));
   }, []);
 
   // Randomize competitive drafts
@@ -212,6 +225,11 @@ export default function App() {
     setRedPicks(newRed);
   }, []);
 
+  const handleLogoClick = useCallback(() => {
+    setCurrentPhase('draft');
+    setActiveSlot(null);
+  }, []);
+
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#070B13] bg-hextech-grid flex flex-col text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       
@@ -221,6 +239,7 @@ export default function App() {
         setCurrentPhase={setCurrentPhase}
         onResetDefault={handleResetDefault}
         onRandomizeDraft={handleRandomizeDraft}
+        onLogoClick={handleLogoClick}
       />
 
       {/* Main Interactive Container: Both the draft and analytics views fit on a single screen with generous edge padding */}
@@ -238,6 +257,7 @@ export default function App() {
             draggedChampion={draggedChampion}
             setDraggedChampion={setDraggedChampion}
             onPredictWinrate={handlePredictWinrate}
+            isPredicting={isPredicting}
           />
         ) : (
           <Phase2AnalyticsDashboard
@@ -247,6 +267,13 @@ export default function App() {
         )}
 
       </main>
+
+      {/* Riot Games Compliance Footer */}
+      <footer className="w-full flex-shrink-0 py-1.5 px-4 text-center border-t border-slate-900/80 bg-[#05080E]/90 backdrop-blur-sm">
+        <p className="text-[10px] leading-relaxed text-slate-500 max-w-4xl mx-auto font-sans tracking-wide">
+          DRAFTJUDGE is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+        </p>
+      </footer>
 
     </div>
   );

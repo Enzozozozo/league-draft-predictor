@@ -180,17 +180,13 @@ export default function DraftSlotCard({
           </div>
         </div>
 
-        {/* Champion Name or Empty Placeholder */}
+        {/* Champion Name (Only displayed when a champion is selected) */}
         <div className="flex-1 min-w-0">
-          <div
-            className={`text-base xl:text-lg font-bold font-sans leading-tight break-words whitespace-normal transition-colors ${
-              hasChampion
-                ? 'text-slate-100 group-hover:text-amber-200'
-                : 'text-slate-500 italic text-sm'
-            }`}
-          >
-            {hasChampion ? pick.champion : 'Pick Champion...'}
-          </div>
+          {hasChampion && (
+            <div className="text-base xl:text-lg font-bold font-sans leading-tight break-words whitespace-normal text-slate-100 group-hover:text-amber-200 transition-colors">
+              {pick.champion}
+            </div>
+          )}
         </div>
 
         {/* Role Position Emblem Icon */}

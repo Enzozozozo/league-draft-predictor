@@ -77,8 +77,8 @@ function LaneChampionCell({ champion, image, badge, isBlue }) {
     switch (tag) {
       case 'HARD COUNTER':
         return isBlue
-          ? 'bg-[#0AC8B9]/20 text-[#0AC8B9] border-[#0AC8B9]/50 shadow-sm shadow-[#0AC8B9]/25 font-black'
-          : 'bg-[#E84057]/20 text-[#E84057] border-[#E84057]/50 shadow-sm shadow-[#E84057]/25 font-black';
+          ? 'bg-[#0AC8B9]/20 text-[#0AC8B9] border-[#0AC8B9]/50 font-black'
+          : 'bg-[#E84057]/20 text-[#E84057] border-[#E84057]/50 font-black';
       case 'EARLY PRIO':
         return 'bg-amber-500/15 text-amber-300 border-amber-500/40 font-bold';
       case 'OUTSCALES':
@@ -94,7 +94,7 @@ function LaneChampionCell({ champion, image, badge, isBlue }) {
       <div className="text-sm font-bold text-slate-100 leading-tight break-words whitespace-normal max-w-[140px]">
         {champion || 'Empty'}
       </div>
-      <div className={`flex items-center gap-1.5 mt-0.5 ${isBlue ? 'justify-end' : 'justify-start'}`}>
+      <div className={`flex items-center gap-1.5 mt-0.5 min-h-[18px] ${isBlue ? 'justify-end' : 'justify-start'}`}>
         {badge ? (
           <span
             className={`text-[9px] font-mono px-1.5 py-0.5 rounded border tracking-wider uppercase whitespace-nowrap ${getBadgeClass(
@@ -279,9 +279,6 @@ function WinConditionCard({ winCondition, isCoachLoading }) {
               Draft Win Condition
             </h3>
           </div>
-          <span className="text-[10px] font-mono text-amber-300/80">
-            {winCondition.coachModel ? `AI Coach (${winCondition.coachModel})` : 'Macro Priority'}
-          </span>
         </div>
         <div className="text-sm font-bold text-amber-300/90 mt-0.5 break-words whitespace-normal">
           {isLoading ? (
@@ -355,15 +352,7 @@ function PowerCurvesCard({ powerSpikes, isCoachLoading }) {
   return (
     <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg flex flex-col justify-between w-full">
       <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-800/70">
-        <span className="font-bold text-slate-300">Game Phase Power Curve</span>
-        <div className="flex items-center gap-3 text-[10px] font-normal">
-          <span className="flex items-center gap-1 text-[#0AC8B9]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#0AC8B9]" /> Blue (Top)
-          </span>
-          <span className="flex items-center gap-1 text-[#E84057]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#E84057]" /> Red (Bottom)
-          </span>
-        </div>
+        <span className="font-bold text-slate-300">Power Curve</span>
       </div>
 
       <div className="w-full py-1 select-none">
@@ -470,7 +459,7 @@ function TacticalCompositionCard({ tactical }) {
   return (
     <div className="bg-[#0B121E]/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-lg w-full">
       <div className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-slate-400 pb-1 border-b border-slate-800/70">
-        <span className="font-bold text-slate-300">Tactical Composition Edge</span>
+        <span className="font-bold text-slate-300">Composition Edge</span>
         <span className="text-[10px] text-slate-500 font-normal">Score (0 - 10)</span>
       </div>
       <div className="grid grid-cols-4 gap-2 pt-1.5">

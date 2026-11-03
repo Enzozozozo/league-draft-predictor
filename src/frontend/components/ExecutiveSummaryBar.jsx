@@ -97,9 +97,9 @@ export default function ExecutiveSummaryBar({
         <div className="w-full lg:w-auto flex justify-end">
           <button
             onClick={onModifyDraft}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-semibold font-mono border border-slate-700 hover:border-[#C89B3C] transition-all shadow-md active:scale-95 group"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-300 text-xs sm:text-sm font-semibold border border-slate-700 hover:border-amber-500/50 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 text-[#C89B3C] group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft className="w-4 h-4 text-amber-400" />
             <span>Modify Draft</span>
           </button>
         </div>

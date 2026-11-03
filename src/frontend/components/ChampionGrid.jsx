@@ -111,9 +111,10 @@ export default function ChampionGrid({
     }
   };
 
-  const isDraftComplete =
-    bluePicks.every((p) => Boolean(p.champion)) &&
-    redPicks.every((p) => Boolean(p.champion));
+  const blueFilledCount = bluePicks.filter((p) => Boolean(p.champion)).length;
+  const redFilledCount = redPicks.filter((p) => Boolean(p.champion)).length;
+  const totalFilled = blueFilledCount + redFilledCount;
+  const isDraftComplete = totalFilled === 10;
 
   return (
     <div className="bg-[#0B121E]/95 rounded-2xl px-2.5 py-3 border border-slate-800 shadow-2xl flex flex-col gap-2.5 h-full min-h-0">
@@ -123,29 +124,35 @@ export default function ChampionGrid({
         
         {/* Role Filter & Search Rows */}
         <div className="flex flex-col gap-2">
-          {/* Role Filter Buttons */}
-          <div className="flex items-center justify-start gap-1 flex-wrap">
-            <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mr-1 flex items-center gap-1">
-              <Filter className="w-3 h-3 text-amber-400" />
-              Role:
-            </span>
+          {/* Role Filter Buttons & Quick Instructions */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
             <div className="flex items-center gap-1 flex-wrap">
-              {ROLES.map((r) => {
-                const isSelected = roleFilter === r.key;
-                return (
-                  <button
-                    key={r.key}
-                    onClick={() => setRoleFilter(r.key)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold font-mono transition-all ${
-                      isSelected
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/60 shadow-sm shadow-amber-500/20'
-                        : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-slate-800'
-                    }`}
-                  >
-                    {r.label}
-                  </button>
-                );
-              })}
+              <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider mr-1 flex items-center gap-1">
+                <Filter className="w-3 h-3 text-amber-400" />
+                Role:
+              </span>
+              <div className="flex items-center gap-1 flex-wrap">
+                {ROLES.map((r) => {
+                  const isSelected = roleFilter === r.key;
+                  return (
+                    <button
+                      key={r.key}
+                      onClick={() => setRoleFilter(r.key)}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold font-mono transition-colors ${
+                        isSelected
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/60'
+                          : 'bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800 border border-slate-800'
+                      }`}
+                    >
+                      {r.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="text-xs font-mono text-slate-500">
+              Click or Drag your champions!
             </div>
           </div>
 
@@ -261,30 +268,32 @@ export default function ChampionGrid({
         )}
       </div>
 
-      {/* Large Bottom Action Button */}
-      <div className="flex-shrink-0">
+      {/* Hero Bottom Action Button */}
+      <div className="flex-shrink-0 pt-1">
         <button
           onClick={onPredictWinrate}
           disabled={isPredicting || !isDraftComplete}
-          className={`w-full group relative py-2.5 px-6 rounded-xl font-bold font-sans text-sm tracking-widest uppercase transition-all duration-200 active:scale-[0.99] flex items-center justify-center gap-2.5 border ${
+          className={`w-full group py-3 px-6 rounded-xl font-bold font-sans text-sm sm:text-base tracking-wider uppercase transition-colors flex items-center justify-center gap-2.5 border ${
             isPredicting
-              ? 'bg-amber-600/60 border-amber-500/40 cursor-wait text-slate-900 opacity-80'
+              ? 'bg-amber-600/70 border-amber-500/50 cursor-wait text-slate-950 opacity-90'
               : isDraftComplete
-              ? 'text-slate-950 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:via-amber-300 hover:to-amber-500 shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 pulse-gold border-amber-300/60 cursor-pointer'
-              : 'bg-slate-900/90 border-slate-800 text-slate-500 cursor-not-allowed opacity-60'
+              ? 'text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 border-amber-300 cursor-pointer active:opacity-90'
+              : 'bg-slate-900/90 border-slate-800 text-slate-500 cursor-not-allowed'
           }`}
         >
           {isPredicting ? (
             <>
-              <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-              <span>CONSULTING AI COACH & RUNNING INFERENCE...</span>
+              <div className="w-5 h-5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+              <span>RUNNING DRAFT INFERENCE...</span>
             </>
           ) : !isDraftComplete ? (
-            <span>LOCK IN ALL PICKS</span>
+            <span className="font-semibold text-xs sm:text-sm tracking-wide text-slate-500">
+              LOCK IN ALL CHAMPIONS ({totalFilled}/10 SELECTED)
+            </span>
           ) : (
             <>
-              <span>GET WINRATE & METRICS</span>
-              <ChevronRight className="w-4 h-4 text-slate-950 group-hover:translate-x-1 transition-transform" />
+              <span>EVALUATE DRAFT WINRATE & METRICS</span>
+              <ChevronRight className="w-5 h-5 text-slate-950" />
             </>
           )}
         </button>
