@@ -12,6 +12,10 @@ from urllib.parse import urlparse
 from .ai_model import MobalyticsJoblibModel, MonotonicCalibratedForest
 from .champion_data import ChampionDataManager
 from .llm_coach import analyze_draft_with_coach
+from .config import BASE_DIR, RiotConfig
+from .riot_client import RiotClient, RiotAPIError
+from .draft_extractor import QUEUE_DESCRIPTIONS
+
 from .schemas import (
     MatchDraft,
     MatchDraftMetadata,
@@ -43,6 +47,86 @@ ROLE_REVERSE_MAP = {
     Role.BOTTOM: "BOT",
     Role.UTILITY: "SUP",
 }
+
+
+
+CHAMPIONS_JSON_PATH = BASE_DIR / "src" / "frontend" / "data" / "champions.json"
+CHAMPIONS_METADATA = {}
+if CHAMPIONS_JSON_PATH.exists():
+    try:
+        with open(CHAMPIONS_JSON_PATH, "r", encoding="utf-8") as f:
+            for item in json.load(f):
+                CHAMPIONS_METADATA[item.get("name", "").lower()] = item
+    except Exception as e:
+        logger.warning("Could not load champions.json: %s", e)
+
+POSITION_TO_ROLE = {
+    "TOP": "TOP",
+    "JUNGLE": "JGL",
+    "JGL": "JGL",
+    "MIDDLE": "MID",
+    "MID": "MID",
+    "BOTTOM": "BOT",
+    "BOT": "BOT",
+    "UTILITY": "SUP",
+    "SUPPORT": "SUP",
+    "SUP": "SUP",
+}
+
+ROLE_ORDER = ["TOP", "JGL", "MID", "BOT", "SUP"]
+
+
+def parse_team_participants(participants, team_id, cdm):
+    """Orders a team's participants into standard roles: TOP, JGL, MID, BOT, SUP."""
+    team_p = [p for p in participants if p.get("teamId") == team_id]
+    if not team_p:
+        team_p = participants[:5] if team_id == 100 else participants[5:10]
+
+    slots = [None] * 5
+    unassigned = []
+
+    for p in team_p:
+        pos = (p.get("teamPosition") or p.get("individualPosition") or "").upper()
+        role = POSITION_TO_ROLE.get(pos)
+        if role in ROLE_ORDER:
+            idx = ROLE_ORDER.index(role)
+            if slots[idx] is None:
+                slots[idx] = p
+            else:
+                unassigned.append(p)
+        else:
+            unassigned.append(p)
+
+    for i in range(5):
+        if slots[i] is None and unassigned:
+            slots[i] = unassigned.pop(0)
+
+    result = []
+    for i in range(5):
+        p = slots[i]
+        role = ROLE_ORDER[i]
+        if not p:
+            raise ValueError(f"Incomplete match data: unable to resolve draft pick for {role}")
+
+        cid = p.get("championId", 0)
+        cname = cdm.id_to_name.get(cid) or p.get("championName")
+        if not cname:
+            raise ValueError(f"Could not resolve champion ID {cid}")
+        meta = CHAMPIONS_METADATA.get(cname.lower(), {})
+        archetype = meta.get("archetype", "Specialist")
+        win_rate = meta.get("winRate", 50.0)
+
+        result.append({
+            "role": role,
+            "champion": cname,
+            "archetype": archetype,
+            "winRate": win_rate,
+            "puuid": p.get("puuid", ""),
+            "riotId": f"{p.get('riotIdGameName', '')}#{p.get('riotIdTagline', '')}" if p.get("riotIdGameName") else p.get("summonerName", ""),
+            "win": bool(p.get("win", False)),
+        })
+
+    return result
 
 
 def run_prediction(blue_picks_data, red_picks_data):
@@ -302,6 +386,92 @@ class DraftHandler(BaseHTTPRequestHandler):
                 "ddragon_version": cdm.latest_version,
             }
             self.wfile.write(json.dumps(resp).encode("utf-8"))
+        elif parsed.path in ("/api/player-match", "/api/summoner-draft"):
+            try:
+                data = json.loads(body.decode("utf-8"))
+                riot_id = data.get("riotId", "").strip()
+                region = data.get("region", "SEA").strip()
+
+                if not riot_id:
+                    raise ValueError("Riot ID is required (e.g. Dinozo#3141)")
+
+                if "#" in riot_id:
+                    game_name, tag_line = riot_id.split("#", 1)
+                else:
+                    game_name = riot_id
+                    tag_line = region.upper()
+
+                game_name = game_name.strip()
+                tag_line = tag_line.strip()
+
+                client = RiotClient()
+                if not client.config.has_valid_api_key:
+                    raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
+                account = client.get_account_by_riot_id(game_name, tag_line, region=region)
+                puuid = account.get("puuid")
+                if not puuid:
+                    raise ValueError(f"Player account not found for {game_name}#{tag_line} ({region}).")
+
+                # Fetch most recent match without queue restriction
+                match_ids = client.get_match_ids_by_puuid(puuid, region=region, count=1, queue_id=None)
+                if not match_ids:
+                    raise ValueError(f"No recent matches found for {game_name}#{tag_line} in {region}.")
+
+                latest_match_id = match_ids[0]
+                raw_match = client.get_match_by_id(latest_match_id, region=region)
+                info = raw_match.get("info", {})
+                participants = info.get("participants", [])
+
+                blue_picks = parse_team_participants(participants, 100, cdm)
+                red_picks = parse_team_participants(participants, 200, cdm)
+
+                queue_id = info.get("queueId", 420)
+                queue_desc, _ = QUEUE_DESCRIPTIONS.get(queue_id, (f"Queue #{queue_id}", False))
+
+                searched_player = None
+                for p in participants:
+                    if p.get("puuid") == puuid:
+                        cid = p.get("championId", 0)
+                        cname = cdm.id_to_name.get(cid) or p.get("championName", "Unknown")
+                        searched_player = {
+                            "gameName": game_name,
+                            "tagLine": tag_line,
+                            "champion": cname,
+                            "teamSide": "Blue" if p.get("teamId") == 100 else "Red",
+                            "win": bool(p.get("win", False)),
+                        }
+                        break
+
+                resp = {
+                    "success": True,
+                    "matchId": latest_match_id,
+                    "queueId": queue_id,
+                    "queueDescription": queue_desc,
+                    "gameDuration": info.get("gameDuration", 0),
+                    "searchedPlayer": searched_player,
+                    "bluePicks": blue_picks,
+                    "redPicks": red_picks,
+                }
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(resp).encode("utf-8"))
+            except RiotAPIError as rae:
+                logger.error("Riot API error for %s: %s", riot_id, rae)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(rae)}).encode("utf-8"))
+            except Exception as e:
+                logger.error("Player match retrieval failed: %s", e)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()
@@ -351,6 +521,92 @@ class DraftHandler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+        elif parsed.path in ("/api/player-match", "/api/summoner-draft"):
+            try:
+                data = json.loads(body.decode("utf-8"))
+                riot_id = data.get("riotId", "").strip()
+                region = data.get("region", "SEA").strip()
+
+                if not riot_id:
+                    raise ValueError("Riot ID is required (e.g. Dinozo#3141)")
+
+                if "#" in riot_id:
+                    game_name, tag_line = riot_id.split("#", 1)
+                else:
+                    game_name = riot_id
+                    tag_line = region.upper()
+
+                game_name = game_name.strip()
+                tag_line = tag_line.strip()
+
+                client = RiotClient()
+                if not client.config.has_valid_api_key:
+                    raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
+                account = client.get_account_by_riot_id(game_name, tag_line, region=region)
+                puuid = account.get("puuid")
+                if not puuid:
+                    raise ValueError(f"Player account not found for {game_name}#{tag_line} ({region}).")
+
+                # Fetch most recent match without queue restriction
+                match_ids = client.get_match_ids_by_puuid(puuid, region=region, count=1, queue_id=None)
+                if not match_ids:
+                    raise ValueError(f"No recent matches found for {game_name}#{tag_line} in {region}.")
+
+                latest_match_id = match_ids[0]
+                raw_match = client.get_match_by_id(latest_match_id, region=region)
+                info = raw_match.get("info", {})
+                participants = info.get("participants", [])
+
+                blue_picks = parse_team_participants(participants, 100, cdm)
+                red_picks = parse_team_participants(participants, 200, cdm)
+
+                queue_id = info.get("queueId", 420)
+                queue_desc, _ = QUEUE_DESCRIPTIONS.get(queue_id, (f"Queue #{queue_id}", False))
+
+                searched_player = None
+                for p in participants:
+                    if p.get("puuid") == puuid:
+                        cid = p.get("championId", 0)
+                        cname = cdm.id_to_name.get(cid) or p.get("championName", "Unknown")
+                        searched_player = {
+                            "gameName": game_name,
+                            "tagLine": tag_line,
+                            "champion": cname,
+                            "teamSide": "Blue" if p.get("teamId") == 100 else "Red",
+                            "win": bool(p.get("win", False)),
+                        }
+                        break
+
+                resp = {
+                    "success": True,
+                    "matchId": latest_match_id,
+                    "queueId": queue_id,
+                    "queueDescription": queue_desc,
+                    "gameDuration": info.get("gameDuration", 0),
+                    "searchedPlayer": searched_player,
+                    "bluePicks": blue_picks,
+                    "redPicks": red_picks,
+                }
+
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(resp).encode("utf-8"))
+            except RiotAPIError as rae:
+                logger.error("Riot API error for %s: %s", riot_id, rae)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(rae)}).encode("utf-8"))
+            except Exception as e:
+                logger.error("Player match retrieval failed: %s", e)
+                self.send_response(200)
+                self._send_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode("utf-8"))
         else:
             self.send_response(404)
             self.end_headers()

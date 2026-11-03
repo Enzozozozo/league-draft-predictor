@@ -424,3 +424,36 @@ export async function fetchAsyncCoachAnalysis(bluePicks, redPicks, tacticalDimen
   }
   return null;
 }
+
+/**
+ * Fetches the latest match draft picks for a given Summoner / Riot ID and region.
+ */
+export async function fetchLatestPlayerDraft(riotId, region = 'SEA') {
+  try {
+    const endpoints = getEndpoints('/api/player-match');
+    for (const ep of endpoints) {
+      try {
+        const r = await fetch(ep, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ riotId, region }),
+        });
+        if (r.ok) {
+          const data = await r.json();
+          return data;
+        }
+      } catch {
+        // try next
+      }
+    }
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message || 'Network error fetching player match.',
+    };
+  }
+  return {
+    success: false,
+    error: 'API server unreachable. Make sure the backend server is running.',
+  };
+}

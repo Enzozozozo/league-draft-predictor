@@ -1,11 +1,11 @@
-"""Official Riot Games API Client with Regional Routing, Rate Limiting, Caching, and Mock Support.
+"""Official Riot Games API Client with Regional Routing, Rate Limiting, and Caching.
 
 Complies strictly with Riot Developer guidelines:
 - Account-v1 (Riot ID -> PUUID)
 - Match-v5 (PUUID -> Match IDs, Match ID -> Match Details)
 - Built-in disk caching for immutable match payloads
 - Local rate-limiting & backoff
-- Realistic offline Mock Mode for development with fake or expired API keys
+- Explicit error propagation (no fallback mock games)
 """
 
 import json
@@ -18,7 +18,7 @@ from urllib.parse import quote
 
 import requests
 
-from .config import RiotConfig, CACHE_DIR, get_regional_route
+from .config import RiotConfig, CACHE_DIR, get_regional_route, resolve_continental_region
 
 logger = logging.getLogger("RiotClient")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -42,9 +42,7 @@ class RateLimiter:
 
     def wait_if_needed(self):
         now = time.time()
-        # Clean timestamps older than 1 second
         self.short_history = [t for t in self.short_history if now - t < 1.0]
-        # Clean timestamps older than 120 seconds
         self.long_history = [t for t in self.long_history if now - t < 120.0]
 
         if len(self.short_history) >= self.short_limit:
@@ -81,16 +79,18 @@ class RiotClient:
         self.account_cache_dir.mkdir(parents=True, exist_ok=True)
 
         logger.info(
-            "RiotClient initialized (Mock Mode: %s, Platform: %s, Region: %s)",
-            self.config.is_mock,
+            "RiotClient initialized (Has API Key: %s, Platform: %s, Region: %s)",
+            self.config.has_valid_api_key,
             self.config.default_platform,
             self.config.default_region,
         )
 
     def _get_headers(self) -> Dict[str, str]:
+        if not self.config.has_valid_api_key:
+            raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
         return {
             "X-Riot-Token": self.config.api_key,
-            "User-Agent": "LeagueDraftAI/1.0.0 (Research & Draft Analysis Application)",
+            "User-Agent": "DraftJudge/1.0.0 (Research & Draft Analysis Application)",
             "Accept-Language": "en-US,en;q=0.9",
         }
 
@@ -99,6 +99,9 @@ class RiotClient:
     # -------------------------------------------------------------------------
     def get_account_by_riot_id(self, game_name: str, tag_line: str, region: Optional[str] = None) -> Dict[str, Any]:
         """Look up player PUUID using official Riot ID (e.g. 'Faker#T1')."""
+        if not self.config.has_valid_api_key:
+            raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
+
         region = region or self.config.default_region
         cache_key = f"{game_name.lower()}_{tag_line.lower()}_{region}.json"
         cache_file = self.account_cache_dir / cache_key
@@ -111,19 +114,12 @@ class RiotClient:
             except Exception as e:
                 logger.warning("Cache read error for %s: %s", cache_file, e)
 
-        if self.config.is_mock:
-            mock_account = self._generate_mock_account(game_name, tag_line)
-            with open(cache_file, "w", encoding="utf-8") as f:
-                json.dump(mock_account, f, indent=2)
-            return mock_account
-
-        # Official Account-v1 endpoint: Account-v1 only supports 'asia', 'americas', 'europe'
-        # 'sea' is NOT a valid Account-v1 cluster; SEA players are resolved via 'asia'
-        account_region = "asia" if (region and region.lower() in ("sea", "asia")) else (region or "americas")
+        # Account-v1 clusters: 'asia', 'americas', 'europe'. SEA players use 'asia'.
+        continental = resolve_continental_region(region or self.config.default_region)
+        account_region = "asia" if continental in ("sea", "asia") else continental
         safe_name = quote(game_name)
         safe_tag = quote(tag_line)
         url = f"https://{account_region}.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{safe_name}/{safe_tag}"
-
 
         self.rate_limiter.wait_if_needed()
         logger.info("HTTP GET Account-v1: %s", url)
@@ -134,11 +130,8 @@ class RiotClient:
             with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
             return data
-        elif resp.status_code in (401, 403) and ("mock" in self.config.api_key.lower() or "fake" in self.config.api_key.lower()):
-            logger.warning("Received %d Unauthorized with fake key; falling back to mock account", resp.status_code)
-            return self._generate_mock_account(game_name, tag_line)
         else:
-            self._handle_api_error(resp)
+            self._handle_api_error(resp, context=f"account '{game_name}#{tag_line}'")
             return {}
 
     # -------------------------------------------------------------------------
@@ -149,17 +142,16 @@ class RiotClient:
         puuid: str,
         region: Optional[str] = None,
         count: int = 10,
-        queue_id: Optional[int] = 420,  # 420 = Ranked Solo/Duo
+        queue_id: Optional[int] = None,
     ) -> List[str]:
         """Fetch list of historical match IDs for a player."""
-        region = region or self.config.default_region
+        if not self.config.has_valid_api_key:
+            raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
 
-        if self.config.is_mock or puuid.startswith("mock-puuid-"):
-            return self._generate_mock_match_ids(region, count)
-
-        url = f"https://{region}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids"
+        continental = resolve_continental_region(region or self.config.default_region)
+        url = f"https://{continental}.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids"
         params: Dict[str, Any] = {"start": 0, "count": count}
-        if queue_id:
+        if queue_id is not None:
             params["queue"] = queue_id
 
         self.rate_limiter.wait_if_needed()
@@ -168,11 +160,8 @@ class RiotClient:
 
         if resp.status_code == 200:
             return resp.json()
-        elif resp.status_code in (401, 403) and ("mock" in self.config.api_key.lower() or "fake" in self.config.api_key.lower()):
-            logger.warning("Received %d with fake key; returning mock match IDs", resp.status_code)
-            return self._generate_mock_match_ids(region, count)
         else:
-            self._handle_api_error(resp)
+            self._handle_api_error(resp, context="match history")
             return []
 
     # -------------------------------------------------------------------------
@@ -180,11 +169,15 @@ class RiotClient:
     # -------------------------------------------------------------------------
     def get_match_by_id(self, match_id: str, region: Optional[str] = None) -> Dict[str, Any]:
         """Fetch detailed match data (picks, bans, participants, metadata)."""
+        if not self.config.has_valid_api_key:
+            raise RiotAPIError(401, "No valid Riot API Key configured. Please add your real RIOT_API_KEY in the .env file.")
+
         # Resolve continental region from match_id prefix if available (e.g. SG2_123 -> sea, NA1_123 -> americas)
         if not region:
             prefix = match_id.split("_")[0].lower() if "_" in match_id else ""
             region = get_regional_route(prefix) if prefix else self.config.default_region
 
+        continental = resolve_continental_region(region)
         cache_file = self.match_cache_dir / f"{match_id}.json"
         if cache_file.exists():
             try:
@@ -194,13 +187,7 @@ class RiotClient:
             except Exception as e:
                 logger.warning("Cache read error for %s: %s", cache_file, e)
 
-        if self.config.is_mock or match_id.startswith("MOCK_"):
-            mock_data = self._generate_mock_match(match_id)
-            with open(cache_file, "w", encoding="utf-8") as f:
-                json.dump(mock_data, f, indent=2)
-            return mock_data
-
-        url = f"https://{region}.api.riotgames.com/lol/match/v5/matches/{match_id}"
+        url = f"https://{continental}.api.riotgames.com/lol/match/v5/matches/{match_id}"
         self.rate_limiter.wait_if_needed()
         logger.info("HTTP GET Match-v5 Match Details: %s", url)
         resp = requests.get(url, headers=self._get_headers(), timeout=12)
@@ -210,20 +197,14 @@ class RiotClient:
             with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
             return data
-        elif resp.status_code in (401, 403) and ("mock" in self.config.api_key.lower() or "fake" in self.config.api_key.lower()):
-            logger.warning("Received %d with fake key; serving high-fidelity mock match", resp.status_code)
-            mock_data = self._generate_mock_match(match_id)
-            with open(cache_file, "w", encoding="utf-8") as f:
-                json.dump(mock_data, f, indent=2)
-            return mock_data
         else:
-            self._handle_api_error(resp)
+            self._handle_api_error(resp, context=f"match ID {match_id}")
             return {}
 
     # -------------------------------------------------------------------------
     # Error Handler
     # -------------------------------------------------------------------------
-    def _handle_api_error(self, resp: requests.Response):
+    def _handle_api_error(self, resp: requests.Response, context: str = ""):
         status = resp.status_code
         try:
             err_json = resp.json()
@@ -231,243 +212,20 @@ class RiotClient:
         except Exception:
             msg = resp.text
 
+        detail = f" for {context}" if context else ""
+
         if status == 400:
-            raise RiotAPIError(400, f"Bad Request: {msg}")
+            raise RiotAPIError(400, f"Bad Request ({status}): {msg}")
         elif status == 401:
-            raise RiotAPIError(401, f"Unauthorized: Check your RIOT_API_KEY in .env. ({msg})")
+            raise RiotAPIError(401, "Unauthorized (401): Invalid Riot API Key. Please update RIOT_API_KEY in .env.")
         elif status == 403:
-            raise RiotAPIError(403, f"Forbidden: API Key is expired or rejected by Riot. ({msg})")
+            raise RiotAPIError(403, "Forbidden (403): Riot API Key has expired or was rejected. Generate a new key at developer.riotgames.com and paste it in .env.")
         elif status == 404:
-            raise RiotAPIError(404, f"Resource Not Found: {msg}")
+            raise RiotAPIError(404, f"Not Found (404){detail}. Check spelling and selected region.")
         elif status == 429:
             retry_after = resp.headers.get("Retry-After", "10")
-            raise RiotAPIError(429, f"Rate Limit Exceeded. Retry-After: {retry_after}s. ({msg})")
+            raise RiotAPIError(429, f"Rate Limit Exceeded (429). Retry after {retry_after}s.")
         elif status >= 500:
-            raise RiotAPIError(status, f"Riot Server Error: {msg}")
+            raise RiotAPIError(status, f"Riot Server Error ({status}): {msg}")
         else:
-            raise RiotAPIError(status, f"Unexpected response: {msg}")
-
-    # -------------------------------------------------------------------------
-    # High-Fidelity Mock Generators for Offline / Fake API Key Testing
-    # -------------------------------------------------------------------------
-    def _generate_mock_account(self, game_name: str, tag_line: str) -> Dict[str, Any]:
-        """Generate official Account-v1 schema response."""
-        return {
-            "puuid": f"mock-puuid-{abs(hash(game_name + tag_line)):016x}",
-            "gameName": game_name,
-            "tagLine": tag_line,
-        }
-
-    def _generate_mock_match_ids(self, region: str, count: int) -> List[str]:
-        """Generate realistic match IDs for the region."""
-        prefix = "SG2" if region == "sea" else ("NA1" if region == "americas" else "KR")
-        return [f"{prefix}_31589400{i:02d}" for i in range(1, count + 1)]
-
-    def _generate_mock_match(self, match_id: str) -> Dict[str, Any]:
-        """Generate official Match-v5 schema payload with full draft (picks & bans)."""
-        # Blue Team: Aatrox (Top), Lee Sin (Jungle), Ahri (Mid), Jinx (Bot), Thresh (Sup)
-        # Red Team:  Malphite (Top), Jarvan IV (Jungle), Sylas (Mid), Ezreal (Bot), Leona (Sup)
-        return {
-            "metadata": {
-                "dataVersion": "2",
-                "matchId": match_id,
-                "participants": [
-                    f"mock-puuid-{i:04d}" for i in range(1, 11)
-                ],
-            },
-            "info": {
-                "gameCreation": 1715690000000,
-                "gameDuration": 1845,
-                "gameEndTimestamp": 1715691845000,
-                "gameId": 315894001,
-                "gameMode": "CLASSIC",
-                "gameName": "teambuilder-match-315894001",
-                "gameStartTimestamp": 1715690060000,
-                "gameType": "MATCHED_GAME",
-                "gameVersion": "14.10.1.5888",
-                "mapId": 11,
-                "platformId": "SG2",
-                "queueId": 420,  # Ranked Solo 5v5
-                "tournamentCode": "",
-                "teams": [
-                    {
-                        "teamId": 100,
-                        "win": True,
-                        "bans": [
-                            {"championId": 157, "pickTurn": 1},  # Yasuo
-                            {"championId": 238, "pickTurn": 3},  # Zed
-                            {"championId": 897, "pickTurn": 5},  # K'Sante
-                            {"championId": 222, "pickTurn": 7},  # Jinx
-                            {"championId": 111, "pickTurn": 9},  # Nautilus
-                        ],
-                        "objectives": {"baron": {"first": True, "kills": 1}, "dragon": {"first": True, "kills": 3}},
-                    },
-                    {
-                        "teamId": 200,
-                        "win": False,
-                        "bans": [
-                            {"championId": 84, "pickTurn": 2},   # Akali
-                            {"championId": 53, "pickTurn": 4},   # Blitzcrank
-                            {"championId": 114, "pickTurn": 6},  # Fiora
-                            {"championId": 516, "pickTurn": 8},  # Ornn
-                            {"championId": 412, "pickTurn": 10}, # Thresh
-                        ],
-                        "objectives": {"baron": {"first": False, "kills": 0}, "dragon": {"first": False, "kills": 1}},
-                    },
-                ],
-                "participants": [
-                    # Blue Team (100)
-                    {
-                        "participantId": 1,
-                        "teamId": 100,
-                        "puuid": "mock-puuid-0001",
-                        "riotIdGameName": "TopTitan",
-                        "riotIdTagline": "SEA",
-                        "championId": 266,
-                        "championName": "Aatrox",
-                        "teamPosition": "TOP",
-                        "individualPosition": "TOP",
-                        "summoner1Id": 4,  # Flash
-                        "summoner2Id": 12, # Teleport
-                        "win": True,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8010}]}]},  # Conqueror
-                    },
-                    {
-                        "participantId": 2,
-                        "teamId": 100,
-                        "puuid": "mock-puuid-0002",
-                        "riotIdGameName": "JungleDiff",
-                        "riotIdTagline": "SG",
-                        "championId": 64,
-                        "championName": "LeeSin",
-                        "teamPosition": "JUNGLE",
-                        "individualPosition": "JUNGLE",
-                        "summoner1Id": 4,
-                        "summoner2Id": 11, # Smite
-                        "win": True,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8010}]}]},
-                    },
-                    {
-                        "participantId": 3,
-                        "teamId": 100,
-                        "puuid": "mock-puuid-0003",
-                        "riotIdGameName": "MidMage",
-                        "riotIdTagline": "KR",
-                        "championId": 103,
-                        "championName": "Ahri",
-                        "teamPosition": "MIDDLE",
-                        "individualPosition": "MIDDLE",
-                        "summoner1Id": 4,
-                        "summoner2Id": 14, # Ignite
-                        "win": True,
-                        "perks": {"styles": [{"style": 8100, "selections": [{"perk": 8112}]}]},  # Electrocute
-                    },
-                    {
-                        "participantId": 4,
-                        "teamId": 100,
-                        "puuid": "mock-puuid-0004",
-                        "riotIdGameName": "CarryQueen",
-                        "riotIdTagline": "001",
-                        "championId": 222,
-                        "championName": "Jinx",
-                        "teamPosition": "BOTTOM",
-                        "individualPosition": "BOTTOM",
-                        "summoner1Id": 4,
-                        "summoner2Id": 7,  # Heal
-                        "win": True,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8008}]}]},  # Lethal Tempo
-                    },
-                    {
-                        "participantId": 5,
-                        "teamId": 100,
-                        "puuid": "mock-puuid-0005",
-                        "riotIdGameName": "HookMaster",
-                        "riotIdTagline": "SUP",
-                        "championId": 412,
-                        "championName": "Thresh",
-                        "teamPosition": "UTILITY",
-                        "individualPosition": "UTILITY",
-                        "summoner1Id": 4,
-                        "summoner2Id": 14,
-                        "win": True,
-                        "perks": {"styles": [{"style": 8400, "selections": [{"perk": 8439}]}]},  # Aftershock
-                    },
-                    # Red Team (200)
-                    {
-                        "participantId": 6,
-                        "teamId": 200,
-                        "puuid": "mock-puuid-0006",
-                        "riotIdGameName": "RockSolid",
-                        "riotIdTagline": "RED",
-                        "championId": 54,
-                        "championName": "Malphite",
-                        "teamPosition": "TOP",
-                        "individualPosition": "TOP",
-                        "summoner1Id": 4,
-                        "summoner2Id": 12,
-                        "win": False,
-                        "perks": {"styles": [{"style": 8200, "selections": [{"perk": 8229}]}]},  # Arcane Comet
-                    },
-                    {
-                        "participantId": 7,
-                        "teamId": 200,
-                        "puuid": "mock-puuid-0007",
-                        "riotIdGameName": "DemaciaFirst",
-                        "riotIdTagline": "PR",
-                        "championId": 59,
-                        "championName": "JarvanIV",
-                        "teamPosition": "JUNGLE",
-                        "individualPosition": "JUNGLE",
-                        "summoner1Id": 4,
-                        "summoner2Id": 11,
-                        "win": False,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8010}]}]},
-                    },
-                    {
-                        "participantId": 8,
-                        "teamId": 200,
-                        "puuid": "mock-puuid-0008",
-                        "riotIdGameName": "ChainsBreak",
-                        "riotIdTagline": "MID",
-                        "championId": 517,
-                        "championName": "Sylas",
-                        "teamPosition": "MIDDLE",
-                        "individualPosition": "MIDDLE",
-                        "summoner1Id": 4,
-                        "summoner2Id": 14,
-                        "win": False,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8010}]}]},
-                    },
-                    {
-                        "participantId": 9,
-                        "teamId": 200,
-                        "puuid": "mock-puuid-0009",
-                        "riotIdGameName": "ArcaneShifter",
-                        "riotIdTagline": "BOT",
-                        "championId": 81,
-                        "championName": "Ezreal",
-                        "teamPosition": "BOTTOM",
-                        "individualPosition": "BOTTOM",
-                        "summoner1Id": 4,
-                        "summoner2Id": 7,
-                        "win": False,
-                        "perks": {"styles": [{"style": 8000, "selections": [{"perk": 8010}]}]},
-                    },
-                    {
-                        "participantId": 10,
-                        "teamId": 200,
-                        "puuid": "mock-puuid-0010",
-                        "riotIdGameName": "PraiseTheSun",
-                        "riotIdTagline": "SUPP",
-                        "championId": 89,
-                        "championName": "Leona",
-                        "teamPosition": "UTILITY",
-                        "individualPosition": "UTILITY",
-                        "summoner1Id": 4,
-                        "summoner2Id": 14,
-                        "win": False,
-                        "perks": {"styles": [{"style": 8400, "selections": [{"perk": 8439}]}]},
-                    },
-                ],
-            },
-        }
+            raise RiotAPIError(status, f"Riot API Error ({status}): {msg}")

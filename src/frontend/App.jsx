@@ -8,11 +8,13 @@ import {
   EMPTY_BLUE_PICKS,
   EMPTY_RED_PICKS,
   CHAMPIONS,
+  getChampion,
 } from './data/championsData';
 import {
   calculateDraftPrediction,
   predictDraftWithBackend,
   fetchAsyncCoachAnalysis,
+  fetchLatestPlayerDraft,
 } from './utils/draftModel';
 
 export default function App() {
@@ -27,6 +29,16 @@ export default function App() {
   const [draggedChampion, setDraggedChampion] = useState(null);
   const [isPredicting, setIsPredicting] = useState(false);
   const [isCoachLoading, setIsCoachLoading] = useState(false);
+  const [isSearchingSummoner, setIsSearchingSummoner] = useState(false);
+  const [searchNotification, setSearchNotification] = useState(null);
+
+  // Auto-dismiss search status after 5 seconds
+  useEffect(() => {
+    if (searchNotification) {
+      const timer = setTimeout(() => setSearchNotification(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchNotification]);
 
   // Recalculate prediction data locally as instant preview in draft mode
   useEffect(() => {
@@ -230,6 +242,68 @@ export default function App() {
     setActiveSlot(null);
   }, []);
 
+  // Fetch summoner's most recent match draft and populate the lobby
+  const handleSearchSummoner = useCallback(async ({ summonerId, region }) => {
+    if (!summonerId?.trim() || isSearchingSummoner) return;
+    setIsSearchingSummoner(true);
+    setSearchNotification(null);
+
+    try {
+      const res = await fetchLatestPlayerDraft(summonerId.trim(), region);
+      if (res && res.success && res.bluePicks && res.redPicks) {
+        // Normalize picks through frontend getChampion to ensure exact assets and metrics match
+        const normalizePick = (p) => {
+          const c = getChampion(p.champion);
+          return {
+            role: p.role,
+            champion: c ? c.name : p.champion,
+            archetype: c?.archetype || p.archetype || 'Specialist',
+            winRate: c?.winRate ?? p.winRate ?? 50.0,
+          };
+        };
+
+        const newBlue = res.bluePicks.map(normalizePick);
+        const newRed = res.redPicks.map(normalizePick);
+
+        setBluePicks(newBlue);
+        setRedPicks(newRed);
+        setActiveSlot(null);
+
+        // Immediate local calculation
+        const localPred = calculateDraftPrediction(newBlue, newRed);
+        setPredictionData(localPred);
+
+        const playerNote = res.searchedPlayer
+          ? ` (${res.searchedPlayer.champion} · ${res.searchedPlayer.teamSide} Team)`
+          : '';
+        const matchLabel = res.matchId ? `[${res.matchId}] ` : '';
+        setSearchNotification({
+          type: 'success',
+          message: `${matchLabel}Loaded latest match draft${playerNote}`,
+        });
+
+        // Trigger ML backend prediction in background if server is online
+        predictDraftWithBackend(newBlue, newRed).then((backendPred) => {
+          if (backendPred) {
+            setPredictionData(backendPred);
+          }
+        });
+      } else {
+        setSearchNotification({
+          type: 'error',
+          message: res?.error || `No recent matches found for ${summonerId}.`,
+        });
+      }
+    } catch (err) {
+      setSearchNotification({
+        type: 'error',
+        message: err.message || 'Error communicating with API.',
+      });
+    } finally {
+      setIsSearchingSummoner(false);
+    }
+  }, [isSearchingSummoner]);
+
   return (
     <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-[#070B13] bg-hextech-grid flex flex-col text-slate-100 selection:bg-amber-500/30 selection:text-amber-200">
       
@@ -240,6 +314,9 @@ export default function App() {
         onResetDefault={handleResetDefault}
         onRandomizeDraft={handleRandomizeDraft}
         onLogoClick={handleLogoClick}
+        onSearchSummoner={handleSearchSummoner}
+        isSearchingSummoner={isSearchingSummoner}
+        searchNotification={searchNotification}
       />
 
       {/* Main Interactive Container: Both the draft and analytics views fit on a single screen with generous edge padding */}

@@ -72,8 +72,7 @@ class DraftAnalysisApp:
 
         match_ids = self.client.get_match_ids_by_puuid(puuid, region=region, count=count)
         if not match_ids:
-            logger.warning("No recent matches found for %s#%s. Utilizing sample active matches.", game_name, tag_line)
-            match_ids = ["SG2_315894001", "SG2_315894002", "SG2_315894003"]
+            raise ValueError(f"No recent matches found for {game_name}#{tag_line} in region {region}.")
 
         selected_matches = match_ids[:count]
         logger.info("Found %d matches. Analyzing %d match drafts...", len(match_ids), len(selected_matches))
