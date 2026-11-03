@@ -5,3 +5,8 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R dist/* $DEPLOYPATH
     - /bin/cp dist/.htaccess $DEPLOYPATH
+    - /bin/cp passenger_wsgi.py $DEPLOYPATH
+    - /bin/cp -R src $DEPLOYPATH
+    - /bin/cp -R models $DEPLOYPATH
+    - /bin/mkdir -p $DEPLOYPATH/tmp
+    - /bin/touch $DEPLOYPATH/tmp/restart.txt
