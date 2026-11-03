@@ -10,9 +10,11 @@ import logging
 import os
 from typing import Dict, Any, List
 import requests
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 logger = logging.getLogger("LLMCoach")
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"

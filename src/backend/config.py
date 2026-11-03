@@ -2,21 +2,51 @@
 
 Handles API credentials, routing, caching, and model paths.
 All mock fallback game modes have been removed so all queries hit the real API or return an explicit error.
+Safe native .env loading prevents ModuleNotFoundError: No module named 'dotenv'.
 """
 
 import os
 from pathlib import Path
 from dataclasses import dataclass
-from dotenv import load_dotenv
 
 # Base directory paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(BASE_DIR / ".env")
 CACHE_DIR = BASE_DIR / ".cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Path to the user's trained joblib model
 DEFAULT_MODEL_PATH = BASE_DIR / "models" / "league_draft_iter1.joblib"
+
+
+def load_env_safe(env_path=None, override=False):
+    """Safely loads key-value pairs from a .env file without requiring python-dotenv."""
+    path = env_path or (BASE_DIR / ".env")
+    if not os.path.exists(path):
+        return
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(path, override=override)
+        return
+    except ImportError:
+        pass
+
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                k, v = line.split("=", 1)
+                k = k.strip()
+                v = v.strip().strip("'\"")
+                if k and (override or k not in os.environ):
+                    os.environ[k] = v
+    except Exception:
+        pass
+
+
+# Initial load from .env
+load_env_safe(BASE_DIR / ".env")
 
 
 def get_model_path() -> Path:
@@ -35,8 +65,18 @@ class RiotConfig:
     cache_ttl_seconds: int = 86400 * 7  # Matches are immutable; cache for 7 days
 
     def __post_init__(self):
-        # Always reload from .env to pick up recent user edits
-        load_dotenv(BASE_DIR / ".env", override=True)
+        # Reload from .env (and common search paths) to pick up recent user edits
+        load_env_safe(BASE_DIR / ".env", override=True)
+        for alt_path in [
+            BASE_DIR.parent / ".env",
+            Path(os.path.expanduser("~")) / ".env",
+            Path("/home/enzotay/.env"),
+            Path("/home/enzotay/public_html/draft/.env"),
+            Path("/home/enzotay/league-draft-predictor-backend/.env"),
+        ]:
+            if alt_path.exists():
+                load_env_safe(alt_path, override=False)
+
         if not self.api_key:
             self.api_key = os.getenv("RIOT_API_KEY", "").strip()
         if not self.default_platform or self.default_platform == "sg2":

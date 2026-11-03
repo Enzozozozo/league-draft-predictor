@@ -15,7 +15,7 @@ if PROJECT_ROOT not in sys.path:
 # On shared cPanel hosts (/dev/shm is restricted), ensure temp folder is in home directory
 os.environ.setdefault("JOBLIB_TEMP_FOLDER", os.path.join(PROJECT_ROOT, ".cache"))
 
-from dotenv import load_dotenv
+from src.backend.config import load_env_safe
 
 # Search for .env in common cPanel deployment paths
 for env_path in [
@@ -25,7 +25,7 @@ for env_path in [
     os.path.join(os.path.expanduser("~"), ".env"),
 ]:
     if os.path.exists(env_path):
-        load_dotenv(env_path, override=True)
+        load_env_safe(env_path, override=True)
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS

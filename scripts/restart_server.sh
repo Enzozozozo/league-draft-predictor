@@ -11,17 +11,20 @@ sleep 1
 touch /home/enzotay/public_html/draft/tmp/restart.txt 2>/dev/null || true
 touch /home/enzotay/league-draft-predictor-backend/tmp/restart.txt 2>/dev/null || true
 
-# 3. Locate Python binary (cPanel virtualenv or system python3)
+# 3. Locate Python binary (scan cPanel virtualenv first, then system python)
 PYTHON_BIN=""
-for candidate in \
+
+# Check if find returns a cPanel virtualenv python
+for venv_path in \
+  $(find /home/enzotay/virtualenv -name python 2>/dev/null) \
   /home/enzotay/virtualenv/league-draft-predictor-backend/*/bin/python \
-  /home/enzotay/virtualenv/draft/*/bin/python \
+  /home/enzotay/virtualenv/league-draft-predictor-backend/bin/python \
   /home/enzotay/league-draft-predictor-backend/.venv/bin/python \
   /home/enzotay/.venv/bin/python \
   /usr/bin/python3 \
   python3; do
-  if [ -x "$candidate" ]; then
-    PYTHON_BIN="$candidate"
+  if [ -x "$venv_path" ]; then
+    PYTHON_BIN="$venv_path"
     break
   fi
 done
@@ -39,6 +42,11 @@ if [ -n "$PYTHON_BIN" ]; then
   fi
 
   cd "$TARGET_DIR" || exit 0
+  
+  # Ensure dependencies are available
+  "$PYTHON_BIN" -m pip install -r requirements.txt --quiet 2>/dev/null || true
+
+  # Launch server on port 5001
   nohup "$PYTHON_BIN" -m src.backend.server > /home/enzotay/server.log 2>&1 &
   echo "[Deploy] Backend server launched in background from $TARGET_DIR on port 5001."
 else
