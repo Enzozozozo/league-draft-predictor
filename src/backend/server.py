@@ -635,8 +635,34 @@ class DraftHandler(BaseHTTPRequestHandler):
         logger.info("%s - %s", self.address_string(), format % args)
 
 
+def kill_old_instances(port=5001):
+    """Terminates any existing backend process owned by the current user to prevent [Errno 98] Address in use."""
+    my_pid = os.getpid()
+    proc_dir = Path("/proc")
+    if not proc_dir.exists():
+        return
+    for entry in proc_dir.iterdir():
+        if not entry.name.isdigit():
+            continue
+        pid = int(entry.name)
+        if pid == my_pid:
+            continue
+        try:
+            cmdline_file = entry / "cmdline"
+            if cmdline_file.exists():
+                cmd = cmdline_file.read_bytes().decode("utf-8", errors="ignore")
+                if ("src.backend.server" in cmd or "server.py" in cmd) and "kill" not in cmd:
+                    logger.info("Terminating old server process %d", pid)
+                    os.kill(pid, 9)
+        except Exception:
+            pass
+    import time
+    time.sleep(0.8)
+
+
 def main():
     port = 5001
+    kill_old_instances(port)
     ThreadingHTTPServer.allow_reuse_address = True
     server = ThreadingHTTPServer(("127.0.0.1", port), DraftHandler)
     logger.info("Draft Predictor API Server running on http://127.0.0.1:%d", port)
