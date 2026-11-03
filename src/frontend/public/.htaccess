@@ -4,9 +4,9 @@ DirectoryIndex index.html index.php
   RewriteEngine On
   RewriteBase /draft/
   
-  # Forward /draft/api calls to the local Python backend service on port 5001
+  # Forward /draft/api calls to the local Python backend service on port 5005
   <IfModule mod_proxy.c>
-    RewriteRule ^api/(.*)$ http://127.0.0.1:5001/api/$1 [P,L]
+    RewriteRule ^api/(.*)$ http://127.0.0.1:5005/api/$1 [P,L]
   </IfModule>
 
   # Prevent /draft/api requests from falling back to React's index.html

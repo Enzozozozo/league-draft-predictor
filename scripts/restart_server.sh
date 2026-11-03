@@ -1,14 +1,26 @@
 #!/bin/sh
 # Instant backend restart script executed by cPanel deployment
 
-echo "[Deploy] Restarting Python backend on port 5001..."
+PORT=5005
+echo "[Deploy] Restarting Python backend on port $PORT..."
 
-# 1. Kill old backend process on port 5001
-fuser -k -9 5001/tcp 2>/dev/null || true
+# 1. Sync updated files to public_html/draft if run from backend repo
+if [ -d "/home/enzotay/public_html/draft" ]; then
+  echo "[Deploy] Syncing updated backend & .htaccess to public_html/draft..."
+  [ -f "dist/.htaccess" ] && cp "dist/.htaccess" "/home/enzotay/public_html/draft/.htaccess"
+  [ -f "passenger_wsgi.py" ] && cp "passenger_wsgi.py" "/home/enzotay/public_html/draft/passenger_wsgi.py"
+  [ -d "src" ] && cp -r src "/home/enzotay/public_html/draft/"
+  [ -d "models" ] && cp -r models "/home/enzotay/public_html/draft/"
+  mkdir -p "/home/enzotay/public_html/draft/tmp"
+  touch "/home/enzotay/public_html/draft/tmp/restart.txt"
+fi
+
+# 2. Kill old backend process on port 5005
+fuser -k -9 $PORT/tcp 2>/dev/null || true
 python3 -c "
 import os, signal
 
-port_hex = f'{5001:04X}'
+port_hex = f'{5005:04X}'
 inodes = set()
 for tcp_path in ('/proc/net/tcp', '/proc/net/tcp6'):
     if os.path.exists(tcp_path):
@@ -53,10 +65,6 @@ pkill -9 -f "src.backend.server" 2>/dev/null || true
 pkill -9 -f "server.py" 2>/dev/null || true
 sleep 1
 
-# 2. Touch restart.txt for Phusion Passenger
-touch /home/enzotay/public_html/draft/tmp/restart.txt 2>/dev/null || true
-touch /home/enzotay/league-draft-predictor-backend/tmp/restart.txt 2>/dev/null || true
-
 # 3. Locate Python binary (direct check, no slow disk scanning)
 PYTHON_BIN="/usr/bin/python3"
 for candidate in \
@@ -80,5 +88,6 @@ elif [ -d "/home/enzotay/public_html/draft" ]; then
 fi
 
 # 4. Launch backend in background
+export DRAFT_PORT=$PORT
 nohup "$PYTHON_BIN" -m src.backend.server > /home/enzotay/server.log 2>&1 &
-echo "[Deploy] Backend server launched on port 5001."
+echo "[Deploy] Backend server launched on port $PORT."

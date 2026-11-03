@@ -655,7 +655,7 @@ class ReusableThreadingServer(ThreadingHTTPServer):
         super().server_bind()
 
 
-def kill_old_instances(port=5001):
+def kill_old_instances(port=5005):
     """Terminates any existing backend process owned by the current user to prevent [Errno 98] Address in use."""
     my_pid = os.getpid()
     port_hex = f"{port:04X}"
@@ -712,7 +712,7 @@ def kill_old_instances(port=5001):
 
 
 def main():
-    port = 5001
+    port = int(os.environ.get("DRAFT_PORT", 5005))
     kill_old_instances(port)
     server = ReusableThreadingServer(("127.0.0.1", port), DraftHandler)
     logger.info("Draft Predictor API Server running on http://127.0.0.1:%d", port)

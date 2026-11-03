@@ -19,11 +19,11 @@ export default defineConfig({
     open: false,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5001',
+        target: 'http://127.0.0.1:5005',
         changeOrigin: true,
       },
       '/draft/api': {
-        target: 'http://127.0.0.1:5001',
+        target: 'http://127.0.0.1:5005',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/draft/, ''),
       },

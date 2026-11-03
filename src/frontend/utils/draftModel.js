@@ -328,7 +328,7 @@ const getEndpoints = (path) => {
   list.push(`/draft${path}`);
   // Only try loopback address in local development (Vite), never in production browsers
   if (import.meta.env.DEV) {
-    list.push(`http://127.0.0.1:5001${path}`);
+    list.push(`http://127.0.0.1:5005${path}`);
   }
   return Array.from(new Set(list));
 };
