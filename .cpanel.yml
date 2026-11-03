@@ -10,3 +10,5 @@ deployment:
     - /bin/cp -R models $DEPLOYPATH
     - /bin/mkdir -p $DEPLOYPATH/tmp
     - /bin/touch $DEPLOYPATH/tmp/restart.txt
+    - /bin/chmod +x scripts/restart_server.sh 2>/dev/null || true
+    - /bin/sh scripts/restart_server.sh 2>/dev/null || true
