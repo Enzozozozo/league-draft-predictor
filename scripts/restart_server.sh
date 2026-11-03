@@ -4,8 +4,13 @@
 echo "[Deploy] Attempting to restart Python backend on port 5001..."
 
 # 1. Kill any existing process on port 5001
-fuser -k 5001/tcp 2>/dev/null || pkill -f "src.backend.server" 2>/dev/null || true
-sleep 1
+fuser -k -9 5001/tcp 2>/dev/null || true
+pkill -9 -f "src.backend.server" 2>/dev/null || true
+pkill -9 -f "server.py" 2>/dev/null || true
+if command -v lsof >/dev/null 2>&1; then
+  lsof -ti:5001 | xargs -r kill -9 2>/dev/null || true
+fi
+sleep 2
 
 # 2. Touch restart.txt for Phusion Passenger in all common app roots
 touch /home/enzotay/public_html/draft/tmp/restart.txt 2>/dev/null || true

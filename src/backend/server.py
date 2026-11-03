@@ -637,6 +637,7 @@ class DraftHandler(BaseHTTPRequestHandler):
 
 def main():
     port = 5001
+    ThreadingHTTPServer.allow_reuse_address = True
     server = ThreadingHTTPServer(("127.0.0.1", port), DraftHandler)
     logger.info("Draft Predictor API Server running on http://127.0.0.1:%d", port)
     logger.info("Ready to accept /api/predict requests from React frontend.")
