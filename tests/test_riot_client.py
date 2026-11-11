@@ -1,16 +1,16 @@
 import unittest
+from unittest.mock import patch, MagicMock
 from src.backend.config import RiotConfig, get_regional_route
 from src.backend.riot_client import RiotClient, RateLimiter
+from .sample_match import MOCK_MATCH_PAYLOAD
 
 
 class TestRiotClient(unittest.TestCase):
     def setUp(self):
-        # Configure with a fake development key
         self.config = RiotConfig(
-            api_key="RGAPI-MOCK-DEV-KEY-0000-000000000000",
+            api_key="RGAPI-TEST-DEV-KEY-0000-000000000000",
             default_platform="sg2",
             default_region="sea",
-            use_mock=True,
         )
         self.client = RiotClient(self.config)
 
@@ -20,18 +20,40 @@ class TestRiotClient(unittest.TestCase):
         self.assertEqual(get_regional_route("kr"), "asia")
         self.assertEqual(get_regional_route("euw1"), "europe")
 
-    def test_mock_account_lookup(self):
+    @patch("requests.get")
+    def test_mock_account_lookup(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = {
+            "puuid": "mock-puuid-123",
+            "gameName": "Faker",
+            "tagLine": "T1",
+        }
+        mock_get.return_value = mock_resp
+
         account = self.client.get_account_by_riot_id("Faker", "T1")
         self.assertIn("puuid", account)
         self.assertEqual(account["gameName"], "Faker")
         self.assertEqual(account["tagLine"], "T1")
 
-    def test_mock_match_ids(self):
+    @patch("requests.get")
+    def test_mock_match_ids(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = [f"SG2_31589400{i}" for i in range(1, 6)]
+        mock_get.return_value = mock_resp
+
         match_ids = self.client.get_match_ids_by_puuid("mock-puuid-123", count=5)
         self.assertEqual(len(match_ids), 5)
         self.assertTrue(all(mid.startswith("SG2_") for mid in match_ids))
 
-    def test_mock_match_details(self):
+    @patch("requests.get")
+    def test_mock_match_details(self, mock_get):
+        mock_resp = MagicMock()
+        mock_resp.status_code = 200
+        mock_resp.json.return_value = MOCK_MATCH_PAYLOAD
+        mock_get.return_value = mock_resp
+
         match_data = self.client.get_match_by_id("SG2_315894001")
         self.assertIn("info", match_data)
         self.assertIn("metadata", match_data)

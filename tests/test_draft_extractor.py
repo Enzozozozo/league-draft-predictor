@@ -1,13 +1,12 @@
 import unittest
-from src.backend.riot_client import RiotClient
 from src.backend.draft_extractor import DraftExtractor
 from src.backend.schemas import TeamSide, Role
+from .sample_match import MOCK_MATCH_PAYLOAD
 
 
 class TestDraftExtractor(unittest.TestCase):
     def setUp(self):
-        self.client = RiotClient()
-        self.raw_match = self.client.get_match_by_id("SG2_315894001")
+        self.raw_match = MOCK_MATCH_PAYLOAD
         self.extractor = DraftExtractor()
         self.draft = self.extractor.extract_draft(self.raw_match)
 
