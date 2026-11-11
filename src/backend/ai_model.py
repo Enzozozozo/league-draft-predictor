@@ -56,8 +56,11 @@ class MonotonicCalibratedForest:
         else:
             raw_p = proba
         if self.calibrator is not None:
-            cal_p = np.clip(self.calibrator.transform(raw_p), 0.01, 0.99)
-            return np.column_stack([1 - cal_p, cal_p])
+            if hasattr(self.calibrator, 'predict_proba'):
+                return self.calibrator.predict_proba(X)
+            elif hasattr(self.calibrator, 'transform'):
+                cal_p = np.clip(self.calibrator.transform(raw_p), 0.01, 0.99)
+                return np.column_stack([1 - cal_p, cal_p])
         return np.column_stack([1 - raw_p, raw_p]) if proba.ndim == 1 or proba.shape[1] == 1 else proba
 
     def predict(self, X):
@@ -105,6 +108,12 @@ class MobalyticsJoblibModel(DraftModelInterface):
         self.spell2_wr_dict: Dict[int, float] = {}
         self.champ_classes: Dict[int, Any] = {}
         self.champ_mastery_elasticity: Dict[int, float] = {}
+        self.role_champ_wr_dict: Dict[Tuple[int, str], float] = {}
+        self.counter_residual_dict: Dict[Tuple[int, int, str], float] = {}
+        self.champ_magic_ratio: Dict[int, float] = {}
+        self.champ_attack_ratio: Dict[int, float] = {}
+        self.eb_matchup_tables: Dict[str, Dict] = {}
+        self.archetype_priors: Dict[str, Dict] = {}
         self.optimal_threshold: float = 0.50
         self.is_loaded = False
 
@@ -132,6 +141,12 @@ class MobalyticsJoblibModel(DraftModelInterface):
                 self.spell2_wr_dict = self.pipeline.get("spell2_wr_dict", {})
                 self.champ_classes = self.pipeline.get("champ_classes", {})
                 self.champ_mastery_elasticity = self.pipeline.get("champ_mastery_elasticity", {})
+                self.role_champ_wr_dict = self.pipeline.get("role_champ_wr_dict", {})
+                self.counter_residual_dict = self.pipeline.get("counter_residual_dict", {})
+                self.champ_magic_ratio = self.pipeline.get("champ_magic_ratio", {})
+                self.champ_attack_ratio = self.pipeline.get("champ_attack_ratio", {})
+                self.eb_matchup_tables = self.pipeline.get("eb_matchup_tables", {})
+                self.archetype_priors = self.pipeline.get("archetype_priors", {})
                 self.optimal_threshold = self.pipeline.get("optimal_threshold", 0.50)
                 self.is_loaded = True
                 logger.info(
@@ -183,28 +198,89 @@ class MobalyticsJoblibModel(DraftModelInterface):
             red_cids.append(1)
 
         def get_cwr(cid: int) -> float:
-            return self.champ_wr_dict.get(cid, 0.50)
+            return self.champ_wr_dict.get(int(cid), 0.50)
 
-        # 1. 5v5 Team Overall Baseline Win Rates
-        blue_total_wr = np.mean([get_cwr(c) for c in blue_cids[:5]])
-        red_total_wr = np.mean([get_cwr(c) for c in red_cids[:5]])
+        def get_role_cwr(cid: int, role: str) -> float:
+            return self.role_champ_wr_dict.get((int(cid), role), get_cwr(cid))
+
+        def get_counter_res(c1: int, c2: int, role: str) -> float:
+            if int(c1) == int(c2):
+                return 0.0
+            return self.counter_residual_dict.get((int(c1), int(c2), role), 0.0)
+
+        # 1. Role-Specific 5v5 Win Rates & Lane Counterparts
+        b_top = get_role_cwr(blue_cids[0], "TOP")
+        b_jgl = get_role_cwr(blue_cids[1], "JGL")
+        b_mid = get_role_cwr(blue_cids[2], "MID")
+        b_bot = get_role_cwr(blue_cids[3], "BOT")
+        b_sup = get_role_cwr(blue_cids[4], "SUP")
+
+        r_top = get_role_cwr(red_cids[0], "TOP")
+        r_jgl = get_role_cwr(red_cids[1], "JGL")
+        r_mid = get_role_cwr(red_cids[2], "MID")
+        r_bot = get_role_cwr(red_cids[3], "BOT")
+        r_sup = get_role_cwr(red_cids[4], "SUP")
+
+        res_top = get_counter_res(blue_cids[0], red_cids[0], "TOP")
+        res_jgl = get_counter_res(blue_cids[1], red_cids[1], "JGL")
+        res_mid = get_counter_res(blue_cids[2], red_cids[2], "MID")
+        res_bot = get_counter_res(blue_cids[3], red_cids[3], "BOT")
+        res_sup = get_counter_res(blue_cids[4], red_cids[4], "SUP")
+
+        raw_delta_top = (b_top - r_top) + res_top
+        raw_delta_jgl = (b_jgl - r_jgl) + res_jgl
+        raw_delta_mid = (b_mid - r_mid) + res_mid
+        raw_delta_bot = (b_bot - r_bot) + res_bot
+        raw_delta_sup = (b_sup - r_sup) + res_sup
+
+        blue_total_wr = (b_top + b_jgl + b_mid + b_bot + b_sup) / 5.0
+        red_total_wr  = (r_top + r_jgl + r_mid + r_bot + r_sup) / 5.0
         raw_team_adv = blue_total_wr - red_total_wr
-        team_adv = raw_team_adv if is_blue else -raw_team_adv
+        persp_adv = raw_team_adv if is_blue else -raw_team_adv
+
+        diff_top = raw_delta_top if is_blue else -raw_delta_top
+        diff_jgl = raw_delta_jgl if is_blue else -raw_delta_jgl
+        diff_mid = raw_delta_mid if is_blue else -raw_delta_mid
+        diff_bot = raw_delta_bot if is_blue else -raw_delta_bot
+        diff_sup = raw_delta_sup if is_blue else -raw_delta_sup
+        lane_momentum = (diff_top + diff_jgl + diff_mid + diff_bot + diff_sup) / 5.0
+
+        my_team_wr = blue_total_wr if is_blue else red_total_wr
+        enemy_team_wr = red_total_wr if is_blue else blue_total_wr
 
         # 2. Pilot Mastery Conditioning on team_adv
         primary_picks = draft.blue_team.picks if is_blue else draft.red_team.picks
-        pilot_cid = primary_picks[0].champion_id if primary_picks else (blue_cids[2] if is_blue else red_cids[2])
+        pilot_cid = primary_picks[0].champion_id if primary_picks else (blue_cids[0] if is_blue else red_cids[0])
         pilot_mastery = getattr(primary_picks[0], "mastery_points", 50000.0) if primary_picks else 50000.0
 
         log_pts = np.log1p(pilot_mastery)
-        mastery_tier = 1.0 / (1.0 + np.exp(-(log_pts - np.log1p(25000.0)) / 2.0))
-        mastery_dev = mastery_tier - 0.5
-        elasticity = self.champ_mastery_elasticity.get(pilot_cid, 0.05)
-        pilot_wr_delta = (mastery_dev * elasticity) / 5.0
-        persp_adv_conditioned = team_adv + pilot_wr_delta
-        team_adv_saturated = float(np.tanh(10.0 * persp_adv_conditioned))
+        elasticity = self.champ_mastery_elasticity.get(int(pilot_cid), 0.05)
+        elastic_mastery = log_pts * elasticity
 
-        # 3. Vectorized 10-Pair Synergy Delta (Wilson Score Lift)
+        mastery_tier = 1.0 / (1.0 + np.exp(-(log_pts - np.log1p(100)) / 2.0))
+        mastery_deviation = mastery_tier - 0.5
+        pilot_wr_delta = (mastery_deviation * elasticity) / 5.0
+        persp_adv_cond = persp_adv + pilot_wr_delta
+        team_adv = float(np.tanh(10.0 * persp_adv_cond))
+
+        my_champ_wr = get_cwr(pilot_cid)
+        enemy_cid = red_cids[0] if is_blue else blue_cids[0]
+        enemy_champ_wr = get_cwr(enemy_cid)
+        champ_adv = my_champ_wr - enemy_champ_wr
+        mastery_champ_synergy = elastic_mastery * my_champ_wr
+
+        keystone_wr = 0.50
+        spell_synergy = 0.50
+        if primary_picks:
+            sample_pick = primary_picks[0]
+            keystone_wr = self.keystone_wr_dict.get(sample_pick.primary_keystone_id, 0.50)
+            s1_w = self.spell1_wr_dict.get(getattr(sample_pick, "summoner_spell1_id", 4), 0.50)
+            s2_w = self.spell2_wr_dict.get(getattr(sample_pick, "summoner_spell2_id", 14), 0.50)
+            spell_synergy = 0.5 * (s1_w + s2_w)
+
+        total_synergy = champ_adv + team_adv + lane_momentum
+
+        # 3. Vectorized 10-Pair Synergy Delta (Wilson Score Lift fallback)
         b_combos = list(combinations(blue_cids[:5], 2))
         r_combos = list(combinations(red_cids[:5], 2))
         blue_syn = sum(self.synergy_dict.get((min(int(a), int(b)), max(int(a), int(b))), 0.0) for a, b in b_combos)
@@ -212,29 +288,61 @@ class MobalyticsJoblibModel(DraftModelInterface):
         raw_synergy_delta = blue_syn - red_syn
         team_synergy_delta = raw_synergy_delta if is_blue else -raw_synergy_delta
 
-        # 4. Pilot Elastic Mastery & Keystone Viability
-        elastic_mastery = log_pts * elasticity
-        keystone_wr = 0.50
-        if primary_picks:
-            sample_pick = primary_picks[0]
-            keystone_wr = self.keystone_wr_dict.get(sample_pick.primary_keystone_id, 0.50)
+        # 4. Damage Shares
+        b_mag = sum(self.champ_magic_ratio.get(int(c), 0.5) for c in blue_cids[:5]) / 5.0
+        b_phys = sum(self.champ_attack_ratio.get(int(c), 0.5) for c in blue_cids[:5]) / 5.0
+        r_mag = sum(self.champ_magic_ratio.get(int(c), 0.5) for c in red_cids[:5]) / 5.0
+        r_phys = sum(self.champ_attack_ratio.get(int(c), 0.5) for c in red_cids[:5]) / 5.0
+
+        my_magic_share = b_mag if is_blue else r_mag
+        my_physical_share = b_phys if is_blue else r_phys
+        enemy_magic_share = r_mag if is_blue else b_mag
+        enemy_physical_share = r_phys if is_blue else b_phys
 
         # 5. Net Class Archetype Deltas
         archetype_classes = ["Tank", "Assassin", "Mage", "Marksman", "Support", "Fighter"]
         archetype_deltas = {}
         for cls in archetype_classes:
-            b_cnt = sum(1 if cls in self.champ_classes.get(c, set()) else 0 for c in blue_cids[:5])
-            r_cnt = sum(1 if cls in self.champ_classes.get(c, set()) else 0 for c in red_cids[:5])
+            b_cnt = sum(1 if cls in self.champ_classes.get(int(c), set()) else 0 for c in blue_cids[:5])
+            r_cnt = sum(1 if cls in self.champ_classes.get(int(c), set()) else 0 for c in red_cids[:5])
             delta_cnt = (b_cnt - r_cnt) if is_blue else (r_cnt - b_cnt)
             archetype_deltas[f"delta_{cls.lower()}s"] = delta_cnt
 
         features = {
-            "team_adv": team_adv_saturated,
+            "team_adv": team_adv,
+            "diff_top": diff_top,
+            "diff_jgl": diff_jgl,
+            "diff_mid": diff_mid,
+            "diff_bot": diff_bot,
+            "diff_sup": diff_sup,
+            "lane_momentum": lane_momentum,
             "team_synergy_delta": team_synergy_delta,
             "elastic_mastery": elastic_mastery,
             "keystone_wr": keystone_wr,
             "is_blue": int(is_blue),
+            "my_magic_share": my_magic_share,
+            "my_physical_share": my_physical_share,
+            "enemy_magic_share": enemy_magic_share,
+            "enemy_physical_share": enemy_physical_share,
             **archetype_deltas,
+            # Legacy fallbacks in case loaded pipeline requests them
+            "eb_top": diff_top,
+            "eb_jgl": diff_jgl,
+            "eb_mid": diff_mid,
+            "eb_bot": diff_bot,
+            "eb_sup": diff_sup,
+            "eb_macro_counter": lane_momentum,
+            "lane_dmg_mismatch": 0.0,
+            "team_armor_vs_ap_pressure": 0.0,
+            "en_team_magic": enemy_magic_share,
+            "my_defense": 5.0,
+            "champ_adv": champ_adv,
+            "my_champ_wr": my_champ_wr,
+            "my_team_wr": my_team_wr,
+            "enemy_team_wr": enemy_team_wr,
+            "total_synergy": total_synergy,
+            "mastery_champ_synergy": mastery_champ_synergy,
+            "spell_synergy": spell_synergy,
         }
 
         ordered_cols = self.feature_names or list(features.keys())
@@ -312,9 +420,18 @@ class MobalyticsJoblibModel(DraftModelInterface):
             if not bp or not rp:
                 continue
 
-            b_wr = self.champ_wr_dict.get(bp.champion_id, 0.50)
-            r_wr = self.champ_wr_dict.get(rp.champion_id, 0.50)
-            diff = (b_wr - r_wr) * 100.0
+            role_map_key = {
+                Role.TOP: 'TOP',
+                Role.JUNGLE: 'JGL',
+                Role.MIDDLE: 'MID',
+                Role.BOTTOM: 'BOT',
+                Role.UTILITY: 'SUP',
+            }
+            rk = role_map_key.get(role, 'TOP')
+            b_wr = self.role_champ_wr_dict.get((bp.champion_id, rk), self.champ_wr_dict.get(bp.champion_id, 0.50))
+            r_wr = self.role_champ_wr_dict.get((rp.champion_id, rk), self.champ_wr_dict.get(rp.champion_id, 0.50))
+            res = 0.0 if bp.champion_id == rp.champion_id else self.counter_residual_dict.get((bp.champion_id, rp.champion_id, rk), 0.0)
+            diff = ((b_wr - r_wr) + res) * 100.0
 
             edge_side = TeamSide.BLUE if diff >= 0 else TeamSide.RED
             summary = self._generate_lane_tactical_summary(role, bp.champion_name, rp.champion_name, diff)

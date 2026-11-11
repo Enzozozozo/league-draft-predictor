@@ -35,6 +35,7 @@ logger = logging.getLogger("DraftServer")
 cdm = ChampionDataManager()
 name_to_id = {v.lower(): k for k, v in cdm.id_to_name.items()}
 model = MobalyticsJoblibModel()
+LAST_EVALUATED_DRAFT = {}
 
 ROLE_MAP = {
     "TOP": Role.TOP,
@@ -407,6 +408,22 @@ def run_prediction(blue_picks_data, red_picks_data):
             "summary": mu.tactical_summary,
         })
 
+    global LAST_EVALUATED_DRAFT
+    LAST_EVALUATED_DRAFT = {
+        "blue": [p.get("champion") for p in blue_picks_data],
+        "red": [p.get("champion") for p in red_picks_data],
+        "blueWinProb": blue_win_prob,
+        "redWinProb": red_win_prob,
+        "deltaSpread": delta_spread,
+        "classification": classification,
+        "laneMatchups": [
+            {"role": m.get("role"), "blue": m.get("blueChampion"), "red": m.get("redChampion"), "badge": m.get("badgeText")}
+            for m in lane_matchups
+        ]
+    }
+    logger.info("LOCALHOST DRAFT: Blue=%s vs Red=%s -> WinProb=%.2f%% (%s)",
+                LAST_EVALUATED_DRAFT["blue"], LAST_EVALUATED_DRAFT["red"], blue_win_prob, classification)
+
     return {
         "source": "Python ML Backend (league_mobalytics_clone.joblib)",
         "blueWinProb": blue_win_prob,
@@ -477,6 +494,12 @@ class DraftHandler(BaseHTTPRequestHandler):
                 "ddragon_version": cdm.latest_version,
             }
             self.wfile.write(json.dumps(resp).encode("utf-8"))
+        elif parsed.path in ("/api/last-draft", "/draft/api/last-draft"):
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(LAST_EVALUATED_DRAFT).encode("utf-8"))
         elif parsed.path in ("/api/player-match", "/api/summoner-draft", "/draft/api/player-match", "/draft/api/summoner-draft"):
             try:
                 qs = parse_qs(parsed.query)

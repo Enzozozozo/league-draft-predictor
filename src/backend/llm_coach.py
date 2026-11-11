@@ -18,7 +18,7 @@ except ImportError:
 logger = logging.getLogger("LLMCoach")
 
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-DEFAULT_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+DEFAULT_MODEL = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
 
 COACH_SYSTEM_PROMPT = """Challenger LoL analyst. Return JSON only matching schema.
 Rules:
